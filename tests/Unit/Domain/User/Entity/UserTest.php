@@ -11,8 +11,7 @@ class UserTest extends TestCase
 {
     public function test_getters_and_setter_methods_on_user_entity()
     {
-        $user = (new User)
-            ->setId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+        $user = (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
             ->setEmail('joe@example.com')
             ->setPasswordHash(PasswordHash::createFromRaw('password'))
             ->setCreatedDate(new \DateTimeImmutable('2017-05-03 21:39:00'))

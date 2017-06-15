@@ -7,6 +7,7 @@ use Cocktales\Domain\User\Hydration\Extractor;
 use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\DateTime\Clock;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Exception\UserRepositoryException;
 use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Builder;
@@ -38,6 +39,10 @@ class IlluminateDbUserRepository implements Repository
      */
     public function createUser(User $user): User
     {
+        if ($this->table()->where('email', $user->getEmail())->exists()) {
+            throw new UserRepositoryException("User with email address {$user->getEmail()} already exists");
+        }
+
         $user->setCreatedDate($this->clock->now());
         $user->setLastModifiedDate($this->clock->now());
 

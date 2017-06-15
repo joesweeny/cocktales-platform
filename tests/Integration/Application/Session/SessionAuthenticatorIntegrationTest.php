@@ -35,8 +35,7 @@ class SessionAuthenticatorIntegrationTest extends TestCase
         $this->container = $this->runMigrations($this->createContainer());
         $this->orchestrator = $this->container->get(UserOrchestrator::class);
         $this->manager = $this->prophesize(SessionManager::class);
-        $this->orchestrator->createUser((new User)
-            ->setId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+        $this->orchestrator->createUser((new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
             ->setEmail('joe@example.com')
             ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );

@@ -5,6 +5,7 @@ namespace Cocktales\Domain\User\Persistence;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Exception\UserRepositoryException;
 use Cocktales\Framework\Uuid\Uuid;
 
 interface Repository
@@ -14,6 +15,7 @@ interface Repository
      *
      * @param User $user
      * @return User
+     * @throws UserRepositoryException
      */
     public function createUser(User $user): User;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cocktales\Application\Http\v1\Controllers;
+namespace Cocktales\Application\Http\Api\v1\Controllers;
 
 use Cocktales\Framework\Controller\ControllerService;
 use Zend\Diactoros\Response\HtmlResponse;

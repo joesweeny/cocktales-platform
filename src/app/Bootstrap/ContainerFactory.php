@@ -6,7 +6,7 @@ use Chief\Busses\SynchronousCommandBus;
 use Chief\Container;
 use Chief\Resolvers\NativeCommandHandlerResolver;
 use Cocktales\Application\Http\Router;
-use Cocktales\Application\Http\v1\Routing\Home\RouteManager;
+use Cocktales\Application\Http\Api\v1\Routing\Home\RouteManager;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
 use Cocktales\Domain\User\Persistence\IlluminateDbUserRepository;
 use Cocktales\Domain\User\Persistence\Repository;
@@ -79,7 +79,8 @@ class ContainerFactory
             Router::class => \DI\decorate(function (Router $router, ContainerInterface $container) {
                 return $router
                     ->addRoutes($container->get(RouteManager::class))
-                    ->addRoutes($container->get(\Cocktales\Application\Http\v1\Routing\Welcome\RouteManager::class));
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Welcome\RouteManager::class))
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\User\RouteManager::class));
 
             }),
 

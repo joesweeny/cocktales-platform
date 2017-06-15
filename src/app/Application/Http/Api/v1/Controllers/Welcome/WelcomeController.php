@@ -1,6 +1,6 @@
 <?php
 
-namespace Cocktales\Application\Http\v1\Controllers\Welcome;
+namespace Cocktales\Application\Http\Api\v1\Controllers\Welcome;
 
 use Zend\Diactoros\Response\RedirectResponse;
 

@@ -1,19 +1,20 @@
 <?php
 
-namespace Cocktales\Application\Http\v1\Routing\Home;
+namespace Cocktales\Application\Http\Api\v1\Routing\User;
 
-use Cocktales\Application\Http\v1\Controllers\HomepageController;
+use Cocktales\Application\Http\Api\v1\Controllers\User\Register;
 use Cocktales\Application\Http\RouteMapper;
 use FastRoute\RouteCollector;
 
 class RouteManager implements RouteMapper
 {
+
     /**
      * @param RouteCollector $router
      * @return void
      */
     public function map(RouteCollector $router)
     {
-        $router->addRoute('GET', '/app', HomepageController::class);
+        $router->addRoute('POST', '/api/v1/user/register', Register::class);
     }
 }

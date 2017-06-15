@@ -4,6 +4,7 @@ namespace Cocktales\Service\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Service\User\Command\CreateUserCommand;
 
 class CreateUserCommandHandler
@@ -22,10 +23,31 @@ class CreateUserCommandHandler
         $this->orchestrator = $orchestrator;
     }
 
+    /**
+     * @param CreateUserCommand $command
+     * @return mixed
+     * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
+     */
     public function handle(CreateUserCommand $command)
     {
-        return $this->orchestrator->createUser(
-            (new User)->setEmail($command->getEmail())->setPasswordHash($command->getPassword())
-        );
+        try {
+            $this->orchestrator->getUserByEmail($command->getEmail());
+
+        } catch (NotFoundException $e) {
+
+            return $this->orchestrator->createUser($this->createUserEntity($command));
+        }
+    }
+
+    /**
+     * @param CreateUserCommand $command
+     * @return User
+     * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
+     */
+    private function createUserEntity(CreateUserCommand $command): User
+    {
+        return (new User)
+            ->setEmail($command->getEmail())
+            ->setPasswordHash($command->getPassword());
     }
 }

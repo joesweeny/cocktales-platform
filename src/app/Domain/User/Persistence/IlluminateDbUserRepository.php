@@ -39,10 +39,6 @@ class IlluminateDbUserRepository implements Repository
      */
     public function createUser(User $user): User
     {
-        if ($this->table()->where('email', $user->getEmail())->exists()) {
-            throw new UserRepositoryException("User with email address {$user->getEmail()} already exists");
-        }
-
         $user->setCreatedDate($this->clock->now());
         $user->setLastModifiedDate($this->clock->now());
 

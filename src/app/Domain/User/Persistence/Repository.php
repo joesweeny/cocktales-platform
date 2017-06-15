@@ -15,7 +15,6 @@ interface Repository
      *
      * @param User $user
      * @return User
-     * @throws UserRepositoryException
      */
     public function createUser(User $user): User;
 

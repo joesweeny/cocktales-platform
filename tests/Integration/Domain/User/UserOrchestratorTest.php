@@ -51,23 +51,6 @@ class UserOrchestratorTest extends TestCase
         $this->assertCount(2, $this->connection->table('user')->get());
     }
 
-    public function test_user_repository_exception_thrown_if_attempting_to_create_a_user_with_a_previously_registered_email()
-    {
-        $this->orchestrator->createUser(
-            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-                ->setEmail('joe@example.com')
-                ->setPasswordHash(PasswordHash::createFromRaw('password'))
-        );
-
-        $this->expectException(UserRepositoryException::class);
-
-        $this->orchestrator->createUser(
-            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-                ->setEmail('joe@example.com')
-                ->setPasswordHash(PasswordHash::createFromRaw('password'))
-        );
-    }
-
     public function test_user_can_be_retrieved_by_email()
     {
         $this->orchestrator->createUser(

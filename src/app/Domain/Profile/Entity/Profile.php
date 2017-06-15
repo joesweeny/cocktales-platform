@@ -86,39 +86,21 @@ class Profile
     }
 
     /**
-     * @param string $city
+     * @param string $location
      * @return Profile
      * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
      */
-    public function setCity(string $city): Profile
+    public function setLocation(string $location): Profile
     {
-        return $this->set('city', $city);
+        return $this->set('location', $location);
     }
 
     /**
      * @return string
      */
-    public function getCity(): string
+    public function getLocation(): string
     {
-        return $this->get('city', '');
-    }
-
-    /**
-     * @param string $county
-     * @return Profile
-     * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
-     */
-    public function setCounty(string $county): Profile
-    {
-        return $this->set('county', $county);
-    }
-
-    /**
-     * @return string
-     */
-    public function getCounty(): string
-    {
-        return $this->get('county', '');
+        return $this->get('location', '');
     }
 
     /**

@@ -124,7 +124,6 @@ class IlluminateDbUserRepositoryTest extends TestCase
         $this->repository->createUser(
             (new User)
                 ->setId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-                ->setUsername('joe')
                 ->setEmail('joe@example.com')
                 ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );
@@ -133,12 +132,11 @@ class IlluminateDbUserRepositoryTest extends TestCase
 
         $this->assertInstanceOf(User::class, $fetched);
         $this->assertEquals('dc5b6421-d452-4862-b741-d43383c3fe1d', $fetched->getId()->__toString());
-        $this->assertEquals('joe', $fetched->getUsername());
 
-        $this->repository->updateUser($fetched->setUsername('new_username'));
+        $this->repository->updateUser($fetched->setEmail('joe@email.com'));
 
         $fetched = $this->repository->getUserById(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
 
-        $this->assertEquals('new_username', $fetched->getUsername());
+        $this->assertEquals('joe@email.com', $fetched->getEmail());
     }
 }

@@ -16,8 +16,7 @@ class ProfileTest extends TestCase
             ->setUsername('joe')
             ->setFirstName('Joe')
             ->setLastName('Sweeny')
-            ->setCity('Romford')
-            ->setCounty('Essex')
+            ->setLocation('Essex')
             ->setSlogan('Be drunk and Merry')
             ->setAvatar('newpic.jpg')
             ->setCreatedDate(new \DateTimeImmutable('2017-06-06 13:43:00'))
@@ -29,8 +28,7 @@ class ProfileTest extends TestCase
         $this->assertEquals('joe', $profile->getUsername());
         $this->assertEquals('Joe', $profile->getFirstName());
         $this->assertEquals('Sweeny', $profile->getLastName());
-        $this->assertEquals('Romford', $profile->getCity());
-        $this->assertEquals('Essex', $profile->getCounty());
+        $this->assertEquals('Essex', $profile->getLocation());
         $this->assertEquals('Be drunk and Merry', $profile->getSlogan());
         $this->assertEquals('newpic.jpg', $profile->getAvatar());
         $this->assertEquals(new \DateTimeImmutable('2017-06-06 13:43:00'), $profile->getCreatedDate());
@@ -47,8 +45,7 @@ class ProfileTest extends TestCase
 
         $this->assertEquals('', $profile->getFirstName());
         $this->assertEquals('', $profile->getLastName());
-        $this->assertEquals('', $profile->getCity());
-        $this->assertEquals('', $profile->getCounty());
+        $this->assertEquals('', $profile->getLocation());
         $this->assertEquals('', $profile->getSlogan());
         $this->assertEquals('default.jpg', $profile->getAvatar());
     }

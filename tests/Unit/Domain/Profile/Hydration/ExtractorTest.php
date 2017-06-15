@@ -17,8 +17,7 @@ class ExtractorTest extends TestCase
                 ->setUsername('joe')
                 ->setFirstName('Joe')
                 ->setLastName('Sweeny')
-                ->setCity('Romford')
-                ->setCounty('Essex')
+                ->setLocation('Essex')
                 ->setSlogan('Oi Oi')
                 ->setAvatar('pic.jpg')
                 ->setCreatedDate(new \DateTimeImmutable('2017-03-12 00:00:00'))
@@ -31,8 +30,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals('joe', $data->username);
         $this->assertEquals('Joe', $data->first_name);
         $this->assertEquals('Sweeny', $data->last_name);
-        $this->assertEquals('Romford', $data->city);
-        $this->assertEquals('Essex', $data->county);
+        $this->assertEquals('Essex', $data->location);
         $this->assertEquals('Oi Oi', $data->slogan);
         $this->assertEquals('pic.jpg', $data->avatar);
         $this->assertEquals('2017-03-12 00:00:00', $data->created_at);

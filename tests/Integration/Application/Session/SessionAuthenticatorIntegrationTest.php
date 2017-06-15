@@ -2,6 +2,8 @@
 
 namespace Cocktales\Application\Session;
 
+use Cocktales\Application\Http\Session\SessionAuthenticator;
+use Cocktales\Application\Http\Session\SessionManager;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Password\PasswordHash;

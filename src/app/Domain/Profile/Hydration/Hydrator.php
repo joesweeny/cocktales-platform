@@ -20,8 +20,7 @@ class Hydrator
             ->setUsername($data->username)
             ->setFirstName($data->first_name)
             ->setLastName($data->last_name)
-            ->setCity($data->city)
-            ->setCounty($data->county)
+            ->setLocation($data->location)
             ->setSlogan($data->slogan)
             ->setAvatar($data->avatar)
             ->setCreatedDate(new \DateTimeImmutable($data->created_at))
@@ -40,8 +39,7 @@ class Hydrator
             'username' => $profile->getUsername(),
             'first_name' => $profile->getFirstName(),
             'last_name' => $profile->getLastName(),
-            'city' => $profile->getCity(),
-            'county' => $profile->getCounty(),
+            'location' => $profile->getLocation(),
             'slogan' => $profile->getSlogan(),
             'avatar' => $profile->getAvatar(),
             'created_at' => $profile->getCreatedDate()->format('d/m/Y'),

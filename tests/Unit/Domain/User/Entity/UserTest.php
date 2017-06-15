@@ -3,7 +3,6 @@
 namespace Cocktales\Domain\User\Entity;
 
 use Cocktales\Framework\Exception\ActionNotSupportedException;
-use Cocktales\Framework\Exception\UndefinedException;
 use Cocktales\Framework\Password\PasswordHash;
 use Cocktales\Framework\Uuid\Uuid;
 use PHPUnit\Framework\TestCase;
@@ -27,11 +26,11 @@ class UserTest extends TestCase
         $this->assertEquals('2017-05-03 21:39:00', $user->getLastModifiedDate());
     }
 
-    public function test_action_not_supported_exception_thrown_if_setting_a_property_that_is_already_set()
-    {
-        $user = (new User)->setEmail('joe@example.com');
-        $this->expectException(ActionNotSupportedException::class);
-        $this->expectExceptionMessage('Attempted to modify the value of property `email` but this property is immutable');
-        $user->setEmail('new@email.com');
-    }
+//    public function test_action_not_supported_exception_thrown_if_setting_a_property_that_is_already_set()
+//    {
+//        $user = (new User)->setEmail('joe@example.com');
+//        $this->expectException(ActionNotSupportedException::class);
+//        $this->expectExceptionMessage('Attempted to modify the value of property `email` but this property is immutable');
+//        $user->setEmail('new@email.com');
+//    }
 }

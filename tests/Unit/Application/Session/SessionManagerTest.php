@@ -2,6 +2,7 @@
 
 namespace Cocktales\Application\Session;
 
+use Cocktales\Application\Http\Session\SessionManager;
 use Cocktales\Helpers\CreatesContainer;
 use Cocktales\Helpers\UsesHttpServer;
 use GuzzleHttp\Psr7\ServerRequest;

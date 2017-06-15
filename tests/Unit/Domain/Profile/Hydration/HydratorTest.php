@@ -16,8 +16,7 @@ class HydratorTest extends TestCase
             'username' => 'joe',
             'first_name' => 'Joe',
             'last_name' => 'Sweeny',
-            'city' => 'Romford',
-            'county' => 'Essex',
+            'location' => 'Essex',
             'slogan' => 'Be drunk and happy',
             'avatar' => 'pic.jpg',
             'created_at' => '2017-03-12 00:00:00',
@@ -30,8 +29,7 @@ class HydratorTest extends TestCase
         $this->assertEquals('joe', $profile->getUsername());
         $this->assertEquals('Joe', $profile->getFirstName());
         $this->assertEquals('Sweeny', $profile->getLastName());
-        $this->assertEquals('Romford', $profile->getCity());
-        $this->assertEquals('Essex', $profile->getCounty());
+        $this->assertEquals('Essex', $profile->getLocation());
         $this->assertEquals('Be drunk and happy', $profile->getSlogan());
         $this->assertEquals('pic.jpg', $profile->getAvatar());
         $this->assertEquals(new \DateTimeImmutable('2017-03-12 00:00:00'), $profile->getCreatedDate());
@@ -47,8 +45,7 @@ class HydratorTest extends TestCase
                 ->setUsername('joe')
                 ->setFirstName('Joe')
                 ->setLastName('Sweeny')
-                ->setCity('Romford')
-                ->setCounty('Essex')
+                ->setLocation('Essex')
                 ->setSlogan('Oi Oi')
                 ->setAvatar('pic.jpg')
                 ->setCreatedDate(new \DateTimeImmutable('2017-03-12 00:00:00'))
@@ -61,8 +58,7 @@ class HydratorTest extends TestCase
         $this->assertEquals('joe', $data->username);
         $this->assertEquals('Joe', $data->first_name);
         $this->assertEquals('Sweeny', $data->last_name);
-        $this->assertEquals('Romford', $data->city);
-        $this->assertEquals('Essex', $data->county);
+        $this->assertEquals('Essex', $data->location);
         $this->assertEquals('Oi Oi', $data->slogan);
         $this->assertEquals('pic.jpg', $data->avatar);
         $this->assertEquals('12/03/2017', $data->created_at);

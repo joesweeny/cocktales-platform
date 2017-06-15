@@ -67,8 +67,7 @@ class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
                 ->setUsername('joe')
                 ->setFirstName('Joe')
                 ->setLastName('Sweeny')
-                ->setCity('Romford')
-                ->setCounty('Essex')
+                ->setLocation('Essex')
                 ->setSlogan('Be drunk and Merry')
         );
 
@@ -96,8 +95,7 @@ class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
                 ->setUsername('joe')
                 ->setFirstName('Joe')
                 ->setLastName('Sweeny')
-                ->setCity('Romford')
-                ->setCounty('Essex')
+                ->setLocation('Essex')
                 ->setSlogan('Be drunk and Merry')
         );
 

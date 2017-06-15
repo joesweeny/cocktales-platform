@@ -24,8 +24,7 @@ class Version20170606121603_AddUserProfileTable extends AbstractMigration
         $table->addColumn('username', Type::STRING)->setNotnull(false);
         $table->addColumn('first_name', Type::STRING)->setNotnull(false);
         $table->addColumn('last_name', Type::STRING)->setNotnull(false);
-        $table->addColumn('city', Type::STRING)->setNotnull(false);
-        $table->addColumn('county', Type::STRING)->setNotnull(false);
+        $table->addColumn('location', Type::STRING)->setNotnull(false);
         $table->addColumn('slogan', Type::STRING)->setNotnull(false);
         $table->addColumn('avatar', Type::STRING)->setDefault('default.jpg');
         $table->addColumn('created_at', Type::DATETIME);

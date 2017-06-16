@@ -7,6 +7,7 @@ use Cocktales\Domain\User\Hydration\Extractor;
 use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\DateTime\Clock;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Exception\UserRepositoryException;
 use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Builder;

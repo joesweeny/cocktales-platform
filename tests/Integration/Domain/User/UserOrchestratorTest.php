@@ -4,6 +4,7 @@ namespace Cocktales\Domain\User;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Exception\UserRepositoryException;
 use Cocktales\Framework\Password\PasswordHash;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Helpers\CreatesContainer;
@@ -34,8 +35,7 @@ class UserOrchestratorTest extends TestCase
     public function test_create_user_adds_a_new_record_to_the_database()
     {
         $this->orchestrator->createUser(
-            (new User)
-                ->setId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
                 ->setEmail('joe@example.com')
                 ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );
@@ -43,9 +43,8 @@ class UserOrchestratorTest extends TestCase
         $this->assertCount(1, $this->connection->table('user')->get());
 
         $this->orchestrator->createUser(
-            (new User)
-                ->setId(new Uuid('2b53b061-a19f-4b93-a0ac-f65fd94b23fb'))
-                ->setEmail('joe@example.com')
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+                ->setEmail('andrea@example.com')
                 ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );
 
@@ -55,8 +54,7 @@ class UserOrchestratorTest extends TestCase
     public function test_user_can_be_retrieved_by_email()
     {
         $this->orchestrator->createUser(
-            (new User)
-                ->setId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
                 ->setEmail('joe@example.com')
                 ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );
@@ -78,8 +76,7 @@ class UserOrchestratorTest extends TestCase
     public function test_a_user_can_be_deleted_from_the_database()
     {
         $this->orchestrator->createUser(
-            (new User)
-                ->setId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
                 ->setEmail('joe@example.com')
                 ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );
@@ -96,8 +93,7 @@ class UserOrchestratorTest extends TestCase
     public function test_a_user_can_be_retrieved_by_their_uuid()
     {
         $this->orchestrator->createUser(
-            (new User)
-                ->setId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
                 ->setEmail('joe@example.com')
                 ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );

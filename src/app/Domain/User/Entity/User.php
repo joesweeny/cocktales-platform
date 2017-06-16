@@ -4,32 +4,14 @@ namespace Cocktales\Domain\User\Entity;
 
 use Cocktales\Framework\Entity\PrivateAttributesTrait;
 use Cocktales\Framework\Entity\TimestampedTrait;
+use Cocktales\Framework\Identity\IdentifiedByUuidTrait;
 use Cocktales\Framework\Password\PasswordHash;
-use Cocktales\Framework\Uuid\Uuid;
 
 class User
 {
+    use IdentifiedByUuidTrait;
     use PrivateAttributesTrait;
     use TimestampedTrait;
-
-    /**
-     * @param Uuid $id
-     * @return User
-     * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
-     */
-    public function setId(Uuid $id): User
-    {
-        return $this->set('id', $id);
-    }
-
-    /**
-     * @return Uuid
-     * @throws \Cocktales\Framework\Exception\UndefinedException
-     */
-    public function getId(): Uuid
-    {
-        return $this->getOrFail('id');
-    }
 
     /**
      * @param string $email

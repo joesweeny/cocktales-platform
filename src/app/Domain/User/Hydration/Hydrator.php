@@ -15,8 +15,7 @@ final class Hydrator
      */
     public static function fromRawData(\stdClass $data): User
     {
-        return (new User)
-            ->setId(Uuid::createFromBinary($data->id))
+        return (new User(Uuid::createFromBinary($data->id)))
             ->setEmail($data->email)
             ->setPasswordHash(new PasswordHash($data->password))
             ->setCreatedDate(new \DateTimeImmutable($data->created_at))

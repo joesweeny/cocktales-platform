@@ -70,6 +70,11 @@ class UserOrchestrator
        $this->repository->deleteUser($user);
     }
 
+    /**
+     * @param User $user
+     * @return bool
+     * @throws \Cocktales\Framework\Exception\UndefinedException
+     */
     public function canCreateNewUser(User $user): bool
     {
         try {

@@ -13,7 +13,11 @@ class Register
 {
     use ControllerService;
 
-    public function __invoke(ServerRequestInterface $request)
+    /**
+     * @param ServerRequestInterface $request
+     * @return JsendResponse
+     */
+    public function __invoke(ServerRequestInterface $request): JsendResponse
     {
         $body = json_decode($request->getBody()->getContents());
 
@@ -33,8 +37,5 @@ class Register
                 'error' => 'A user has already registered with this email address'
             ]);
         }
-
-
-
     }
 }

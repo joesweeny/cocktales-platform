@@ -4,7 +4,7 @@ namespace Cocktales\Service\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
-use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Exception\UserEmailValidation;
 use Cocktales\Service\User\Command\CreateUserCommand;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -22,7 +22,7 @@ class CreateUserCommandHandlerTest extends TestCase
             'password' => 'password'
         ]);
 
-        $orchestrator->getUserByEmail($command->getEmail())->shouldBeCalled()->willThrow(NotFoundException::class);
+        $orchestrator->canCreateNewUser(Argument::type(User::class))->shouldBeCalled()->willReturn(true);
 
         $orchestrator->createUser(Argument::that(function (User $user) {
             $this->assertEquals('joe@email.com', $user->getEmail());
@@ -43,9 +43,12 @@ class CreateUserCommandHandlerTest extends TestCase
             'password' => 'password'
         ]);
 
-        $orchestrator->getUserByEmail($command->getEmail())->shouldBeCalled()->willReturn((new User)->setEmail('joe@email.com'));
+        $orchestrator->canCreateNewUser(Argument::type(User::class))->shouldBeCalled()->willReturn(false);
 
         $orchestrator->createUser(Argument::type(User::class))->shouldNotBeCalled();
+
+        $this->expectException(UserEmailValidation::class);
+        $this->expectExceptionMessage('A user has already registered with this email address joe@email.com');
 
         $handler->handle($command);
     }

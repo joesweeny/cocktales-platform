@@ -69,4 +69,14 @@ class UserOrchestrator
     {
        $this->repository->deleteUser($user);
     }
+
+    public function canCreateNewUser(User $user): bool
+    {
+        try {
+            $this->getUserByEmail($user->getEmail());
+            return false;
+        } catch (NotFoundException $e) {
+            return true;
+        }
+    }
 }

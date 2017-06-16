@@ -5,6 +5,7 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\Exception\UserEmailValidation;
 use Cocktales\Service\User\Command\CreateUserCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -21,14 +22,19 @@ class Register
             'password' => $body->password
         ];
 
-        if (!$user = $this->bus->execute(new CreateUserCommand($data))) {
+        try {
+            $user = $this->bus->execute(new CreateUserCommand($data));
+
+            return JsendResponse::success([
+                'user' => Hydrator::toPublicViewableData($user)
+            ]);
+        } catch (UserEmailValidation $e) {
             return JsendResponse::fail([
                 'error' => 'A user has already registered with this email address'
             ]);
         }
 
-        return JsendResponse::success([
-            'user' => Hydrator::toPublicViewableData($user)
-        ]);
+
+
     }
 }

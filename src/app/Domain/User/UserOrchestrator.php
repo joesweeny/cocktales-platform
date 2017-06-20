@@ -84,4 +84,18 @@ class UserOrchestrator
             return true;
         }
     }
+
+    /**
+     * @param string $email
+     * @return bool
+     */
+    public function canUpdateUser(string $email): bool
+    {
+        try {
+            $this->getUserByEmail($email);
+            return false;
+        } catch (NotFoundException $e) {
+            return true;
+        }
+    }
 }

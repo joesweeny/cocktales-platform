@@ -6,8 +6,8 @@ use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
-use Cocktales\Framework\Exception\UserEmailValidation;
-use Cocktales\Framework\Exception\UserPasswordValidation;
+use Cocktales\Framework\Exception\UserEmailValidationException;
+use Cocktales\Framework\Exception\UserPasswordValidationException;
 use Cocktales\Service\User\Command\UpdateUserCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -36,11 +36,11 @@ class Update
             return JsendResponse::fail([
                 'error' => 'Unable to process request - please try again'
             ]);
-        } catch (UserEmailValidation $e) {
+        } catch (UserEmailValidationException $e) {
             return JsendResponse::fail([
                 'error' => 'A user has already registered with this email address'
             ]);
-        } catch (UserPasswordValidation $e) {
+        } catch (UserPasswordValidationException $e) {
             return JsendResponse::fail([
                 'error' => 'Password does not match the password on record - please try again'
             ]);

@@ -2,7 +2,7 @@
 
 namespace Cocktales\Framework\Exception;
 
-class UserPasswordValidation extends \Exception
+class UsernameValidationException extends \Exception
 {
 
 }

@@ -12,25 +12,6 @@ class Profile
     use TimestampedTrait;
 
     /**
-     * @param Uuid $id
-     * @return Profile
-     * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
-     */
-    public function setId(Uuid $id): Profile
-    {
-        return $this->set('id', $id);
-    }
-
-    /**
-     * @return Uuid
-     * @throws \Cocktales\Framework\Exception\UndefinedException
-     */
-    public function getId(): Uuid
-    {
-        return $this->getOrFail('id');
-    }
-
-    /**
      * @param Uuid $userId
      * @return Profile
      * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
@@ -119,24 +100,6 @@ class Profile
     public function getSlogan(): string
     {
         return $this->get('slogan', '');
-    }
-
-    /**
-     * @param string $avatar
-     * @return Profile
-     * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
-     */
-    public function setAvatar(string $avatar): Profile
-    {
-        return $this->set('avatar', $avatar);
-    }
-
-    /**
-     * @return string
-     */
-    public function getAvatar(): string
-    {
-        return $this->get('avatar', 'default.jpg');
     }
 
     /**

@@ -42,7 +42,7 @@ class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
     public function test_create_profile_increases_table_count()
     {
         $this->repository->createProfile(
-            (new Profile)->setId(Uuid::generate())->setUserId(Uuid::generate())->setUsername('joe')
+            (new Profile)->setUserId(Uuid::generate())->setUsername('joe')
         );
 
         $total = $this->connection->table('user_profile')->get();
@@ -50,7 +50,7 @@ class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
         $this->assertCount(1, $total);
 
         $this->repository->createProfile(
-            (new Profile)->setId(Uuid::generate())->setUserId(Uuid::generate())->setUsername('bob')
+            (new Profile)->setUserId(Uuid::generate())->setUsername('bob')
         );
 
         $total = $this->connection->table('user_profile')->get();
@@ -62,7 +62,6 @@ class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
     {
         $this->repository->createProfile(
             (new Profile)
-                ->setId(new Uuid('03622d29-9e1d-499e-a9dd-9fcd12b4fab9'))
                 ->setUserId(new Uuid('b5acd30c-085e-4dee-b8a9-19e725dc62c3'))
                 ->setUsername('joe')
                 ->setFirstName('Joe')
@@ -74,7 +73,6 @@ class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
         $fetched = $this->repository->getProfileByUserId(new Uuid('b5acd30c-085e-4dee-b8a9-19e725dc62c3'));
 
         $this->assertInstanceOf(Profile::class, $fetched);
-        $this->assertEquals('03622d29-9e1d-499e-a9dd-9fcd12b4fab9', $fetched->getId()->__toString());
         $this->assertEquals('b5acd30c-085e-4dee-b8a9-19e725dc62c3', $fetched->getUserId()->__toString());
         $this->assertEquals('Joe', $fetched->getFirstName());
     }
@@ -90,7 +88,6 @@ class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
     {
         $this->repository->createProfile(
             (new Profile)
-                ->setId(new Uuid('03622d29-9e1d-499e-a9dd-9fcd12b4fab9'))
                 ->setUserId(new Uuid('b5acd30c-085e-4dee-b8a9-19e725dc62c3'))
                 ->setUsername('joe')
                 ->setFirstName('Joe')

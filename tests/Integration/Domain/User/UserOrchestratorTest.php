@@ -143,4 +143,26 @@ class UserOrchestratorTest extends TestCase
 
         $this->assertFalse($this->orchestrator->canUpdateUser('joe@example.com'));
     }
+
+    public function test_validate_user_password_returns_true_if_password_matches_password_stored_for_user()
+    {
+        $this->orchestrator->createUser(
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+                ->setEmail('joe@example.com')
+                ->setPasswordHash(PasswordHash::createFromRaw('password'))
+        );
+
+        $this->assertTrue($this->orchestrator->validateUserPassword(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'), 'password'));
+    }
+
+    public function test_validate_user_password_returns_false_if_password_does_not_match_password_stored_for_user()
+    {
+        $this->orchestrator->createUser(
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+                ->setEmail('joe@example.com')
+                ->setPasswordHash(PasswordHash::createFromRaw('password'))
+        );
+
+        $this->assertFalse($this->orchestrator->validateUserPassword(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'), 'wrongPassword'));
+    }
 }

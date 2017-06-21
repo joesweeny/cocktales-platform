@@ -114,7 +114,7 @@ class ProfileOrchestratorIntegrationTest extends TestCase
 
     public function test_is_username_unique_returns_true_if_username_is_not_already_in_the_database()
     {
-        $this->assertTrue($this->orchestrator->isUsernameUnique('joe'));
+        $this->assertTrue($this->orchestrator->canCreateProfile('joe'));
     }
 
     public function test_is_username_unique_returns_false_if_username_is_already_in_the_database()
@@ -123,6 +123,6 @@ class ProfileOrchestratorIntegrationTest extends TestCase
             (new Profile)->setUserId(Uuid::generate())->setUsername('joe')
         );
 
-        $this->assertFalse($this->orchestrator->isUsernameUnique('joe'));
+        $this->assertFalse($this->orchestrator->canCreateProfile('joe'));
     }
 }

@@ -4,7 +4,7 @@ namespace Cocktales\Service\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
-use Cocktales\Framework\Exception\UserEmailValidation;
+use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Service\User\Command\CreateUserCommand;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -47,7 +47,7 @@ class CreateUserCommandHandlerTest extends TestCase
 
         $orchestrator->createUser(Argument::type(User::class))->shouldNotBeCalled();
 
-        $this->expectException(UserEmailValidation::class);
+        $this->expectException(UserEmailValidationException::class);
         $this->expectExceptionMessage('A user has already registered with this email address joe@email.com');
 
         $handler->handle($command);

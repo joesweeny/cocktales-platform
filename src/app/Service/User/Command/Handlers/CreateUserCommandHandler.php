@@ -4,7 +4,7 @@ namespace Cocktales\Service\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
-use Cocktales\Framework\Exception\UserEmailValidation;
+use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Service\User\Command\CreateUserCommand;
 
 class CreateUserCommandHandler
@@ -27,7 +27,7 @@ class CreateUserCommandHandler
      * @param CreateUserCommand $command
      * @return User
      * @throws \Cocktales\Framework\Exception\UndefinedException
-     * @throws \Cocktales\Framework\Exception\UserEmailValidation
+     * @throws \Cocktales\Framework\Exception\UserEmailValidationException
      * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
      */
     public function handle(CreateUserCommand $command): User
@@ -35,7 +35,7 @@ class CreateUserCommandHandler
         $user = $this->createUserEntity($command);
 
         if (!$this->orchestrator->canCreateNewUser($user)) {
-            throw new UserEmailValidation("A user has already registered with this email address {$user->getEmail()}");
+            throw new UserEmailValidationException("A user has already registered with this email address {$user->getEmail()}");
         }
 
         return $this->orchestrator->createUser($user);

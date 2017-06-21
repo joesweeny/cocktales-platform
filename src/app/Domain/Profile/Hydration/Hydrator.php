@@ -15,14 +15,12 @@ class Hydrator
     public static function fromRawData(\stdClass $data): Profile
     {
         return (new Profile)
-            ->setId(Uuid::createFromBinary($data->id))
             ->setUserId(Uuid::createFromBinary($data->user_id))
             ->setUsername($data->username)
             ->setFirstName($data->first_name)
             ->setLastName($data->last_name)
             ->setLocation($data->location)
             ->setSlogan($data->slogan)
-            ->setAvatar($data->avatar)
             ->setCreatedDate(new \DateTimeImmutable($data->created_at))
             ->setLastModifiedDate(new \DateTimeImmutable($data->updated_at));
     }
@@ -34,14 +32,12 @@ class Hydrator
     public static function toPublicViewableData(Profile $profile): \stdClass
     {
         return (object) [
-            'id' => $profile->getId()->__toString(),
             'user_id' => $profile->getUserId()->__toString(),
             'username' => $profile->getUsername(),
             'first_name' => $profile->getFirstName(),
             'last_name' => $profile->getLastName(),
             'location' => $profile->getLocation(),
             'slogan' => $profile->getSlogan(),
-            'avatar' => $profile->getAvatar(),
             'created_at' => $profile->getCreatedDate()->format('d/m/Y'),
             'updated_at' => $profile->getLastModifiedDate()->format('d/m/Y')
         ];

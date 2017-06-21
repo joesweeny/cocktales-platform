@@ -19,14 +19,12 @@ class Version20170606121603_AddUserProfileTable extends AbstractMigration
         $this->setup();
 
         $table = $schema->createTable('user_profile');
-        $table->addColumn('id', Type::BINARY)->setLength(16);
         $table->addColumn('user_id', Type::BINARY)->setLength(16);
         $table->addColumn('username', Type::STRING)->setNotnull(false);
         $table->addColumn('first_name', Type::STRING)->setNotnull(false);
         $table->addColumn('last_name', Type::STRING)->setNotnull(false);
         $table->addColumn('location', Type::STRING)->setNotnull(false);
         $table->addColumn('slogan', Type::STRING)->setNotnull(false);
-        $table->addColumn('avatar', Type::STRING)->setDefault('default.jpg');
         $table->addColumn('created_at', Type::DATETIME);
         $table->addColumn('updated_at', Type::DATETIME);
     }

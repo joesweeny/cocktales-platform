@@ -5,8 +5,8 @@ namespace Cocktales\Service\User\Command\Handlers;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Exception\NotFoundException;
-use Cocktales\Framework\Exception\UserEmailValidation;
-use Cocktales\Framework\Exception\UserPasswordValidation;
+use Cocktales\Framework\Exception\UserEmailValidationException;
+use Cocktales\Framework\Exception\UserPasswordValidationException;
 use Cocktales\Framework\Password\PasswordHash;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Service\User\Command\UpdateUserCommand;
@@ -153,7 +153,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->updateUser(Argument::type(User::class))->shouldNotBeCalled();
 
-        $this->expectException(UserEmailValidation::class);
+        $this->expectException(UserEmailValidationException::class);
 
         $this->handler->handle($command);
     }
@@ -179,7 +179,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->updateUser(Argument::type(User::class))->shouldNotBeCalled();
 
-        $this->expectException(UserPasswordValidation::class);
+        $this->expectException(UserPasswordValidationException::class);
 
         $this->handler->handle($command);
     }

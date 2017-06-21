@@ -84,4 +84,32 @@ class UserOrchestrator
             return true;
         }
     }
+
+    /**
+     * @param string $email
+     * @return bool
+     */
+    public function canUpdateUser(string $email): bool
+    {
+        try {
+            $this->getUserByEmail($email);
+            return false;
+        } catch (NotFoundException $e) {
+            return true;
+        }
+    }
+
+    /**
+     * @param Uuid $id
+     * @param string $password
+     * @return bool
+     * @throws \Cocktales\Framework\Exception\UndefinedException
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
+    public function validateUserPassword(Uuid $id, string $password): bool
+    {
+        $user = $this->getUserById($id);
+
+        return $user->getPasswordHash()->verify($password);
+    }
 }

@@ -5,8 +5,10 @@ namespace Cocktales\Bootstrap;
 use Chief\Busses\SynchronousCommandBus;
 use Chief\Container;
 use Chief\Resolvers\NativeCommandHandlerResolver;
+use Cocktales\Application\Http\Middleware\PathGuard;
 use Cocktales\Application\Http\Router;
 use Cocktales\Application\Http\Api\v1\Routing\Home\RouteManager;
+use Cocktales\Application\Http\Session\SessionAuthenticator;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
 use Cocktales\Domain\User\Persistence\IlluminateDbUserRepository;
 use Cocktales\Domain\User\Persistence\Repository;
@@ -81,8 +83,13 @@ class ContainerFactory
                     ->addRoutes($container->get(RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Welcome\RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\User\RouteManager::class))
-                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class));
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class))
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Auth\RouteManager::class));
 
+            }),
+
+            PathGuard::class => \DI\factory(function (ContainerInterface $container) {
+                return new PathGuard($container->get(SessionAuthenticator::class), "/^\/auth\/login/");
             }),
 
             CommandBus::class => \DI\factory(function (ContainerInterface $container) {

@@ -23,9 +23,9 @@ class PathGuard implements ServerMiddlewareInterface
     /**
      * AppGuard constructor.
      * @param SessionAuthenticator $authenticator
-     * @param array $exclude
+     * @param string $exclude
      */
-    public function __construct(SessionAuthenticator $authenticator, array $exclude)
+    public function __construct(SessionAuthenticator $authenticator, string $exclude)
     {
         $this->exclude = $exclude;
         $this->authenticator = $authenticator;
@@ -42,8 +42,8 @@ class PathGuard implements ServerMiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        if (!$this->authenticator->isLoggedIn($request) && !in_array($request->getUri()->getPath(), $this->exclude)) {
-            return new RedirectResponse('/user/login');
+        if (!preg_match($this->exclude, $request->getUri()->getPath()) && !$this->authenticator->isLoggedIn($request)) {
+            return new RedirectResponse('/app/auth/login');
         }
 
         return $delegate->process($request);

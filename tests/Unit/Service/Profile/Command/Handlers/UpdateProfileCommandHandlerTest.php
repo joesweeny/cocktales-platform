@@ -4,6 +4,7 @@ namespace Cocktales\Service\Profile\Command\Handlers;
 
 use Cocktales\Domain\Profile\Entity\Profile;
 use Cocktales\Domain\Profile\ProfileOrchestrator;
+use Cocktales\Framework\Exception\UsernameValidationException;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Service\Profile\Command\UpdateProfileCommand;
 use PHPUnit\Framework\TestCase;
@@ -54,6 +55,37 @@ class UpdateProfileCommandHandlerTest extends TestCase
             $this->assertEquals('I want to get pissed', $profile->getSlogan());
             return true;
         }))->shouldBeCalled();
+
+        $this->handler->handle($command);
+    }
+
+    public function test_exception_is_thrown_if_attempting_to_change_a_username_to_a_username_that_is_already_taken()
+    {
+        $command = new UpdateProfileCommand((object) [
+            'user_id' => '8897fa60-e66f-41fb-86a2-9828b1785481',
+            'username' => 'joe',
+            'first_name' => 'Joe',
+            'last_name' => 'Sweeny',
+            'location' => '',
+            'slogan' => 'I want to get pissed'
+        ]);
+
+        $this->orchestrator->getProfileByUserId($command->getUserId())->shouldBeCalled()->willReturn(
+            (new Profile)
+                ->setUserId(new Uuid('8897fa60-e66f-41fb-86a2-9828b1785481'))
+                ->setUsername('Andrea')
+                ->setFirstName('Andrea')
+                ->setFirstName('Sweeny')
+                ->setLocation('')
+                ->setSlogan('Love Life')
+        );
+
+        $this->orchestrator->isUsernameUnique($command->getUsername())->shouldBeCalled()->willReturn(false);
+
+        $this->orchestrator->updateProfile(Argument::type(Profile::class))->shouldNotBeCalled();
+
+        $this->expectException(UsernameValidationException::class);
+        $this->expectExceptionMessage('Username joe is already taken by another user');
 
         $this->handler->handle($command);
     }

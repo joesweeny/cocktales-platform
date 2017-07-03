@@ -88,9 +88,9 @@ class ContainerFactory
 
             }),
 
-            PathGuard::class => \DI\factory(function (ContainerInterface $container) {
-                return new PathGuard($container->get(SessionAuthenticator::class), "/^\/auth\/login/");
-            }),
+//            PathGuard::class => \DI\factory(function (ContainerInterface $container) {
+//                return new PathGuard($container->get(SessionAuthenticator::class), "/^\/auth\/login/");
+//            }),
 
             CommandBus::class => \DI\factory(function (ContainerInterface $container) {
                 $bus = new ChiefAdapter(new SynchronousCommandBus(new NativeCommandHandlerResolver(new class($container) implements Container {

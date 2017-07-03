@@ -40,6 +40,7 @@ class LoginIntegrationTest extends TestCase
         $request = new ServerRequest('post', '/app/auth/login', [], '{"email":"joe@mail.com","password":"password"}');
 
         $response = $this->handle($this->container, $request);
+
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/app', $response->getHeader('location')[0]);
     }

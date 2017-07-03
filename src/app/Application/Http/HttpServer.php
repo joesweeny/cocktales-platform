@@ -2,7 +2,7 @@
 
 namespace Cocktales\Application\Http;
 
-use Cocktales\Application\Middleware\PathGuard;
+use Cocktales\Application\Http\Middleware\PathGuard;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

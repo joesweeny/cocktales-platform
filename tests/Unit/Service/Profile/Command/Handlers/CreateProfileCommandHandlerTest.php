@@ -33,7 +33,7 @@ class CreateProfileCommandHandlerTest extends TestCase
             'slogan' => ''
         ]);
 
-        $this->orchestrator->canCreateProfile($command->getUsername())->shouldBeCalled()->willReturn(true);
+        $this->orchestrator->isUsernameUnique($command->getUsername())->shouldBeCalled()->willReturn(true);
 
         $this->orchestrator->createProfile(Argument::that(function (Profile $profile) {
             $this->assertEquals('8897fa60-e66f-41fb-86a2-9828b1785481', $profile->getUserId()->__toString());
@@ -59,7 +59,7 @@ class CreateProfileCommandHandlerTest extends TestCase
             'slogan' => ''
         ]);
 
-        $this->orchestrator->canCreateProfile($command->getUsername())->shouldBeCalled()->willReturn(false);
+        $this->orchestrator->isUsernameUnique($command->getUsername())->shouldBeCalled()->willReturn(false);
 
         $this->orchestrator->createProfile(Argument::type(Profile::class))->shouldNotBeCalled();
 

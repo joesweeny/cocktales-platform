@@ -66,7 +66,7 @@ class ProfileOrchestrator
      * @param string $username
      * @return bool
      */
-    public function canCreateProfile(string $username): bool
+    public function isUsernameUnique(string $username): bool
     {
         try {
             $this->getProfileByUsername($username);

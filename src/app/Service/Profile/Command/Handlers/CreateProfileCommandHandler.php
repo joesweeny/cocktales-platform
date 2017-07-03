@@ -32,7 +32,7 @@ class CreateProfileCommandHandler
      */
     public function handle(CreateProfileCommand $command): Profile
     {
-        if (!$this->orchestrator->canCreateProfile($command->getUsername())) {
+        if (!$this->orchestrator->isUsernameUnique($command->getUsername())) {
             throw new UsernameValidationException("Username {$command->getUsername()} is already taken by another user");
         }
 

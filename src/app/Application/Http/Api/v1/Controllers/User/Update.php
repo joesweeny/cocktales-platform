@@ -15,6 +15,11 @@ class Update
 {
     use ControllerService;
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return JsendResponse
+     * @throws \RuntimeException
+     */
     public function __invoke(ServerRequestInterface $request): JsendResponse
     {
         $body = json_decode($request->getBody()->getContents());

@@ -83,14 +83,9 @@ class ContainerFactory
                     ->addRoutes($container->get(RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Welcome\RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\User\RouteManager::class))
-                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class))
-                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Auth\RouteManager::class));
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class));
 
             }),
-
-//            PathGuard::class => \DI\factory(function (ContainerInterface $container) {
-//                return new PathGuard($container->get(SessionAuthenticator::class), "/^\/auth\/login/");
-//            }),
 
             CommandBus::class => \DI\factory(function (ContainerInterface $container) {
                 $bus = new ChiefAdapter(new SynchronousCommandBus(new NativeCommandHandlerResolver(new class($container) implements Container {

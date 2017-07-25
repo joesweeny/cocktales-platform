@@ -54,7 +54,7 @@ class ProfileCreate extends Command
                 'slogan' => $input->getArgument('slogan'),
             ]));
 
-            $response->success('User Registered!');
+            $response->success('Profile created!');
         } catch (UsernameValidationException $e) {
             $response->error($e->getMessage());
         }

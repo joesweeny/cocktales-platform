@@ -27,7 +27,7 @@ class Register
         ];
 
         try {
-            $user = $this->bus->execute(new CreateUserCommand($data->email, $data->password));
+            $user = $this->bus->execute(new CreateUserCommand($data));
 
             return JsendResponse::success([
                 'user' => Hydrator::toPublicViewableData($user)

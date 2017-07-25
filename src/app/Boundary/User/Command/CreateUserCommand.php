@@ -8,24 +8,17 @@ use Cocktales\Framework\Password\PasswordHash;
 class CreateUserCommand implements Command
 {
     /**
-     * @var string
+     * @var \stdClass
      */
-    private $email;
-    /**
-     * @var string
-     */
-    private $password;
-
+    private $data;
 
     /**
      * CreateUserCommand constructor.
-     * @param string $email
-     * @param string $password
+     * @param \stdClass $data
      */
-    public function __construct(string $email, string $password)
+    public function __construct(\stdClass $data)
     {
-        $this->email = $email;
-        $this->password = $password;
+        $this->data = $data;
     }
 
     /**
@@ -33,7 +26,7 @@ class CreateUserCommand implements Command
      */
     public function getEmail(): string
     {
-        return $this->email;
+        return $this->data->email;
     }
 
     /**
@@ -41,6 +34,6 @@ class CreateUserCommand implements Command
      */
     public function getPassword(): PasswordHash
     {
-        return PasswordHash::createFromRaw($this->password);
+        return PasswordHash::createFromRaw($this->data->password);
     }
 }

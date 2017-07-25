@@ -2,11 +2,11 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
+use Cocktales\Boundary\User\Command\GetUserByIdCommand;
 use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
-use Cocktales\Service\User\Command\GetUserByIdCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Get

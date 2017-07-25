@@ -2,8 +2,6 @@
 
 namespace Cocktales\Application\Console;
 
-use Cocktales\Application\Console\Command\RegisterUserCommand;
-use Cocktales\Application\Console\Command\UpdateProfileCommand;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\DBAL\Migrations\Finder\GlobFinder;
@@ -56,9 +54,6 @@ class Console
         ]));
 
         $app->addCommands([
-            $this->container->get(RegisterUserCommand::class),
-            $this->container->get(UpdateProfileCommand::class),
-
             new \Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand(),
             new \Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand(),
             new \Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand(),

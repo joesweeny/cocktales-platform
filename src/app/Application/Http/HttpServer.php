@@ -2,8 +2,8 @@
 
 namespace Cocktales\Application\Http;
 
-use Cocktales\Application\Http\Middleware\PathGuard;
 use Interop\Container\ContainerInterface;
+use Cocktales\Framework\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use PSR7Session\Http\SessionMiddleware;
@@ -27,6 +27,15 @@ class HttpServer
         $this->container = $container;
     }
 
+    /**
+     * Handle a HTTP request and return an HTTP response.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $pipe = new MiddlewarePipe;
@@ -37,7 +46,7 @@ class HttpServer
 
         return $pipe
             ->pipe('/', new CallableMiddlewareWrapper($this->container->get(SessionMiddleware::class), $prototype))
-//            ->pipe('/', $this->container->get(PathGuard::class))
+
             ->process($request, $this->container->get(Router::class));
     }
 }

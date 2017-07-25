@@ -5,17 +5,17 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Profile;
 use Cocktales\Domain\Profile\Entity\Profile;
 use Cocktales\Domain\Profile\ProfileOrchestrator;
 use Cocktales\Framework\Uuid\Uuid;
-use Cocktales\Helpers\CreatesContainer;
-use Cocktales\Helpers\RunsMigrations;
-use Cocktales\Helpers\UsesHttpServer;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Cocktales\Testing\Traits\RunsMigrations;
+use Cocktales\Testing\Traits\UsesContainer;
+use Cocktales\Testing\Traits\UsesHttpServer;
 
 class CreateIntegrationTest extends TestCase
 {
     use UsesHttpServer;
-    use CreatesContainer;
+    use UsesContainer;
     use RunsMigrations;
 
     /** @var  ContainerInterface */

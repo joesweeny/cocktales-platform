@@ -5,7 +5,7 @@ namespace Cocktales\Boundary\User\Command;
 use Cocktales\Framework\CommandBus\Command;
 use Cocktales\Framework\Password\PasswordHash;
 
-class CreateUserCommand implements Command
+class RegisterUserCommand implements Command
 {
     /**
      * @var \stdClass
@@ -13,7 +13,7 @@ class CreateUserCommand implements Command
     private $data;
 
     /**
-     * CreateUserCommand constructor.
+     * RegisterUserCommand constructor.
      * @param \stdClass $data
      */
     public function __construct(\stdClass $data)

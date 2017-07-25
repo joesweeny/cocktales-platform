@@ -2,7 +2,7 @@
 
 namespace Cocktales\Application\Console\Command;
 
-use Cocktales\Boundary\User\Command\RegisterUserCommand;
+use Cocktales\Boundary\Profile\Command\CreateProfileCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
 use Cocktales\Framework\Exception\UsernameValidationException;
 use Symfony\Component\Console\Command\Command;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class UserRegister extends Command
+class ProfileCreate extends Command
 {
     /**
      * @var CommandBus
@@ -30,10 +30,14 @@ class UserRegister extends Command
 
     protected function configure()
     {
-        $this->setName('user:register')
-            ->setDescription('Register a new User')
-            ->addArgument('email', InputArgument::REQUIRED)
-            ->addArgument('password', InputArgument::REQUIRED);
+        $this->setName('profile:create')
+            ->setDescription('Create a Profile for a registered User')
+            ->addArgument('user_id', InputArgument::REQUIRED)
+            ->addArgument('username', InputArgument::REQUIRED)
+            ->addArgument('first_name', InputArgument::OPTIONAL, '')
+            ->addArgument('last_name', InputArgument::OPTIONAL, '')
+            ->addArgument('location', InputArgument::OPTIONAL, '')
+            ->addArgument('slogan', InputArgument::OPTIONAL, '');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -41,9 +45,13 @@ class UserRegister extends Command
         $response = new SymfonyStyle($input, $output);
 
         try {
-            $this->bus->execute(new RegisterUserCommand((object) [
-                'email' => $input->getArgument('email'),
-                'password' => $input->getArgument('password')
+            $this->bus->execute(new CreateProfileCommand((object) [
+                'user_id' => $input->getArgument('user_id'),
+                'username' => $input->getArgument('username'),
+                'first_name' => $input->getArgument('first_name'),
+                'last_name' => $input->getArgument('last_name'),
+                'location' => $input->getArgument('location'),
+                'slogan' => $input->getArgument('slogan'),
             ]));
 
             $response->success('User Registered!');

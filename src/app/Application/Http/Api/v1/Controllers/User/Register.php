@@ -6,7 +6,7 @@ use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\UserEmailValidationException;
-use Cocktales\Boundary\User\Command\CreateUserCommand;
+use Cocktales\Boundary\User\Command\RegisterUserCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Register
@@ -27,7 +27,7 @@ class Register
         ];
 
         try {
-            $user = $this->bus->execute(new CreateUserCommand($data));
+            $user = $this->bus->execute(new RegisterUserCommand($data));
 
             return JsendResponse::success([
                 'user' => Hydrator::toPublicViewableData($user)

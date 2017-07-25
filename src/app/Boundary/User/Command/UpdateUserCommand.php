@@ -14,7 +14,7 @@ class UpdateUserCommand implements Command
     private $data;
 
     /**
-     * CreateUserCommand constructor.
+     * RegisterUserCommand constructor.
      * @param \stdClass $data
      */
     public function __construct(\stdClass $data)

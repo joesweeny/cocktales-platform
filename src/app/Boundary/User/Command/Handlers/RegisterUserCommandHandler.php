@@ -5,9 +5,9 @@ namespace Cocktales\Boundary\User\Command\Handlers;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Exception\UserEmailValidationException;
-use Cocktales\Boundary\User\Command\CreateUserCommand;
+use Cocktales\Boundary\User\Command\RegisterUserCommand;
 
-class CreateUserCommandHandler
+class RegisterUserCommandHandler
 {
     /**
      * @var UserOrchestrator
@@ -15,7 +15,7 @@ class CreateUserCommandHandler
     private $orchestrator;
 
     /**
-     * CreateUserCommandHandler constructor.
+     * RegisterUserCommandHandler constructor.
      * @param UserOrchestrator $orchestrator
      */
     public function __construct(UserOrchestrator $orchestrator)
@@ -24,13 +24,13 @@ class CreateUserCommandHandler
     }
 
     /**
-     * @param CreateUserCommand $command
+     * @param RegisterUserCommand $command
      * @return User
      * @throws \Cocktales\Framework\Exception\UndefinedException
      * @throws \Cocktales\Framework\Exception\UserEmailValidationException
      * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
      */
-    public function handle(CreateUserCommand $command): User
+    public function handle(RegisterUserCommand $command): User
     {
         $user = $this->createUserEntity($command);
 
@@ -42,11 +42,11 @@ class CreateUserCommandHandler
     }
 
     /**
-     * @param CreateUserCommand $command
+     * @param RegisterUserCommand $command
      * @return User
      * @throws \Cocktales\Framework\Exception\ActionNotSupportedException
      */
-    private function createUserEntity(CreateUserCommand $command): User
+    private function createUserEntity(RegisterUserCommand $command): User
     {
         return (new User)
             ->setEmail($command->getEmail())

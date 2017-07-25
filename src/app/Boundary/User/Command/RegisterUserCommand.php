@@ -4,9 +4,8 @@ namespace Cocktales\Boundary\User\Command;
 
 use Cocktales\Framework\CommandBus\Command;
 use Cocktales\Framework\Password\PasswordHash;
-use Cocktales\Framework\Uuid\Uuid;
 
-class UpdateUserCommand implements Command
+class RegisterUserCommand implements Command
 {
     /**
      * @var \stdClass
@@ -23,14 +22,6 @@ class UpdateUserCommand implements Command
     }
 
     /**
-     * @return Uuid
-     */
-    public function getUserId(): Uuid
-    {
-        return new Uuid($this->data->id);
-    }
-
-    /**
      * @return string
      */
     public function getEmail(): string
@@ -39,18 +30,10 @@ class UpdateUserCommand implements Command
     }
 
     /**
-     * @return string
+     * @return PasswordHash
      */
-    public function getOldPassword(): string
+    public function getPassword(): PasswordHash
     {
-        return $this->data->oldPassword;
-    }
-
-    /**
-     * @return PasswordHash|string
-     */
-    public function getNewPassword()
-    {
-        return $this->data->newPassword ? PasswordHash::createFromRaw($this->data->newPassword) : '';
+        return PasswordHash::createFromRaw($this->data->password);
     }
 }

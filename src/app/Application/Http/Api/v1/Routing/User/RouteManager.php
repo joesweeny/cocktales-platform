@@ -5,7 +5,7 @@ namespace Cocktales\Application\Http\Api\v1\Routing\User;
 use Cocktales\Application\Http\Api\v1\Controllers\User\Get;
 use Cocktales\Application\Http\Api\v1\Controllers\User\Register;
 use Cocktales\Application\Http\Api\v1\Controllers\User\Update;
-use Cocktales\Application\Http\RouteMapper;
+use Cocktales\Framework\Routing\RouteMapper;
 use FastRoute\RouteCollector;
 
 class RouteManager implements RouteMapper

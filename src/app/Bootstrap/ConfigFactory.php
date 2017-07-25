@@ -12,9 +12,6 @@ class ConfigFactory
     public static function create(): Config
     {
         return new Config([
-            'app' => [
-                'templates' => __DIR__ . '/../../templates/'
-            ],
             'database' => [
                 'default' => [
                     'pdo' => [

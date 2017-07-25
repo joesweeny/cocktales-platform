@@ -5,37 +5,35 @@ namespace Cocktales\Bootstrap;
 use Chief\Busses\SynchronousCommandBus;
 use Chief\Container;
 use Chief\Resolvers\NativeCommandHandlerResolver;
-use Cocktales\Application\Http\Middleware\PathGuard;
-use Cocktales\Application\Http\Router;
-use Cocktales\Application\Http\Api\v1\Routing\Home\RouteManager;
-use Cocktales\Application\Http\Session\SessionAuthenticator;
+use Cocktales\Application\Http\App\Routing\RouteManager;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
 use Cocktales\Domain\User\Persistence\IlluminateDbUserRepository;
 use Cocktales\Domain\User\Persistence\Repository;
-use Cocktales\Framework\CommandBus\ChiefAdapter;
 use Cocktales\Framework\CommandBus\CommandBus;
 use Cocktales\Framework\DateTime\Clock;
 use Cocktales\Framework\DateTime\SystemClock;
 use Dflydev\FigCookies\SetCookie;
 use DI\ContainerBuilder;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Database\Connection;
 use Illuminate\Database\MySqlConnection;
 use Illuminate\Database\SQLiteConnection;
 use Interop\Container\ContainerInterface;
 use Lcobucci\JWT\Parser;
+use Cocktales\Framework\CommandBus\ChiefAdapter;
+use Cocktales\Framework\Routing\Router;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
-use Twig_Environment;
-use Twig_Loader_Filesystem;
 
 class ContainerFactory
 {
-    /**
-     * @return ContainerInterface
-     * @throws \InvalidArgumentException
-     */
-    public function create(): ContainerInterface
+    /** @var Config */
+    private $config;
+
+    public function create(Config $config): ContainerInterface
     {
+        $this->config = $config;
+
         return (new ContainerBuilder)
             ->useAutowiring(true)
             ->ignorePhpDocErrors(true)
@@ -45,45 +43,48 @@ class ContainerFactory
             ->build();
     }
 
-    protected function getDefinitions()
+    /**
+     * @return array
+     * @throws \UnexpectedValueException
+     */
+    protected function getDefinitions(): array
     {
         return array_merge(
             $this->defineConfig(),
-            $this->defineConnections(),
             $this->defineFramework(),
-            $this->definePersistenceLayer(),
-            $this->defineFrameworkLayer()
+            $this->defineDomain(),
+            $this->defineConnections()
         );
     }
 
-    protected function defineConfig()
+    protected function defineConfig(): array
     {
         return [
             Config::class => \DI\factory(function () {
-                return ConfigFactory::create();
-            })
+                return $this->config;
+            }),
         ];
     }
 
-    private function defineFramework()
+    /**
+     * @return array
+     * @throws \UnexpectedValueException
+     */
+    private function defineFramework(): array
     {
         return [
             ContainerInterface::class => \DI\factory(function (ContainerInterface $container) {
                 return $container;
             }),
 
-            Twig_Environment::class => \DI\factory(function (ContainerInterface $container) {
-                return new Twig_Environment(
-                    new Twig_Loader_Filesystem(ConfigFactory::fromContainer($container)->get('app.templates'))
-                );
-            }),
 
             Router::class => \DI\decorate(function (Router $router, ContainerInterface $container) {
+                // @todo Add RouteManagers here
                 return $router
                     ->addRoutes($container->get(RouteManager::class))
-                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Welcome\RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\User\RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class));
+
 
             }),
 
@@ -120,13 +121,33 @@ class ContainerFactory
                     1200,
                     new SystemCurrentTime()
                 );
-            })
+            }),
+
+
+            Clock::class => \DI\object(SystemClock::class)
+
         ];
     }
+
+    /**
+     * @return array
+     */
+    private function defineDomain(): array
+    {
+        return [
+            Repository::class => \DI\object(IlluminateDbUserRepository::class),
+            \Cocktales\Domain\Profile\Persistence\Repository::class => \DI\object(IlluminateDbProfileRepository::class)
+        ];
+    }
+
 
     private function defineConnections()
     {
         return [
+            AbstractSchemaManager::class => \DI\factory(function (ContainerInterface $container) {
+                return $container->get(Connection::class)->getDoctrineSchemaManager();
+            }),
+
             Connection::class => \DI\factory(function (ContainerInterface $container) {
 
                 $config = $container->get(Config::class);
@@ -161,18 +182,4 @@ class ContainerFactory
         ];
     }
 
-    private function definePersistenceLayer()
-    {
-        return [
-            Repository::class => \DI\object(IlluminateDbUserRepository::class),
-            \Cocktales\Domain\Profile\Persistence\Repository::class => \DI\object(IlluminateDbProfileRepository::class)
-        ];
-    }
-
-    private function defineFrameworkLayer()
-    {
-        return [
-            Clock::class => \DI\object(SystemClock::class)
-        ];
-    }
 }

@@ -6,7 +6,7 @@ use Cocktales\Domain\Profile\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\UsernameValidationException;
-use Cocktales\Service\Profile\Command\CreateProfileCommand;
+use Cocktales\Boundary\Profile\Command\CreateProfileCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Create

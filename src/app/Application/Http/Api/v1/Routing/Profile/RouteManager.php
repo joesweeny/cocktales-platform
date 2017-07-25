@@ -4,7 +4,7 @@ namespace Cocktales\Application\Http\Api\v1\Routing\Profile;
 
 use Cocktales\Application\Http\Api\v1\Controllers\Profile\Create;
 use Cocktales\Application\Http\Api\v1\Controllers\Profile\Update;
-use Cocktales\Application\Http\RouteMapper;
+use Cocktales\Framework\Routing\RouteMapper;
 use FastRoute\RouteCollector;
 
 class RouteManager implements RouteMapper

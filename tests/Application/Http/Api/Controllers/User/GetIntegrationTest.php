@@ -5,9 +5,9 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Password\PasswordHash;
-use Cocktales\Helpers\CreatesContainer;
-use Cocktales\Helpers\RunsMigrations;
-use Cocktales\Helpers\UsesHttpServer;
+use Cocktales\Testing\Traits\RunsMigrations;
+use Cocktales\Testing\Traits\UsesContainer;
+use Cocktales\Testing\Traits\UsesHttpServer;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class GetIntegrationTest extends TestCase
 {
     use UsesHttpServer;
-    use CreatesContainer;
+    use UsesContainer;
     use RunsMigrations;
 
     /** @var  ContainerInterface */

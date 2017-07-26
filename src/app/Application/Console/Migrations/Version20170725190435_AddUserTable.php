@@ -11,6 +11,8 @@ use Doctrine\DBAL\Types\Type;
  */
 class Version20170725190435_AddUserTable extends AbstractMigration
 {
+    private $schemaManager;
+
     /**
      * @param Schema $schema
      */

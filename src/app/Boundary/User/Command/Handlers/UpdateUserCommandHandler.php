@@ -7,6 +7,7 @@ use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Framework\Exception\UserPasswordValidationException;
 use Cocktales\Boundary\User\Command\UpdateUserCommand;
+use Cocktales\Framework\Password\PasswordHash;
 
 class UpdateUserCommandHandler
 {
@@ -51,7 +52,7 @@ class UpdateUserCommandHandler
                 throw new UserPasswordValidationException('Password does not match the password stored for this user');
             }
 
-            $user->setPasswordHash($command->getNewPassword());
+            $user->setPasswordHash(PasswordHash::createFromRaw($command->getNewPassword()));
         }
 
         return $this->orchestrator->updateUser($user);

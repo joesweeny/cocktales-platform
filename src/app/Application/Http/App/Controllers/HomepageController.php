@@ -12,7 +12,6 @@ class HomepageController
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         return new HtmlResponse(OutputBuffer::capture(function () use ($request) {
-            // @todo Which token should be used?
             require __DIR__ . '/../../App/Resources/home.php';
         }));
     }

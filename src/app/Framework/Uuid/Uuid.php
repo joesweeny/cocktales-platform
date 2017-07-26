@@ -3,11 +3,12 @@
 namespace Cocktales\Framework\Uuid;
 
 use Ramsey\Uuid\Uuid as BaseUuid;
+use Ramsey\Uuid\UuidInterface;
 
 class Uuid implements \JsonSerializable
 {
     /**
-     * @var BaseUuid
+     * @var UuidInterface
      */
     private $inner;
     /**
@@ -58,7 +59,7 @@ class Uuid implements \JsonSerializable
      */
     public function __toString()
     {
-        return $this->inner->__toString();
+        return $this->inner->toString();
     }
 
     /**

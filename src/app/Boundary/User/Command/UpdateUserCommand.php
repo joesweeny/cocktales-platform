@@ -47,10 +47,10 @@ class UpdateUserCommand implements Command
     }
 
     /**
-     * @return PasswordHash|string
+     * @return string
      */
     public function getNewPassword()
     {
-        return $this->data->newPassword ? PasswordHash::createFromRaw($this->data->newPassword) : '';
+        return $this->data->newPassword;
     }
 }

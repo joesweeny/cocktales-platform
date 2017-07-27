@@ -9,16 +9,8 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Application">
-            <directory suffix="Test.php">./tests/Application</directory>
-        </testsuite>
-
-        <testsuite name="Boundary">
-            <directory suffix="Test.php">./tests/Integration</directory>
-        </testsuite>
-
-        <testsuite name="Domain">
-            <directory suffix="Test.php">./tests/Unit</directory>
+        <testsuite name="Tests">
+            <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -32,29 +32,4 @@ class HydratorTest extends TestCase
         $this->assertEquals(new \DateTimeImmutable('2017-03-12 00:00:00'), $profile->getCreatedDate());
         $this->assertEquals(new \DateTimeImmutable('2017-03-12 00:00:00'), $profile->getLastModifiedDate());
     }
-
-    public function test_converts_profile_entity_into_public_viewable_data()
-    {
-        $data = Hydrator::toPublicViewableData(
-            (new Profile)
-                ->setUserId(new Uuid('acbde855-3b9d-4ad8-801d-78fffcda2be7'))
-                ->setUsername('joe')
-                ->setFirstName('Joe')
-                ->setLastName('Sweeny')
-                ->setLocation('Essex')
-                ->setSlogan('Oi Oi')
-                ->setCreatedDate(new \DateTimeImmutable('2017-03-12 00:00:00'))
-                ->setLastModifiedDate(new \DateTimeImmutable('2017-03-12 00:00:00'))
-        );
-
-        $this->assertInstanceOf(\stdClass::class, $data);
-        $this->assertEquals('acbde855-3b9d-4ad8-801d-78fffcda2be7', $data->user_id);
-        $this->assertEquals('joe', $data->username);
-        $this->assertEquals('Joe', $data->first_name);
-        $this->assertEquals('Sweeny', $data->last_name);
-        $this->assertEquals('Essex', $data->location);
-        $this->assertEquals('Oi Oi', $data->slogan);
-        $this->assertEquals('12/03/2017', $data->created_at);
-        $this->assertEquals('12/03/2017', $data->updated_at);
-    }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Cocktales\Service\User\Command\Handlers;
+namespace Cocktales\Boundary\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Exception\NotFoundException;
-use Cocktales\Service\User\Command\GetUserByIdCommand;
+use Cocktales\Boundary\User\Command\GetUserByIdCommand;
 use PHPUnit\Framework\TestCase;
 
 class GetUserByIdCommandHandlerTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cocktales\Service\User\Command\Handlers;
+namespace Cocktales\Boundary\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
@@ -9,7 +9,7 @@ use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Framework\Exception\UserPasswordValidationException;
 use Cocktales\Framework\Password\PasswordHash;
 use Cocktales\Framework\Uuid\Uuid;
-use Cocktales\Service\User\Command\UpdateUserCommand;
+use Cocktales\Boundary\User\Command\UpdateUserCommand;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 

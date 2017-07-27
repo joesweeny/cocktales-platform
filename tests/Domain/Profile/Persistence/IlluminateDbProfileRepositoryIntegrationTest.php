@@ -6,8 +6,8 @@ use Cocktales\Domain\Profile\Entity\Profile;
 use Cocktales\Framework\DateTime\SystemClock;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
-use Cocktales\Helpers\CreatesContainer;
-use Cocktales\Helpers\RunsMigrations;
+use Cocktales\Testing\Traits\RunsMigrations;
+use Cocktales\Testing\Traits\UsesContainer;
 use Illuminate\Database\Connection;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class IlluminateDbProfileRepositoryIntegrationTest extends TestCase
 {
     use RunsMigrations;
-    use CreatesContainer;
+    use UsesContainer;
 
     /** @var  ContainerInterface */
     private $container;

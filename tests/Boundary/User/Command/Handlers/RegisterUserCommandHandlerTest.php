@@ -1,23 +1,23 @@
 <?php
 
-namespace Cocktales\Service\User\Command\Handlers;
+namespace Cocktales\Boundary\User\Command\Handlers;
 
+use Cocktales\Boundary\User\Command\RegisterUserCommand;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Exception\UserEmailValidationException;
-use Cocktales\Service\User\Command\CreateUserCommand;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
-class CreateUserCommandHandlerTest extends TestCase
+class RegisterUserCommandHandlerTest extends TestCase
 {
     public function test_handle_create_a_new_user_record_in_the_database()
     {
         /** @var UserOrchestrator $orchestrator */
         $orchestrator = $this->prophesize(UserOrchestrator::class);
-        $handler = new CreateUserCommandHandler($orchestrator->reveal());
+        $handler = new RegisterUserCommandHandler($orchestrator->reveal());
 
-        $command = new CreateUserCommand((object) [
+        $command = new RegisterUserCommand((object) [
             'email' => 'joe@email.com',
             'password' => 'password'
         ]);

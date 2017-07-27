@@ -34,7 +34,7 @@ class Create
             $profile = $this->bus->execute(new CreateProfileCommand($data));
 
             return JsendResponse::success([
-                'profile' => Hydrator::toPublicViewableData($profile)
+                'profile' => $profile
             ]);
         } catch (UsernameValidationException $e) {
             return JsendResponse::fail([

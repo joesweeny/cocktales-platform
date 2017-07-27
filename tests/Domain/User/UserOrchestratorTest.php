@@ -164,4 +164,33 @@ class UserOrchestratorTest extends TestCase
 
         $this->assertFalse($this->orchestrator->validateUserPassword(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'), 'wrongPassword'));
     }
+
+    public function test_gets_users_returns_a_collection_of_users_sorted_alphabetically_by_email()
+    {
+        $this->orchestrator->createUser(
+            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+                ->setEmail('joe@example.com')
+                ->setPasswordHash(PasswordHash::createFromRaw('password'))
+        );
+
+        $this->orchestrator->createUser(
+            (new User('fbeb2f20-b1a4-433f-8f83-bb6f83c01cfa'))
+                ->setEmail('andrea@example.com')
+                ->setPasswordHash(PasswordHash::createFromRaw('password'))
+        );
+
+        $this->orchestrator->createUser(
+            (new User('77e2438d-a744-4590-9785-08917dcdeb75'))
+                ->setEmail('thomas@example.com')
+                ->setPasswordHash(PasswordHash::createFromRaw('password'))
+        );
+
+        $users = $this->orchestrator->getUsers();
+
+        $this->assertCount(3, $users);
+        $this->assertEquals('andrea@example.com', $users->first()->getEmail());
+        foreach ($users as $user) {
+            $this->assertInstanceOf(User::class, $user);
+        }
+    }
 }

@@ -6,6 +6,7 @@ use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\Persistence\Repository;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
+use Illuminate\Support\Collection;
 
 class UserOrchestrator
 {
@@ -111,5 +112,13 @@ class UserOrchestrator
         $user = $this->getUserById($id);
 
         return $user->getPasswordHash()->verify($password);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsers(): Collection
+    {
+        return $this->repository->getUsers();
     }
 }

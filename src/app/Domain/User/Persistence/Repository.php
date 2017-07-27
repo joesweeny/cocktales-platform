@@ -7,6 +7,7 @@ use Cocktales\Domain\User\Entity\User;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\UserRepositoryException;
 use Cocktales\Framework\Uuid\Uuid;
+use Illuminate\Support\Collection;
 
 interface Repository
 {
@@ -39,6 +40,13 @@ interface Repository
      * @return User
      */
     public function updateUser(User $user): User;
+
+    /**
+     * Return a collection of all Users
+     *
+     * @return Collection
+     */
+    public function getUsers(): Collection;
 
     /**
      * Deletes a user from the database

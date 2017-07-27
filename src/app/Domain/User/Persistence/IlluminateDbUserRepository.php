@@ -11,6 +11,7 @@ use Cocktales\Framework\Exception\UserRepositoryException;
 use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 
 class IlluminateDbUserRepository implements Repository
 {
@@ -90,6 +91,16 @@ class IlluminateDbUserRepository implements Repository
         $this->table()->where('id', $user->getId()->toBinary())->update((array) Extractor::toRawData($user));
 
         return $user;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUsers(): Collection
+    {
+        return Collection::make($this->table()->get()->sortBy('email'))->map(function ($data) {
+            return Hydrator::fromRawData($data);
+        });
     }
 
     /**

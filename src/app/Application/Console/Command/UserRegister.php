@@ -34,13 +34,6 @@ class UserRegister extends Command
             ->setDescription('Register a new User');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
-     * @throws \Symfony\Component\Console\Exception\LogicException
-     * @return string|array
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $response = new SymfonyStyle($input, $output);

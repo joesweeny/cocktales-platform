@@ -4,9 +4,11 @@ namespace Cocktales\Boundary\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Domain\User\UserPresenter;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Boundary\User\Command\GetUserByIdCommand;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 
 class GetUserByIdCommandHandlerTest extends TestCase
 {
@@ -14,11 +16,14 @@ class GetUserByIdCommandHandlerTest extends TestCase
     private $orchestrator;
     /** @var  GetUserByIdCommandHandler */
     private $handler;
+    /** @var  UserPresenter */
+    private $presenter;
 
     public function setUp()
     {
         $this->orchestrator = $this->prophesize(UserOrchestrator::class);
-        $this->handler = new GetUserByIdCommandHandler($this->orchestrator->reveal());
+        $this->presenter = $this->prophesize(UserPresenter::class);
+        $this->handler = new GetUserByIdCommandHandler($this->orchestrator->reveal(), $this->presenter->reveal());
     }
 
     public function test_handle_returns_a_user_object_if_user_id_is_stored_in_the_database()
@@ -29,6 +34,8 @@ class GetUserByIdCommandHandlerTest extends TestCase
             new User('dc5b6421-d452-4862-b741-d43383c3fe1d')
         );
 
+        $this->presenter->toDto(Argument::type(User::class))->shouldBeCalled();
+
         $this->handler->handle($command);
     }
 
@@ -37,6 +44,8 @@ class GetUserByIdCommandHandlerTest extends TestCase
         $command = new GetUserByIdCommand('dc5b6421-d452-4862-b741-d43383c3fe1d');
 
         $this->orchestrator->getUserById($command->getId())->shouldBeCalled()->willThrow(NotFoundException::class);
+
+        $this->presenter->toDto(Argument::type(User::class))->shouldNotBeCalled();
 
         $this->expectException(NotFoundException::class);
 

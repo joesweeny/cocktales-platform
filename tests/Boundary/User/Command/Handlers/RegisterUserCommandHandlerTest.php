@@ -5,6 +5,7 @@ namespace Cocktales\Boundary\User\Command\Handlers;
 use Cocktales\Boundary\User\Command\RegisterUserCommand;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Domain\User\UserPresenter;
 use Cocktales\Framework\Exception\UserEmailValidationException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -15,7 +16,9 @@ class RegisterUserCommandHandlerTest extends TestCase
     {
         /** @var UserOrchestrator $orchestrator */
         $orchestrator = $this->prophesize(UserOrchestrator::class);
-        $handler = new RegisterUserCommandHandler($orchestrator->reveal());
+        /** @var UserPresenter $presenter */
+        $presenter = $this->prophesize(UserPresenter::class);
+        $handler = new RegisterUserCommandHandler($orchestrator->reveal(), $presenter->reveal());
 
         $command = new RegisterUserCommand((object) [
             'email' => 'joe@email.com',
@@ -29,6 +32,8 @@ class RegisterUserCommandHandlerTest extends TestCase
             return true;
         }))->shouldBeCalled();
 
+        $presenter->toDto(Argument::type(User::class))->shouldBeCalled();
+
         $handler->handle($command);
     }
 
@@ -36,9 +41,11 @@ class RegisterUserCommandHandlerTest extends TestCase
     {
         /** @var UserOrchestrator $orchestrator */
         $orchestrator = $this->prophesize(UserOrchestrator::class);
-        $handler = new CreateUserCommandHandler($orchestrator->reveal());
+        /** @var UserPresenter $presenter */
+        $presenter = $this->prophesize(UserPresenter::class);
+        $handler = new RegisterUserCommandHandler($orchestrator->reveal(), $presenter->reveal());
 
-        $command = new CreateUserCommand((object) [
+        $command = new RegisterUserCommand((object) [
             'email' => 'joe@email.com',
             'password' => 'password'
         ]);

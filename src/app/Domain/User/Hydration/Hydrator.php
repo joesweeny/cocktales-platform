@@ -21,14 +21,4 @@ final class Hydrator
             ->setCreatedDate(new \DateTimeImmutable($data->created_at))
             ->setLastModifiedDate(new \DateTimeImmutable($data->updated_at));
     }
-
-    public static function toPublicViewableData(User $user): \stdClass
-    {
-        return (object) [
-            'id' => $user->getId()->__toString(),
-            'email' => $user->getEmail(),
-            'created_at' => $user->getCreatedDate()->format('d-m-Y'),
-            'updated_at' => $user->getLastModifiedDate()->format('d-m-Y')
-        ];
-    }
 }

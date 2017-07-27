@@ -35,7 +35,7 @@ class Update
             $user = $this->bus->execute(new UpdateUserCommand($data));
 
             return JsendResponse::success([
-                'user' => Hydrator::toPublicViewableData($user)
+                'user' => $user
             ]);
         } catch (NotFoundException $e) {
             return JsendResponse::fail([

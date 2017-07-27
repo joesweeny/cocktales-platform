@@ -4,6 +4,7 @@ namespace Cocktales\Boundary\User\Command\Handlers;
 
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Domain\User\UserPresenter;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Framework\Exception\UserPasswordValidationException;
@@ -19,11 +20,14 @@ class UpdateUserCommandHandlerTest extends TestCase
     private $orchestrator;
     /** @var  UpdateUserCommandHandler */
     private $handler;
+    /** @var  UserPresenter */
+    private $presenter;
 
     public function setUp()
     {
         $this->orchestrator = $this->prophesize(UserOrchestrator::class);
-        $this->handler = new UpdateUserCommandHandler($this->orchestrator->reveal());
+        $this->presenter = $this->prophesize(UserPresenter::class);
+        $this->handler = new UpdateUserCommandHandler($this->orchestrator->reveal(), $this->presenter->reveal());
     }
 
     public function test_handle_updates_a_user_email_record_successfully()
@@ -48,6 +52,8 @@ class UpdateUserCommandHandlerTest extends TestCase
             $this->assertEquals('joe@newemail.com', $user->getEmail());
             return true;
         }))->shouldBeCalled();
+
+        $this->presenter->toDto(Argument::type(User::class))->shouldBeCalled();
 
         $this->handler->handle($command);
     }
@@ -78,6 +84,8 @@ class UpdateUserCommandHandlerTest extends TestCase
             return true;
         }))->shouldBeCalled();
 
+        $this->presenter->toDto(Argument::type(User::class))->shouldBeCalled();
+
         $this->handler->handle($command);
     }
 
@@ -106,6 +114,8 @@ class UpdateUserCommandHandlerTest extends TestCase
             $this->assertTrue($user->getPasswordHash()->verify('newPassword'));
             return true;
         }))->shouldBeCalled();
+
+        $this->presenter->toDto(Argument::type(User::class))->shouldBeCalled();
 
         $this->handler->handle($command);
     }

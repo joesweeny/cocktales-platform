@@ -30,7 +30,7 @@ class Register
             $user = $this->bus->execute(new RegisterUserCommand($data));
 
             return JsendResponse::success([
-                'user' => Hydrator::toPublicViewableData($user)
+                'user' => $user
             ]);
         } catch (UserEmailValidationException $e) {
             return JsendResponse::fail([

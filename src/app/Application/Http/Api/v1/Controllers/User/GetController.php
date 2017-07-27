@@ -3,13 +3,12 @@
 namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
 use Cocktales\Boundary\User\Command\GetUserByIdCommand;
-use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Get
+class GetController
 {
     use ControllerService;
 
@@ -25,7 +24,7 @@ class Get
             $user = $this->bus->execute(new GetUserByIdCommand($body->id));
 
             return JsendResponse::success([
-               'user' => Hydrator::toPublicViewableData($user)
+               'user' => $user
             ]);
         } catch (NotFoundException $e) {
             return JsendResponse::fail([

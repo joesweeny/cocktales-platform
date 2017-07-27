@@ -9,7 +9,7 @@ use Cocktales\Framework\Exception\UsernameValidationException;
 use Cocktales\Boundary\Profile\Command\CreateProfileCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Create
+class CreateController
 {
     use ControllerService;
 
@@ -34,7 +34,7 @@ class Create
             $profile = $this->bus->execute(new CreateProfileCommand($data));
 
             return JsendResponse::success([
-                'profile' => Hydrator::toPublicViewableData($profile)
+                'profile' => $profile
             ]);
         } catch (UsernameValidationException $e) {
             return JsendResponse::fail([

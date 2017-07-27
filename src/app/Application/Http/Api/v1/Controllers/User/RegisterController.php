@@ -9,7 +9,7 @@ use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Boundary\User\Command\RegisterUserCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Register
+class RegisterController
 {
     use ControllerService;
 
@@ -30,7 +30,7 @@ class Register
             $user = $this->bus->execute(new RegisterUserCommand($data));
 
             return JsendResponse::success([
-                'user' => Hydrator::toPublicViewableData($user)
+                'user' => $user
             ]);
         } catch (UserEmailValidationException $e) {
             return JsendResponse::fail([

@@ -1,23 +1,26 @@
 <?php
 
-namespace Cocktales\Service\User\Command\Handlers;
+namespace Cocktales\Boundary\User\Command\Handlers;
 
+use Cocktales\Boundary\User\Command\RegisterUserCommand;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Domain\User\UserPresenter;
 use Cocktales\Framework\Exception\UserEmailValidationException;
-use Cocktales\Service\User\Command\CreateUserCommand;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
-class CreateUserCommandHandlerTest extends TestCase
+class RegisterUserCommandHandlerTest extends TestCase
 {
     public function test_handle_create_a_new_user_record_in_the_database()
     {
         /** @var UserOrchestrator $orchestrator */
         $orchestrator = $this->prophesize(UserOrchestrator::class);
-        $handler = new CreateUserCommandHandler($orchestrator->reveal());
+        /** @var UserPresenter $presenter */
+        $presenter = $this->prophesize(UserPresenter::class);
+        $handler = new RegisterUserCommandHandler($orchestrator->reveal(), $presenter->reveal());
 
-        $command = new CreateUserCommand((object) [
+        $command = new RegisterUserCommand((object) [
             'email' => 'joe@email.com',
             'password' => 'password'
         ]);
@@ -29,6 +32,8 @@ class CreateUserCommandHandlerTest extends TestCase
             return true;
         }))->shouldBeCalled();
 
+        $presenter->toDto(Argument::type(User::class))->shouldBeCalled();
+
         $handler->handle($command);
     }
 
@@ -36,9 +41,11 @@ class CreateUserCommandHandlerTest extends TestCase
     {
         /** @var UserOrchestrator $orchestrator */
         $orchestrator = $this->prophesize(UserOrchestrator::class);
-        $handler = new CreateUserCommandHandler($orchestrator->reveal());
+        /** @var UserPresenter $presenter */
+        $presenter = $this->prophesize(UserPresenter::class);
+        $handler = new RegisterUserCommandHandler($orchestrator->reveal(), $presenter->reveal());
 
-        $command = new CreateUserCommand((object) [
+        $command = new RegisterUserCommand((object) [
             'email' => 'joe@email.com',
             'password' => 'password'
         ]);

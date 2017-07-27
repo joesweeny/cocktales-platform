@@ -4,6 +4,7 @@ namespace Cocktales\Boundary\Profile\Command\Handlers;
 
 use Cocktales\Domain\Profile\Entity\Profile;
 use Cocktales\Domain\Profile\ProfileOrchestrator;
+use Cocktales\Domain\Profile\ProfilePresenter;
 use Cocktales\Framework\Exception\UsernameValidationException;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Boundary\Profile\Command\UpdateProfileCommand;
@@ -16,11 +17,14 @@ class UpdateProfileCommandHandlerTest extends TestCase
     private $orchestrator;
     /** @var  UpdateProfileCommandHandler */
     private $handler;
+    /** @var  ProfilePresenter */
+    private $presenter;
 
     public function setUp()
     {
         $this->orchestrator = $this->prophesize(ProfileOrchestrator::class);
-        $this->handler = new UpdateProfileCommandHandler($this->orchestrator->reveal());
+        $this->presenter = $this->prophesize(ProfilePresenter::class);
+        $this->handler = new UpdateProfileCommandHandler($this->orchestrator->reveal(), $this->presenter->reveal());
     }
 
     public function test_handle_updates_profile_record_in_the_database()
@@ -55,6 +59,8 @@ class UpdateProfileCommandHandlerTest extends TestCase
             $this->assertEquals('I want to get pissed', $profile->getSlogan());
             return true;
         }))->shouldBeCalled();
+
+        $this->presenter->toDto(Argument::type(Profile::class))->shouldBeCalled();
 
         $this->handler->handle($command);
     }

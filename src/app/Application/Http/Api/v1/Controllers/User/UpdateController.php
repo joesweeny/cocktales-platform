@@ -11,7 +11,7 @@ use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Framework\Exception\UserPasswordValidationException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Update
+class UpdateController
 {
     use ControllerService;
 
@@ -35,7 +35,7 @@ class Update
             $user = $this->bus->execute(new UpdateUserCommand($data));
 
             return JsendResponse::success([
-                'user' => Hydrator::toPublicViewableData($user)
+                'user' => $user
             ]);
         } catch (NotFoundException $e) {
             return JsendResponse::fail([

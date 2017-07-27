@@ -10,7 +10,7 @@ use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\UsernameValidationException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Update
+class UpdateController
 {
     use ControllerService;
 
@@ -36,7 +36,7 @@ class Update
             $profile = $this->bus->execute(new UpdateProfileCommand($data));
 
             return JsendResponse::success([
-                'profile' => Hydrator::toPublicViewableData($profile)
+                'profile' => $profile
             ]);
         } catch (NotFoundException $e) {
             return JsendResponse::fail([

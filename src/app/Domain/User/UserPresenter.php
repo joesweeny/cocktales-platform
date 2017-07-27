@@ -6,6 +6,11 @@ use Cocktales\Domain\User\Entity\User;
 
 class UserPresenter
 {
+    /**
+     * @param User $user
+     * @return \stdClass
+     * @throws \Cocktales\Framework\Exception\UndefinedException
+     */
     public function toDto(User $user): \stdClass
     {
         return (object) [

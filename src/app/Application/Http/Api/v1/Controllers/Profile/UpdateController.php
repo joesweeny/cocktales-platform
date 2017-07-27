@@ -2,20 +2,22 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\Profile;
 
+use Cocktales\Boundary\Profile\Command\UpdateProfileCommand;
 use Cocktales\Domain\Profile\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\UsernameValidationException;
-use Cocktales\Boundary\Profile\Command\CreateProfileCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Create
+class UpdateController
 {
     use ControllerService;
 
     /**
      * @param ServerRequestInterface $request
      * @return JsendResponse
+     * @throws \RuntimeException
      */
     public function __invoke(ServerRequestInterface $request): JsendResponse
     {
@@ -31,10 +33,14 @@ class Create
         ];
 
         try {
-            $profile = $this->bus->execute(new CreateProfileCommand($data));
+            $profile = $this->bus->execute(new UpdateProfileCommand($data));
 
             return JsendResponse::success([
                 'profile' => $profile
+            ]);
+        } catch (NotFoundException $e) {
+            return JsendResponse::fail([
+                'error' => 'Unable to process request - please try again'
             ]);
         } catch (UsernameValidationException $e) {
             return JsendResponse::fail([

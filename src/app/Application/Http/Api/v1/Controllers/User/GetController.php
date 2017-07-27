@@ -2,14 +2,13 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
-use Cocktales\Domain\User\Hydration\Hydrator;
+use Cocktales\Boundary\User\Command\GetUserByIdCommand;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
-use Cocktales\Framework\Exception\UserEmailValidationException;
-use Cocktales\Boundary\User\Command\RegisterUserCommand;
+use Cocktales\Framework\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Register
+class GetController
 {
     use ControllerService;
 
@@ -21,20 +20,15 @@ class Register
     {
         $body = json_decode($request->getBody()->getContents());
 
-        $data = (object) [
-            'email' => $body->email,
-            'password' => $body->password
-        ];
-
         try {
-            $user = $this->bus->execute(new RegisterUserCommand($data));
+            $user = $this->bus->execute(new GetUserByIdCommand($body->id));
 
             return JsendResponse::success([
-                'user' => $user
+               'user' => $user
             ]);
-        } catch (UserEmailValidationException $e) {
+        } catch (NotFoundException $e) {
             return JsendResponse::fail([
-                'error' => 'A user has already registered with this email address'
+                'error' => 'Unable to retrieve user'
             ]);
         }
     }

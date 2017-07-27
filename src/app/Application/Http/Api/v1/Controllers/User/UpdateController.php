@@ -11,7 +11,7 @@ use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Framework\Exception\UserPasswordValidationException;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Update
+class UpdateController
 {
     use ControllerService;
 

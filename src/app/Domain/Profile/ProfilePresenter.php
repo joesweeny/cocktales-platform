@@ -9,6 +9,8 @@ class ProfilePresenter
     /**
      * @param Profile $profile
      * @return \stdClass
+     * @throws \Cocktales\Framework\Exception\UndefinedValueException
+     * @throws \Cocktales\Framework\Exception\UndefinedException
      */
     public function toDto(Profile $profile): \stdClass
     {

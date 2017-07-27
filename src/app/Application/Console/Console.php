@@ -4,6 +4,7 @@ namespace Cocktales\Application\Console;
 
 use Cocktales\Application\Console\Command\ProfileCreate;
 use Cocktales\Application\Console\Command\UserList;
+use Cocktales\Application\Console\Command\UserProfile;
 use Cocktales\Application\Console\Command\UserRegister;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
@@ -59,6 +60,7 @@ class Console
         $app->addCommands([
             $this->container->get(ProfileCreate::class),
             $this->container->get(UserList::class),
+            $this->container->get(UserProfile::class),
             $this->container->get(UserRegister::class),
 
             new \Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand(),

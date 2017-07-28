@@ -9,8 +9,9 @@ use Cocktales\Bootstrap\ContainerFactory;
 
 trait UsesContainer
 {
-    protected function createContainer(Config $config = null): ContainerInterface
+    protected function createContainer(): ContainerInterface
     {
-        return (new ContainerFactory)->create($config ?: ConfigFactory::create());
+        return (new ContainerFactory)->create(ConfigFactory::create()->set('database.default.pdo.dsn', 'sqlite::memory:')
+        );
     }
 }

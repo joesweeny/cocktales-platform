@@ -7,6 +7,10 @@ services:
       context: ./
     volumes:
       - .:/opt
+    environment:
+      - DB_DSN=mysql:host=mysql;dbname=cocktales
+      - DB_USER=dev
+      - DB_PASS=password
 
   php-fpm:
     build:
@@ -14,6 +18,10 @@ services:
       context: ./
     volumes:
      - .:/opt
+    environment:
+     - DB_DSN=mysql:host=mysql;dbname=cocktales
+     - DB_USER=dev
+     - DB_PASS=password
 
   nginx:
     build:

@@ -12,7 +12,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 
-class RegisterIntegrationTest extends TestCase
+class RegisterControllerIntegrationTest extends TestCase
 {
     use UsesHttpServer;
     use UsesContainer;

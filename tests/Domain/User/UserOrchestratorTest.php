@@ -2,7 +2,6 @@
 
 namespace Cocktales\Domain\User;
 
-use Cocktales\Bootstrap\ConfigFactory;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Password\PasswordHash;

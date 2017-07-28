@@ -12,7 +12,7 @@ use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
 use Cocktales\Testing\Traits\UsesHttpServer;
 
-class CreateIntegrationTest extends TestCase
+class CreateControllerIntegrationTest extends TestCase
 {
     use UsesHttpServer;
     use UsesContainer;

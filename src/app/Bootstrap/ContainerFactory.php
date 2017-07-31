@@ -19,6 +19,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\MySqlConnection;
 use Illuminate\Database\SQLiteConnection;
 use Interop\Container\ContainerInterface;
+use Intervention\Image\ImageManager;
 use Lcobucci\JWT\Parser;
 use Cocktales\Framework\CommandBus\ChiefAdapter;
 use Cocktales\Framework\Routing\Router;
@@ -124,8 +125,12 @@ class ContainerFactory
             }),
 
 
-            Clock::class => \DI\object(SystemClock::class)
+            Clock::class => \DI\object(SystemClock::class),
 
+            ImageManager::class => \DI\factory(function (ContainerInterface $container) {
+                return new ImageManager(['driver' => 'imagick']);
+            })
+            
         ];
     }
 

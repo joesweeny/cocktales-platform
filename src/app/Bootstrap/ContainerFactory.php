@@ -6,6 +6,7 @@ use Chief\Busses\SynchronousCommandBus;
 use Chief\Container;
 use Chief\Resolvers\NativeCommandHandlerResolver;
 use Cocktales\Application\Http\App\Routing\RouteManager;
+use Cocktales\Domain\Avatar\Persistence\IlluminateDbAvatarRepository;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
 use Cocktales\Domain\User\Persistence\IlluminateDbUserRepository;
 use Cocktales\Domain\User\Persistence\Repository;
@@ -141,7 +142,8 @@ class ContainerFactory
     {
         return [
             Repository::class => \DI\object(IlluminateDbUserRepository::class),
-            \Cocktales\Domain\Profile\Persistence\Repository::class => \DI\object(IlluminateDbProfileRepository::class)
+            \Cocktales\Domain\Profile\Persistence\Repository::class => \DI\object(IlluminateDbProfileRepository::class),
+            \Cocktales\Domain\Avatar\Persistence\Repository::class => \DI\object(IlluminateDbAvatarRepository::class)
         ];
     }
 

@@ -6,6 +6,10 @@ use Cocktales\Domain\Avatar\Entity\Avatar;
 
 class Extractor
 {
+    /**
+     * @param Avatar $avatar
+     * @return \stdClass
+     */
     public static function toRawData(Avatar $avatar): \stdClass
     {
         return (object) [

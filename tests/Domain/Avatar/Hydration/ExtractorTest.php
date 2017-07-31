@@ -16,7 +16,7 @@ class ExtractorTest extends TestCase
             ->setStandard('standard.jpg')
             ->setCreatedDate(new \DateTimeImmutable('2017-03-12 10:56:00'))
             ->setLastModifiedDate(new \DateTimeImmutable('2017-03-12 10:56:00')));
-        
+
         $this->assertInstanceOf(\stdClass::class, $data);
         $this->assertEquals('dc5b6421-d452-4862-b741-d43383c3fe1d', Uuid::createFromBinary($data->user_id)->__toString());
         $this->assertEquals('thumbnail.jpg', $data->thumbnail);

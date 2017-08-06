@@ -1,6 +1,6 @@
 <?php
 
-namespace Cocktales\Domain\Avatar\Command\Handlers;
+namespace Cocktales\Boundary\Avatar\Command\Handlers;
 
 use Cocktales\Boundary\Avatar\Command\CreateAvatarCommand;
 use Cocktales\Domain\Avatar\AvatarOrchestrator;

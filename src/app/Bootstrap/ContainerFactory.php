@@ -79,15 +79,12 @@ class ContainerFactory
                 return $container;
             }),
 
-
             Router::class => \DI\decorate(function (Router $router, ContainerInterface $container) {
                 // @todo Add RouteManagers here
                 return $router
                     ->addRoutes($container->get(RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\User\RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class));
-
-
             }),
 
             CommandBus::class => \DI\factory(function (ContainerInterface $container) {

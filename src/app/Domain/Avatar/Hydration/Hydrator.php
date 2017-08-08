@@ -15,8 +15,7 @@ class Hydrator
     {
         return (new Avatar)
             ->setUserId(Uuid::createFromBinary($data->user_id))
-            ->setThumbnail($data->thumbnail)
-            ->setStandard($data->standard)
+            ->setFilename($data->filename)
             ->setCreatedDate((new \DateTimeImmutable)->setTimestamp($data->created_at))
             ->setLastModifiedDate((new \DateTimeImmutable)->setTimestamp($data->created_at));
     }

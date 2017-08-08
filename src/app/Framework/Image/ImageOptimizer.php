@@ -30,7 +30,7 @@ class ImageOptimizer
      */
     public function createThumbnail(UploadedFile $file): Image
     {
-        return $this->imageManager->make($file)->resize(100, 100);
+        return $this->imageManager->make($file)->resize(100, 125)->encode($file->getClientOriginalExtension(), 100);
     }
 
     /**
@@ -41,6 +41,6 @@ class ImageOptimizer
      */
     public function createStandardSize(UploadedFile $file): Image
     {
-        return $this->imageManager->make($file)->resize(450, 450);
+        return $this->imageManager->make($file)->resize(375, 450)->encode($file->getClientOriginalExtension(), 10);
     }
 }

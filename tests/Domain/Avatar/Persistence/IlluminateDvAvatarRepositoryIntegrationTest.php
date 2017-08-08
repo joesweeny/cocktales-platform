@@ -39,8 +39,7 @@ class IlluminateDvAvatarRepositoryIntegrationTest extends TestCase
     {
         $this->repository->createAvatar((new Avatar)
             ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setThumbnail('thumbnail.jpg')
-            ->setStandard('standard.jpg'));
+            ->setFilename('filename.jpg'));
 
         $total = $this->connection->table('avatar')->get();
 
@@ -48,8 +47,7 @@ class IlluminateDvAvatarRepositoryIntegrationTest extends TestCase
 
         $this->repository->createAvatar((new Avatar)
             ->setUserId(new Uuid('6aa4e7ac-ad89-4184-aba5-d3c9744ac6cf'))
-            ->setThumbnail('thumbnail.jpg')
-            ->setStandard('standard.jpg'));
+            ->setFilename('filename.jpg'));
 
         $total = $this->connection->table('avatar')->get();
 
@@ -60,14 +58,12 @@ class IlluminateDvAvatarRepositoryIntegrationTest extends TestCase
     {
         $this->repository->createAvatar((new Avatar)
             ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setThumbnail('thumbnail.jpg')
-            ->setStandard('standard.jpg'));
+            ->setFilename('filename.jpg'));
 
         $this->expectException(AvatarRepositoryException::class);
         $this->expectExceptionMessage('Avatar with dc5b6421-d452-4862-b741-d43383c3fe1d already exists');
         $this->repository->createAvatar((new Avatar)
             ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setThumbnail('thumbnail.jpg')
-            ->setStandard('standard.jpg'));
+            ->setFilename('filename.jpg'));
     }
 }

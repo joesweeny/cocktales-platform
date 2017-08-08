@@ -4,33 +4,29 @@ namespace Cocktales\Boundary\Avatar\Command;
 
 use Cocktales\Framework\CommandBus\Command;
 use Cocktales\Framework\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CreateAvatarCommand implements Command
 {
     /**
      * @var string
      */
-    private $thumbnail;
-    /**
-     * @var string
-     */
-    private $standardSize;
-    /**
-     * @var string
-     */
     private $user_id;
+    /**
+     * @var UploadedFile
+     */
+    private $file;
+
 
     /**
      * CreateAvatarCommand constructor.
      * @param string $user_id
-     * @param string $thumbnail
-     * @param string $standardSize
+     * @param UploadedFile $file
      */
-    public function __construct(string $user_id, string $thumbnail, string $standardSize)
+    public function __construct(string $user_id, UploadedFile $file)
     {
         $this->user_id = $user_id;
-        $this->thumbnail = $thumbnail;
-        $this->standardSize = $standardSize;
+        $this->file = $file;
     }
 
     /**
@@ -42,18 +38,10 @@ class CreateAvatarCommand implements Command
     }
 
     /**
-     * @return string
+     * @return UploadedFile
      */
-    public function getThumbnail(): string
+    public function getFile(): UploadedFile
     {
-        return $this->thumbnail;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStandardSize(): string
-    {
-        return $this->standardSize;
+        return $this->file;
     }
 }

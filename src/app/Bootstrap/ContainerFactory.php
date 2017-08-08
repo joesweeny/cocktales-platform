@@ -24,6 +24,9 @@ use Intervention\Image\ImageManager;
 use Lcobucci\JWT\Parser;
 use Cocktales\Framework\CommandBus\ChiefAdapter;
 use Cocktales\Framework\Routing\Router;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\AdapterInterface;
+use League\Flysystem\Filesystem;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 
@@ -134,13 +137,31 @@ class ContainerFactory
 
     /**
      * @return array
+     * @throws \LogicException
      */
     private function defineDomain(): array
     {
         return [
             Repository::class => \DI\object(IlluminateDbUserRepository::class),
+
             \Cocktales\Domain\Profile\Persistence\Repository::class => \DI\object(IlluminateDbProfileRepository::class),
-            \Cocktales\Domain\Avatar\Persistence\Repository::class => \DI\object(IlluminateDbAvatarRepository::class)
+
+            \Cocktales\Domain\Avatar\Persistence\Repository::class => \DI\object(IlluminateDbAvatarRepository::class),
+
+            Filesystem::class => \DI\factory(function (ContainerInterface $container) {
+                return new Filesystem(
+                    new Local('./src/public/img',
+                    0, Local::SKIP_LINKS, [
+                        'file' => [
+                            'public' => 0777,
+                            'private' => 0777,
+                        ],
+                        'dir' => [
+                            'public' => 0777,
+                            'private' => 0777,
+                        ]
+                ]));
+            })
         ];
     }
 

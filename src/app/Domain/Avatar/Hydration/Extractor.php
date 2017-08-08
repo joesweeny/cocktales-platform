@@ -14,8 +14,7 @@ class Extractor
     {
         return (object) [
             'user_id' => $avatar->getUserId()->toBinary(),
-            'thumbnail' => $avatar->getThumbnail(),
-            'standard' => $avatar->getStandard(),
+            'filename' => $avatar->getFilename(),
             'created_at' => $avatar->getCreatedDate()->getTimestamp(),
             'updated_at' => $avatar->getLastModifiedDate()->getTimestamp()
         ];

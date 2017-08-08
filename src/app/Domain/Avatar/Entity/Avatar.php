@@ -29,36 +29,19 @@ class Avatar
     }
 
     /**
-     * @param string $thumbnail
+     * @param string $filename
      * @return Avatar
      */
-    public function setThumbnail(string $thumbnail): Avatar
+    public function setFilename(string $filename): Avatar
     {
-        return $this->set('thumbnail', $thumbnail);
+        return $this->set('filename', $filename);
     }
 
     /**
      * @return string
      */
-    public function getThumbnail(): string
+    public function getFilename(): string
     {
-        return $this->get('thumbnail');
-    }
-
-    /**
-     * @param string $standard
-     * @return Avatar
-     */
-    public function setStandard(string $standard): Avatar
-    {
-        return $this->set('standard', $standard);
-    }
-
-    /**
-     * @return string
-     */
-    public function getStandard(): string
-    {
-        return $this->get('standard');
+        return $this->get('filename', '');
     }
 }

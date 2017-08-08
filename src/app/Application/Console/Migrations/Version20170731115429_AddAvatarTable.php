@@ -22,8 +22,7 @@ class Version20170731115429_AddAvatarTable extends AbstractMigration
 
         $table = $schema->createTable('avatar');
         $table->addColumn('user_id', Type::BINARY)->setLength(16);
-        $table->addColumn('thumbnail', Type::STRING);
-        $table->addColumn('standard', Type::STRING);
+        $table->addColumn('filename', Type::STRING);
         $table->addColumn('created_at', Type::INTEGER);
         $table->addColumn('updated_at', Type::INTEGER);
         $table->addIndex(['user_id']);

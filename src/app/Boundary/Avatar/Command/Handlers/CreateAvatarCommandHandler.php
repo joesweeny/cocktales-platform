@@ -29,9 +29,8 @@ class CreateAvatarCommandHandler
      */
     public function handle(CreateAvatarCommand $command): Avatar
     {
-        return $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId($command->getUserId())
-            ->setThumbnail($command->getThumbnail())
-            ->setStandard($command->getStandardSize()));
+//        return $this->orchestrator->createAvatar((new Avatar)
+//            ->setUserId($command->getUserId())
+//            ->setFilename($command->getFilename()));
     }
 }

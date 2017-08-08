@@ -25,12 +25,19 @@ class CreateAvatarCommandHandler
     /**
      * @param CreateAvatarCommand $command
      * @return Avatar
+     * @throws \League\Flysystem\FileExistsException
      * @throws \Cocktales\Domain\Avatar\Exception\AvatarRepositoryException
      */
     public function handle(CreateAvatarCommand $command): Avatar
     {
-//        return $this->orchestrator->createAvatar((new Avatar)
-//            ->setUserId($command->getUserId())
-//            ->setFilename($command->getFilename()));
+        $filename = $command->getUserId()->__toString() . '.' . $command->getFile()->getClientOriginalExtension();
+        
+        $this->orchestrator->saveThumbnailToStorage($command->getFile(), "/{$command->getUserId()}/avatar/thumbnail/" . $filename);
+
+        $this->orchestrator->saveStandardSizeToStorage($command->getFile(), "/{$command->getUserId()}/avatar/standard/" . $filename);
+
+        return $this->orchestrator->createAvatar((new Avatar)
+            ->setUserId($command->getUserId())
+            ->setFilename($filename));
     }
 }

@@ -23,12 +23,12 @@ class CreateAvatarCommandHandlerTest extends TestCase
 
         $orchestrator->saveThumbnailToStorage(
             $command->getFile(),
-            '/c86979cf-4733-403c-80d9-c4d8e52f408f/avatar/thumbnail/c86979cf-4733-403c-80d9-c4d8e52f408f.jpg'
+            '/avatar/c86979cf-4733-403c-80d9-c4d8e52f408f/thumbnail/c86979cf-4733-403c-80d9-c4d8e52f408f.jpg'
         )->shouldBeCalled();
 
         $orchestrator->saveStandardSizeToStorage(
             $command->getFile(),
-            '/c86979cf-4733-403c-80d9-c4d8e52f408f/avatar/standard/c86979cf-4733-403c-80d9-c4d8e52f408f.jpg'
+            '/avatar/c86979cf-4733-403c-80d9-c4d8e52f408f/standard/c86979cf-4733-403c-80d9-c4d8e52f408f.jpg'
         )->shouldBeCalled();
 
         $orchestrator->createAvatar((new Avatar)->setUserId($command->getUserId())->setFilename('c86979cf-4733-403c-80d9-c4d8e52f408f.jpg'))->shouldBeCalled();

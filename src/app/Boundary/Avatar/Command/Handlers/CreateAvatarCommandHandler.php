@@ -31,10 +31,10 @@ class CreateAvatarCommandHandler
     public function handle(CreateAvatarCommand $command): Avatar
     {
         $filename = $command->getUserId()->__toString() . '.' . $command->getFile()->getClientOriginalExtension();
-        
-        $this->orchestrator->saveThumbnailToStorage($command->getFile(), "/{$command->getUserId()}/avatar/thumbnail/" . $filename);
 
-        $this->orchestrator->saveStandardSizeToStorage($command->getFile(), "/{$command->getUserId()}/avatar/standard/" . $filename);
+        $this->orchestrator->saveThumbnailToStorage($command->getFile(), "/avatar/{$command->getUserId()}/thumbnail/" . $filename);
+
+        $this->orchestrator->saveStandardSizeToStorage($command->getFile(), "/avatar/{$command->getUserId()}/standard/" . $filename);
 
         return $this->orchestrator->createAvatar((new Avatar)
             ->setUserId($command->getUserId())

@@ -108,6 +108,21 @@ class AvatarOrchestratorIntegrationTest extends TestCase
         $this->orchestrator->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
     }
 
+    public function test_avatar_can_be_updated()
+    {
+        $this->orchestrator->createAvatar((new Avatar)
+            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            ->setFilename('filename.jpg'));
+
+        $this->orchestrator->updateAvatar(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'), function (Avatar $avatar) {
+            $avatar->setFilename('filename.png');
+        });
+
+        $fetched = $this->orchestrator->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
+
+        $this->assertEquals('filename.png', $fetched->getFilename());
+    }
+
     private function removeFiles(string $file)
     {
         $this->filesystem->delete($file);

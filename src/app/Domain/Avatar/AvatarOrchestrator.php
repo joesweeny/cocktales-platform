@@ -59,6 +59,17 @@ class AvatarOrchestrator
     }
 
     /**
+     * @param Uuid $userId
+     * @param callable $updater
+     * @return Avatar
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
+    public function updateAvatar(Uuid $userId, callable $updater): Avatar
+    {
+        return $this->repository->updateAvatar($userId, $updater);
+    }
+
+    /**
      * @param UploadedFile $file
      * @param string $path
      * @throws \League\Flysystem\FileExistsException

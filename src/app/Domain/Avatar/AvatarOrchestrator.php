@@ -5,6 +5,7 @@ namespace Cocktales\Domain\Avatar;
 use Cocktales\Domain\Avatar\Entity\Avatar;
 use Cocktales\Domain\Avatar\Persistence\Repository;
 use Cocktales\Framework\Image\ImageOptimizer;
+use Cocktales\Framework\Uuid\Uuid;
 use Intervention\Image\Image;
 use League\Flysystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -45,6 +46,16 @@ class AvatarOrchestrator
     public function createAvatar(Avatar $avatar): Avatar
     {
         return $this->repository->createAvatar($avatar);
+    }
+
+    /**
+     * @param Uuid $userId
+     * @return Avatar
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
+    public function getAvatarByUserId(Uuid $userId): Avatar
+    {
+        return $this->repository->getAvatarByUserId($userId);
     }
 
     /**

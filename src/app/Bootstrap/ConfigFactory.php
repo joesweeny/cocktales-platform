@@ -17,7 +17,7 @@ class ConfigFactory
                     'pdo' => [
                         'dsn' => self::fromEnv('DB_DSN'),
                         'user' => self::fromEnv('DB_USER'),
-                        'pass' => self::fromEnv('DB_PASS'),
+                        'password' => self::fromEnv('DB_PASS'),
                     ]
                 ]
             ]

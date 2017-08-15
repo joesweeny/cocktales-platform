@@ -4,6 +4,7 @@ namespace Cocktales\Domain\Avatar\Persistence;
 
 use Cocktales\Domain\Avatar\Entity\Avatar;
 use Cocktales\Domain\Avatar\Exception\AvatarRepositoryException;
+use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
@@ -11,7 +12,7 @@ use Illuminate\Database\Connection;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 
-class IlluminateDvAvatarRepositoryIntegrationTest extends TestCase
+class IlluminateDbAvatarRepositoryIntegrationTest extends TestCase
 {
     use RunsMigrations;
     use UsesContainer;
@@ -61,9 +62,27 @@ class IlluminateDvAvatarRepositoryIntegrationTest extends TestCase
             ->setFilename('filename.jpg'));
 
         $this->expectException(AvatarRepositoryException::class);
-        $this->expectExceptionMessage('Avatar with dc5b6421-d452-4862-b741-d43383c3fe1d already exists');
+        $this->expectExceptionMessage('Avatar with User ID dc5b6421-d452-4862-b741-d43383c3fe1d already exists');
         $this->repository->createAvatar((new Avatar)
             ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
             ->setFilename('filename.jpg'));
+    }
+
+    public function test_avatar_can_be_retrieved_by_user_id()
+    {
+        $this->repository->createAvatar((new Avatar)
+            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            ->setFilename('filename.jpg'));
+
+        $fetched = $this->repository->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
+
+        $this->assertEquals('filename.jpg', $fetched->getFilename());
+    }
+
+    public function test_exception_is_thrown_if_avatar_user_id_does_not_exist()
+    {
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Avatar with User ID dc5b6421-d452-4862-b741-d43383c3fe1d does not exist');
+        $this->repository->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
     }
 }

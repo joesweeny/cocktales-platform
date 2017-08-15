@@ -72,23 +72,21 @@ class AvatarOrchestrator
     /**
      * @param UploadedFile $file
      * @param string $path
-     * @throws \League\Flysystem\FileExistsException
      * @return void
      */
     public function saveThumbnailToStorage(UploadedFile $file, string $path): void
     {
-        $this->filesystem->write($path, $this->createThumbnail($file));
+        $this->filesystem->put($path, $this->createThumbnail($file));
     }
 
     /**
      * @param UploadedFile $file
      * @param string $path
-     * @throws \League\Flysystem\FileExistsException
      * @return void
      */
     public function saveStandardSizeToStorage(UploadedFile $file, string $path): void
     {
-        $this->filesystem->write($path, $this->createStandardSize($file));
+        $this->filesystem->put($path, $this->createStandardSize($file));
     }
 
     /**

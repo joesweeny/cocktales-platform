@@ -2,10 +2,12 @@
 
 namespace Cocktales\Boundary\Avatar\Command\Handlers;
 
+use Cocktales\Boundary\Avatar\AvatarPresenter;
 use Cocktales\Boundary\Avatar\Command\CreateAvatarCommand;
 use Cocktales\Domain\Avatar\AvatarOrchestrator;
 use Cocktales\Domain\Avatar\Entity\Avatar;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CreateAvatarCommandHandlerTest extends TestCase
@@ -14,7 +16,9 @@ class CreateAvatarCommandHandlerTest extends TestCase
     {
         /** @var AvatarOrchestrator $orchestrator */
         $orchestrator = $this->prophesize(AvatarOrchestrator::class);
-        $handler = new CreateAvatarCommandHandler($orchestrator->reveal());
+        /** @var AvatarPresenter $presenter */
+        $presenter = $this->prophesize(AvatarPresenter::class);
+        $handler = new CreateAvatarCommandHandler($orchestrator->reveal(), $presenter->reveal());
 
         $command = new CreateAvatarCommand(
             'c86979cf-4733-403c-80d9-c4d8e52f408f',
@@ -32,6 +36,8 @@ class CreateAvatarCommandHandlerTest extends TestCase
         )->shouldBeCalled();
 
         $orchestrator->createAvatar((new Avatar)->setUserId($command->getUserId())->setFilename('c86979cf-4733-403c-80d9-c4d8e52f408f.jpg'))->shouldBeCalled();
+
+        $presenter->toDto(Argument::type(Avatar::class))->willReturn((object) ['filename' => 'c86979cf-4733-403c-80d9-c4d8e52f408f.jpg']);
 
         $handler->handle($command);
     }

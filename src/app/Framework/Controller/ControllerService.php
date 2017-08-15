@@ -6,7 +6,6 @@ use Cocktales\Framework\CommandBus\CommandBus;
 
 trait ControllerService
 {
-
     /**
      * @var CommandBus
      */

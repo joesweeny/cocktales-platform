@@ -24,4 +24,12 @@ interface Repository
      * @return Avatar
      */
     public function getAvatarByUserId(Uuid $userId): Avatar;
+
+    /**
+     * @param Uuid $userId
+     * @param callable $updater
+     * @throws NotFoundException
+     * @return Avatar
+     */
+    public function updateAvatar(Uuid $userId, callable $updater): Avatar;
 }

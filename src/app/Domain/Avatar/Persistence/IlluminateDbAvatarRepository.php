@@ -64,6 +64,22 @@ class IlluminateDbAvatarRepository implements Repository
     }
 
     /**
+     * @inheritdoc
+     */
+    public function updateAvatar(Uuid $userId, callable $updater): Avatar
+    {
+        $avatar = $this->getAvatarByUserId($userId);
+
+        $updater($avatar);
+
+        $avatar->setLastModifiedDate($this->clock->now());
+
+        $this->table()->where('user_id', $avatar->getUserId()->toBinary())->update((array) Extractor::toRawData($avatar));
+
+        return $avatar;
+    }
+
+    /**
      * @return Builder
      */
     private function table(): Builder

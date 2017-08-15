@@ -1,3 +1,4 @@
 /src/vendor/
 /src/.env
 /node_modules/
+/src/public/img/default_avatar.jpg

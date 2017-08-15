@@ -2,4 +2,8 @@
 /src/.env
 /node_modules/
 /src/public/img/default_avatar.jpg
+<<<<<<< HEAD
 /src/public/img/default_avatar.png
+=======
+#/src/public/img/default_avatar.png
+>>>>>>> e16cc5e811fae8309fea320b60101ec4d6e56261

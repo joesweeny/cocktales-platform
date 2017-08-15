@@ -59,25 +59,34 @@ class AvatarOrchestrator
     }
 
     /**
-     * @param UploadedFile $file
-     * @param string $path
-     * @throws \League\Flysystem\FileExistsException
-     * @return void
+     * @param Uuid $userId
+     * @param callable $updater
+     * @return Avatar
+     * @throws \Cocktales\Framework\Exception\NotFoundException
      */
-    public function saveThumbnailToStorage(UploadedFile $file, string $path): void
+    public function updateAvatar(Uuid $userId, callable $updater): Avatar
     {
-        $this->filesystem->write($path, $this->createThumbnail($file));
+        return $this->repository->updateAvatar($userId, $updater);
     }
 
     /**
      * @param UploadedFile $file
      * @param string $path
-     * @throws \League\Flysystem\FileExistsException
+     * @return void
+     */
+    public function saveThumbnailToStorage(UploadedFile $file, string $path): void
+    {
+        $this->filesystem->put($path, $this->createThumbnail($file));
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @param string $path
      * @return void
      */
     public function saveStandardSizeToStorage(UploadedFile $file, string $path): void
     {
-        $this->filesystem->write($path, $this->createStandardSize($file));
+        $this->filesystem->put($path, $this->createStandardSize($file));
     }
 
     /**

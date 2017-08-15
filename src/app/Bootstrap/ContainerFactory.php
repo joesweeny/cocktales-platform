@@ -6,6 +6,7 @@ use Chief\Busses\SynchronousCommandBus;
 use Chief\Container;
 use Chief\Resolvers\NativeCommandHandlerResolver;
 use Cocktales\Application\Http\App\Routing\RouteManager;
+use Cocktales\Domain\Avatar\Persistence\IlluminateDbAvatarRepository;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
 use Cocktales\Domain\User\Persistence\IlluminateDbUserRepository;
 use Cocktales\Domain\User\Persistence\Repository;
@@ -19,9 +20,13 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\MySqlConnection;
 use Illuminate\Database\SQLiteConnection;
 use Interop\Container\ContainerInterface;
+use Intervention\Image\ImageManager;
 use Lcobucci\JWT\Parser;
 use Cocktales\Framework\CommandBus\ChiefAdapter;
 use Cocktales\Framework\Routing\Router;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\AdapterInterface;
+use League\Flysystem\Filesystem;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 
@@ -77,15 +82,13 @@ class ContainerFactory
                 return $container;
             }),
 
-
             Router::class => \DI\decorate(function (Router $router, ContainerInterface $container) {
                 // @todo Add RouteManagers here
                 return $router
                     ->addRoutes($container->get(RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\User\RouteManager::class))
-                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class));
-
-
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class))
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Avatar\RouteManager::class));
             }),
 
             CommandBus::class => \DI\factory(function (ContainerInterface $container) {
@@ -124,19 +127,42 @@ class ContainerFactory
             }),
 
 
-            Clock::class => \DI\object(SystemClock::class)
+            Clock::class => \DI\object(SystemClock::class),
 
+            ImageManager::class => \DI\factory(function (ContainerInterface $container) {
+                return new ImageManager(['driver' => 'imagick']);
+            })
+            
         ];
     }
 
     /**
      * @return array
+     * @throws \LogicException
      */
     private function defineDomain(): array
     {
         return [
             Repository::class => \DI\object(IlluminateDbUserRepository::class),
-            \Cocktales\Domain\Profile\Persistence\Repository::class => \DI\object(IlluminateDbProfileRepository::class)
+
+            \Cocktales\Domain\Profile\Persistence\Repository::class => \DI\object(IlluminateDbProfileRepository::class),
+
+            \Cocktales\Domain\Avatar\Persistence\Repository::class => \DI\object(IlluminateDbAvatarRepository::class),
+
+            Filesystem::class => \DI\factory(function (ContainerInterface $container) {
+                return new Filesystem(
+                    new Local('./src/public/img',
+                    0, Local::SKIP_LINKS, [
+                        'file' => [
+                            'public' => 0777,
+                            'private' => 0777,
+                        ],
+                        'dir' => [
+                            'public' => 0777,
+                            'private' => 0777,
+                        ]
+                ]));
+            })
         ];
     }
 

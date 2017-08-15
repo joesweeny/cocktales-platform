@@ -29,6 +29,7 @@ class Version20170725191205_AddUserProfileTable extends AbstractMigration
         $table->addColumn('slogan', Type::STRING)->setNotnull(false);
         $table->addColumn('created_at', Type::DATETIME);
         $table->addColumn('updated_at', Type::DATETIME);
+        $table->addIndex(['user_id']);
     }
 
     /**

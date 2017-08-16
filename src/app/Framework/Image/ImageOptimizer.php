@@ -23,7 +23,7 @@ class ImageOptimizer
     }
 
     /**
-     * Creates an Image with dimensions 100 x 100
+     * Creates an Image with dimensions 100 x 125
      *
      * @param UploadedFile $file
      * @return \Intervention\Image\Image
@@ -34,13 +34,13 @@ class ImageOptimizer
     }
 
     /**
-     * Creates an Image with dimensions 450 x 450
+     * Creates an Image with dimensions 375 x 450
      *
      * @param UploadedFile $file
      * @return Image
      */
     public function createStandardSize(UploadedFile $file): Image
     {
-        return $this->imageManager->make($file)->resize(375, 450)->encode($file->getClientOriginalExtension(), 10);
+        return $this->imageManager->make($file)->resize(375, 450)->encode($file->getClientOriginalExtension(), 100);
     }
 }

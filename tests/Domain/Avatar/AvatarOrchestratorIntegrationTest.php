@@ -2,6 +2,8 @@
 
 namespace Cocktales\Domain\Avatar;
 
+use Cocktales\Bootstrap\ConfigFactory;
+use Cocktales\Bootstrap\ContainerFactory;
 use Cocktales\Domain\Avatar\Entity\Avatar;
 use Cocktales\Domain\Avatar\Exception\AvatarRepositoryException;
 use Cocktales\Framework\Exception\NotFoundException;
@@ -121,6 +123,44 @@ class AvatarOrchestratorIntegrationTest extends TestCase
         $fetched = $this->orchestrator->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
 
         $this->assertEquals('filename.png', $fetched->getFilename());
+    }
+
+    public function test_thumbnail_image_is_created_and_save_to_storage_in_amazon_S3()
+    {
+        $this->markTestSkipped('Only test when AWS required');
+
+        $container = (new ContainerFactory)->create(ConfigFactory::create()->set('aws.filesystem_enabled', true));
+
+        $orchestrator = $container->get(AvatarOrchestrator::class);
+
+        $filesystem = $container->get(Filesystem::class);
+
+        $file = new UploadedFile('./src/public/img/default_avatar.jpg', 'default_avatar.jpg', 'image/jpeg', 22000, UPLOAD_ERR_OK, true);
+
+        $orchestrator->saveThumbnailToStorage($file, $newFile = '/tests/test.jpg');
+
+        $this->assertTrue($filesystem->has('/tests/test.jpg'));
+
+        $this->removeFiles($newFile);
+    }
+
+    public function test_standard_image_is_created_and_save_to_storage_in_amazon_S3()
+    {
+        $this->markTestSkipped('Only test when AWS required');
+
+        $container = (new ContainerFactory)->create(ConfigFactory::create()->set('aws.filesystem_enabled', true));
+
+        $orchestrator = $container->get(AvatarOrchestrator::class);
+
+        $filesystem = $container->get(Filesystem::class);
+
+        $file = new UploadedFile('./src/public/img/default_avatar.jpg', 'default_avatar.jpg', 'image/jpeg', 22000, UPLOAD_ERR_OK, true);
+
+        $orchestrator->saveStandardSizeToStorage($file, $newFile = '/tests/test.jpg');
+
+        $this->assertTrue($filesystem->has('/tests/test.jpg'));
+
+        $this->removeFiles($newFile);
     }
 
     private function removeFiles(string $file)

@@ -20,6 +20,14 @@ class ConfigFactory
                         'password' => self::fromEnv('DB_PASS'),
                     ]
                 ]
+            ],
+
+            'aws' => [
+                'filesystem_enabled' => self::fromEnv('AWS_FILESYSTEM_ENABLED', false),
+
+                'key' => self::fromEnv('AWS_ACCESS_KEY_ID'),
+
+                'secret' => self::fromEnv('AWS_SECRET_KEY')
             ]
         ]);
     }

@@ -6,10 +6,10 @@ use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
 use Cocktales\Testing\Traits\UsesHttpServer;
 use GuzzleHttp\Psr7\ServerRequest;
-use GuzzleHttp\Psr7\UploadedFile;
 use Interop\Container\ContainerInterface;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\UploadedFile;
 
 class CreateControllerIntegrationTest extends TestCase
 {

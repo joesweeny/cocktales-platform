@@ -2,6 +2,7 @@
 
 namespace Cocktales\Bootstrap;
 
+use Aws\S3\S3Client;
 use Chief\Busses\SynchronousCommandBus;
 use Chief\Container;
 use Chief\Resolvers\NativeCommandHandlerResolver;
@@ -25,7 +26,7 @@ use Lcobucci\JWT\Parser;
 use Cocktales\Framework\CommandBus\ChiefAdapter;
 use Cocktales\Framework\Routing\Router;
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\AdapterInterface;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
@@ -150,6 +151,23 @@ class ContainerFactory
             \Cocktales\Domain\Avatar\Persistence\Repository::class => \DI\object(IlluminateDbAvatarRepository::class),
 
             Filesystem::class => \DI\factory(function (ContainerInterface $container) {
+                $config = $container->get(Config::class);
+
+                if ($config->get('aws.filesystem_enabled')) {
+                    $client = S3Client::factory([
+                        'credentials' => [
+                            'key'    => $config->get('aws.key'),
+                            'secret' => $config->get('aws.secret'),
+                        ],
+                        'region' => 'eu-west-2',
+                        'version' => 'latest',
+                    ]);
+
+                    $adapter = new AwsS3Adapter($client, 'test.cocktales.io');
+
+                    return new Filesystem($adapter);
+                }
+
                 return new Filesystem(
                     new Local('./src/public/img',
                     0, Local::SKIP_LINKS, [

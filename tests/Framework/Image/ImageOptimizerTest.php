@@ -30,7 +30,6 @@ class ImageOptimizerTest extends TestCase
         $this->assertInstanceOf(Image::class, $image);
         $this->assertEquals(125, $image->getHeight());
         $this->assertEquals(100, $image->getWidth());
-        $this->assertEquals('image/jpeg', $image->mime());
         $this->assertEquals('default_avatar', $image->filename);
         $this->assertEquals('jpg', $image->extension);
     }
@@ -44,7 +43,6 @@ class ImageOptimizerTest extends TestCase
         $this->assertInstanceOf(Image::class, $image);
         $this->assertEquals(450, $image->getHeight());
         $this->assertEquals(375, $image->getWidth());
-        $this->assertEquals('image/jpeg', $image->mime());
         $this->assertEquals('default_avatar', $image->filename);
         $this->assertEquals('jpg', $image->extension);
     }

@@ -76,7 +76,7 @@ class AvatarOrchestrator
      */
     public function saveThumbnailToStorage(UploadedFile $file, string $path): void
     {
-        $this->filesystem->put($path, $this->createThumbnail($file));
+        $this->filesystem->put($path, $this->createThumbnail($file)->stream()->__toString());
     }
 
     /**
@@ -86,7 +86,7 @@ class AvatarOrchestrator
      */
     public function saveStandardSizeToStorage(UploadedFile $file, string $path): void
     {
-        $this->filesystem->put($path, $this->createStandardSize($file));
+        $this->filesystem->put($path, $this->createStandardSize($file)->stream()->__toString());
     }
 
     /**

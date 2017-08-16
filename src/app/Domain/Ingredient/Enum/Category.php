@@ -16,12 +16,12 @@ use MyCLabs\Enum\Enum;
  */
 class Category extends Enum
 {
-    const SPIRIT = 'SPIRIT';
-    const LIQUEUR = 'LIQUEUR';
-    const WINE = 'WINE';
-    const BEER = 'BEER';
-    const CIDER = 'CIDER';
-    const CHAMPAGNE = 'CHAMPAGNE';
-    const MIXER = 'MIXER';
-    const GARNISH = 'GARNISH';
+    const SPIRIT = 'Spirit';
+    const LIQUEUR = 'Liqueur';
+    const WINE = 'Wine';
+    const BEER = 'Beer';
+    const CIDER = 'Cider';
+    const CHAMPAGNE = 'Champagne';
+    const MIXER = 'Mixer';
+    const GARNISH = 'Garnish';
 }

@@ -135,4 +135,30 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
             $this->assertEquals(Type::VODKA(), $ingredient->getType());
         }
     }
+
+    public function test_get_ingredients_by_category_returns_a_collection_of_ingredient_objects_with_specific_category()
+    {
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName('Smirnoff Red')
+            ->setCategory(Category::SPIRIT())
+            ->setType(Type::VODKA()));
+
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName('Smirnoff Black')
+            ->setCategory(Category::SPIRIT())
+            ->setType(Type::VODKA()));
+
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName('Orange Juice')
+            ->setCategory(Category::MIXER())
+            ->setType(Type::FRUIT_JUICE()));
+
+        $ingredients = $this->repository->getIngredientsByCategory(Category::SPIRIT());
+
+        $this->assertCount(2, $ingredients);
+        
+        foreach ($ingredients as $ingredient) {
+            $this->assertEquals(Category::SPIRIT(), $ingredient->getCategory());
+        }
+    }
 }

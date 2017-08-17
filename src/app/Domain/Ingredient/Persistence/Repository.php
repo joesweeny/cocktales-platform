@@ -3,6 +3,7 @@
 namespace Cocktales\Domain\Ingredient\Persistence;
 
 use Cocktales\Domain\Ingredient\Entity\Ingredient;
+use Cocktales\Domain\Ingredient\Enum\Category;
 use Cocktales\Domain\Ingredient\Enum\Type;
 use Cocktales\Domain\Ingredient\Exception\IngredientRepositoryException;
 use Illuminate\Support\Collection;
@@ -32,4 +33,12 @@ interface Repository
      * @return Collection
      */
     public function getIngredientsByType(Type $type): Collection;
+
+    /**
+     * Return a collection of Ingredients based on a specific Category
+     *
+     * @param Category $category
+     * @return Collection
+     */
+    public function getIngredientsByCategory(Category $category): Collection;
 }

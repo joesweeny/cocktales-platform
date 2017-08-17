@@ -6,6 +6,8 @@ use Cocktales\Domain\Ingredient\Entity\Ingredient;
 use Cocktales\Domain\Ingredient\Enum\Category;
 use Cocktales\Domain\Ingredient\Enum\Type;
 use Cocktales\Domain\Ingredient\Exception\IngredientRepositoryException;
+use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Support\Collection;
 
 interface Repository
@@ -41,4 +43,11 @@ interface Repository
      * @return Collection
      */
     public function getIngredientsByCategory(Category $category): Collection;
+
+    /**
+     * @param Uuid $id
+     * @return Ingredient
+     * @throws NotFoundException
+     */
+    public function getIngredientById(Uuid $id): Ingredient;
 }

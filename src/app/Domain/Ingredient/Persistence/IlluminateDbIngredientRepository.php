@@ -9,6 +9,8 @@ use Cocktales\Domain\Ingredient\Exception\IngredientRepositoryException;
 use Cocktales\Domain\Ingredient\Hydration\Extractor;
 use Cocktales\Domain\Ingredient\Hydration\Hydrator;
 use Cocktales\Framework\DateTime\Clock;
+use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
@@ -78,6 +80,18 @@ class IlluminateDbIngredientRepository implements Repository
         return Collection::make($this->table()->where('category', $category->getValue())->orderBy('name')->get())->map(function ($data) {
             return Hydrator::fromRawData($data);
         });
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIngredientById(Uuid $id): Ingredient
+    {
+        if (!$row = $this->table()->where('id', $id->toBinary())->first()) {
+            throw new NotFoundException("Ingredient with ID {$id} does not exist");
+        }
+
+        return Hydrator::fromRawData($row);
     }
 
     private function table(): Builder

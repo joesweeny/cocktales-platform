@@ -6,6 +6,8 @@ use Cocktales\Domain\Ingredient\Entity\Ingredient;
 use Cocktales\Domain\Ingredient\Enum\Category;
 use Cocktales\Domain\Ingredient\Enum\Type;
 use Cocktales\Domain\Ingredient\Exception\IngredientRepositoryException;
+use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
 use Illuminate\Database\Connection;
@@ -156,9 +158,30 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
         $ingredients = $this->repository->getIngredientsByCategory(Category::SPIRIT());
 
         $this->assertCount(2, $ingredients);
-        
+
         foreach ($ingredients as $ingredient) {
             $this->assertEquals(Category::SPIRIT(), $ingredient->getCategory());
         }
+    }
+
+    public function test_ingredient_can_be_retrieved_by_id()
+    {
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName('Smirnoff Red')
+            ->setCategory(Category::SPIRIT())
+            ->setType(Type::VODKA()));
+
+        $ingredient = $this->repository->getIngredientById(new Uuid('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'));
+
+        $this->assertEquals('Smirnoff Red', $ingredient->getName());
+        $this->assertEquals(Category::SPIRIT(), $ingredient->getCategory());
+        $this->assertEquals(Type::VODKA(), $ingredient->getType());
+    }
+
+    public function test_exception_thrown_if_attempting_to_retrieve_an_ingredient_that_does_not_exist()
+    {
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Ingredient with ID e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5 does not exist');
+        $this->repository->getIngredientById(new Uuid('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'));
     }
 }

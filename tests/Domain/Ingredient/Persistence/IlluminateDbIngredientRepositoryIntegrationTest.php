@@ -72,4 +72,41 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
     }
+
+    public function test_get_ingredients_returns_a_collection_of_all_ingredients_sorted_alphabetically_by_name()
+    {
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName('Smirnoff Red')
+            ->setCategory(Category::SPIRIT())
+            ->setType(Type::VODKA()));
+
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName('Bacardi Breezer')
+            ->setCategory(Category::MIXER())
+            ->setType(Type::ALCOPOP()));
+
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName("Gordon's Gin")
+            ->setCategory(Category::SPIRIT())
+            ->setType(Type::GIN()));
+
+        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            ->setName('Orange Juice')
+            ->setCategory(Category::MIXER())
+            ->setType(Type::FRUIT_JUICE()));
+
+        $ingredients = $this->connection->table('ingredient')->get();
+
+        $this->assertEquals('Smirnoff Red', $ingredients[0]->name);
+        $this->assertEquals('Bacardi Breezer', $ingredients[1]->name);
+        $this->assertEquals("Gordon's Gin", $ingredients[2]->name);
+        $this->assertEquals('Orange Juice', $ingredients[3]->name);
+
+        $sortedIngredients = $this->repository->getIngredients();
+
+        $this->assertEquals('Bacardi Breezer', $sortedIngredients[0]->getName());
+        $this->assertEquals("Gordon's Gin", $sortedIngredients[1]->getName());
+        $this->assertEquals('Orange Juice', $sortedIngredients[2]->getName());
+        $this->assertEquals('Smirnoff Red', $sortedIngredients[3]->getName());
+    }
 }

@@ -3,6 +3,7 @@
 namespace Cocktales\Domain\Ingredient\Persistence;
 
 use Cocktales\Domain\Ingredient\Entity\Ingredient;
+use Cocktales\Domain\Ingredient\Enum\Type;
 use Cocktales\Domain\Ingredient\Exception\IngredientRepositoryException;
 use Cocktales\Domain\Ingredient\Hydration\Extractor;
 use Cocktales\Domain\Ingredient\Hydration\Hydrator;
@@ -58,9 +59,18 @@ class IlluminateDbIngredientRepository implements Repository
         });
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getIngredientsByType(Type $type): Collection
+    {
+        return Collection::make($this->table()->where('type', $type->getValue())->orderBy('name')->get())->map(function ($data) {
+            return Hydrator::fromRawData($data);
+        });
+    }
+
     private function table(): Builder
     {
         return $this->connection->table('ingredient');
     }
-
 }

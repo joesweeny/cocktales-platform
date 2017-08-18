@@ -22,15 +22,15 @@ class GetAllIngredientsCommandHandlerTest extends TestCase
         $handler = new GetAllIngredientsCommandHandler($orchestrator->reveal(), $presenter);
 
         $orchestrator->getIngredients()->willReturn(new Collection([
-            $ingredient1 = (new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            (new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
                 ->setName('Bacardi Breezer')
                 ->setCategory(Category::MIXER())
                 ->setType(Type::ALCOPOP()),
-            $ingredient2 = (new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            (new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
                 ->setName('Orange Juice')
                 ->setCategory(Category::MIXER())
                 ->setType(Type::FRUIT_JUICE()),
-            $ingredient3 = (new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+            (new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
                 ->setName('Smirnoff Red')
                 ->setCategory(Category::SPIRIT())
                 ->setType(Type::VODKA())

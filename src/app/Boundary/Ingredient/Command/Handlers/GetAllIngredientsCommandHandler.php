@@ -33,7 +33,7 @@ class GetAllIngredientsCommandHandler
      * @param GetAllIngredientsCommand $command
      * @return array|\stdClass[]
      */
-    public function handle(GetAllIngredientsCommand $command)
+    public function handle(GetAllIngredientsCommand $command): array
     {
         return array_map(function (Ingredient $ingredient) {
             return $this->presenter->toDto($ingredient);

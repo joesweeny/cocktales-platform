@@ -30,7 +30,11 @@ class GetIngredientsSortedByCategoryCommandHandler
         $this->presenter = $presenter;
     }
 
-    public function handle(GetIngredientsSortedByCategoryCommand $command)
+    /**
+     * @param GetIngredientsSortedByCategoryCommand $command
+     * @return array|\stdClass[]
+     */
+    public function handle(GetIngredientsSortedByCategoryCommand $command): array
     {
         $ingredients = [];
 

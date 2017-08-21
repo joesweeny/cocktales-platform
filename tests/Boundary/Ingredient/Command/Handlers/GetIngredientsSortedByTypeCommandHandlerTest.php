@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class GetIngredientsSortedByTypeCommandHandlerTest extends TestCase
 {
-    public function test_handle_returns_an_array_of_std_classes_containing_ingredient_information_sorted_by_type()
+    public function test_handle_returns_an_array_of_std_objects_containing_ingredient_information_sorted_by_type()
     {
         /** @var IngredientOrchestrator $orchestrator */
         $orchestrator = $this->prophesize(IngredientOrchestrator::class);

@@ -44,7 +44,7 @@ class GetIngredientsSortedByCategoryCommandHandlerTest extends TestCase
         ]));
 
         $data = $handler->handle(new GetIngredientsSortedByCategoryCommand);
-        
+
         $this->assertEquals('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5', $data['SPIRIT'][0]->id);
         $this->assertEquals('Smirnoff Black', $data['SPIRIT'][0]->name);
         $this->assertEquals('Spirit', $data['SPIRIT'][0]->category);

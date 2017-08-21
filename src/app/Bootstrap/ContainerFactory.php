@@ -90,7 +90,8 @@ class ContainerFactory
                     ->addRoutes($container->get(RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\User\RouteManager::class))
                     ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Profile\RouteManager::class))
-                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Avatar\RouteManager::class));
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Avatar\RouteManager::class))
+                    ->addRoutes($container->get(\Cocktales\Application\Http\Api\v1\Routing\Ingredient\RouteManager::class));
             }),
 
             CommandBus::class => \DI\factory(function (ContainerInterface $container) {

@@ -3,6 +3,7 @@
 namespace Cocktales\Application\Console;
 
 use Cocktales\Application\Console\Command\IngredientCreate;
+use Cocktales\Application\Console\Command\IngredientList;
 use Cocktales\Application\Console\Command\ProfileCreate;
 use Cocktales\Application\Console\Command\UserList;
 use Cocktales\Application\Console\Command\UserProfile;
@@ -60,6 +61,7 @@ class Console
 
         $app->addCommands([
             $this->container->get(IngredientCreate::class),
+            $this->container->get(IngredientList::class),
             $this->container->get(ProfileCreate::class),
             $this->container->get(UserList::class),
             $this->container->get(UserProfile::class),

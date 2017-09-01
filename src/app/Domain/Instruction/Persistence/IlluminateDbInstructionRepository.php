@@ -4,12 +4,15 @@ namespace Cocktales\Domain\Instruction\Persistence;
 
 use Cocktales\Domain\Instruction\Entity\Instruction;
 use Cocktales\Domain\Instruction\Hydration\Extractor;
+use Cocktales\Domain\Instruction\Hydration\Hydrator;
 use Cocktales\Framework\DateTime\Clock;
+use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
+use Illuminate\Support\Collection;
 
 class IlluminateDbInstructionRepository implements Repository
 {
-    const TABLE = 'instruction';
+    const TABLE = 'cocktail_instruction';
 
     /**
      * @var Connection
@@ -39,5 +42,18 @@ class IlluminateDbInstructionRepository implements Repository
         $instruction->setCreatedDate($this->clock->now());
 
         $this->connection->table(self::TABLE)->insert((array) Extractor::toRawData($instruction));
+    }
+
+    /**
+     * Return a collection on Instructions linked to associated Cocktail
+     *
+     * @param Uuid $cocktailId
+     * @return Collection|Instruction[]
+     */
+    public function getInstructions(Uuid $cocktailId): Collection
+    {
+        return Collection::make($this->connection->table(self::TABLE)->orderBy('ingredient_id')->get())->map(function (\stdClass $data) {
+            return Hydrator::fromRawData($data);
+        });
     }
 }

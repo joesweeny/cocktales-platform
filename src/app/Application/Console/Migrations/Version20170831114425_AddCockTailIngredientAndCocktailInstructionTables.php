@@ -26,11 +26,15 @@ class Version20170831114425_AddCockTailIngredientAndCocktailInstructionTables ex
         $table->addColumn('order_number', Type::INTEGER);
         $table->addColumn('quantity', Type::INTEGER);
         $table->addColumn('measurement', Type::STRING);
+        $table->addColumn('created_at', Type::INTEGER);
+        $table->addIndex(['cocktail_id']);
 
         $table = $schema->createTable('cocktail_instruction');
         $table->addColumn('cocktail_id', Type::BINARY)->setLength(16);
         $table->addColumn('instruction_id', Type::INTEGER);
         $table->addColumn('text', Type::TEXT);
+        $table->addColumn('created_at', Type::INTEGER);
+        $table->addIndex(['cocktail_id']);
     }
 
     /**

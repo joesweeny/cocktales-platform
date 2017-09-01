@@ -45,10 +45,7 @@ class IlluminateDbInstructionRepository implements Repository
     }
 
     /**
-     * Return a collection on Instructions linked to associated Cocktail
-     *
-     * @param Uuid $cocktailId
-     * @return Collection|Instruction[]
+     * @inheritdoc
      */
     public function getInstructions(Uuid $cocktailId): Collection
     {

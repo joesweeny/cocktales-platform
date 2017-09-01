@@ -10,7 +10,7 @@ class ProfilePresenterTest extends TestCase
 {
     public function test_convert_profile_entity_into_dto()
     {
-        $data = ProfilePresenter::toDto(
+        $data = (new ProfilePresenter)->toDto(
             (new Profile)
                 ->setUserId(new Uuid('acbde855-3b9d-4ad8-801d-78fffcda2be7'))
                 ->setUsername('joe')

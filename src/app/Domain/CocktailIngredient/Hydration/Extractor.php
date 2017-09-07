@@ -13,7 +13,8 @@ class Extractor
             'ingredient_id' => $ingredient->getIngredientId()->toBinary(),
             'order_number' => $ingredient->getOrderNumber(),
             'quantity' => $ingredient->getQuantity(),
-            'measurement' => $ingredient->getMeasurement()
+            'measurement' => $ingredient->getMeasurement(),
+            'created_at' => $ingredient->getCreatedDate()->getTimestamp()
         ];
     }
 }

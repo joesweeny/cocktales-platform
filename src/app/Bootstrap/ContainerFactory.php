@@ -8,6 +8,7 @@ use Chief\Container;
 use Chief\Resolvers\NativeCommandHandlerResolver;
 use Cocktales\Application\Http\App\Routing\RouteManager;
 use Cocktales\Domain\Avatar\Persistence\IlluminateDbAvatarRepository;
+use Cocktales\Domain\CocktailIngredient\Persistence\IlluminateDbCocktailIngredientRepository;
 use Cocktales\Domain\Ingredient\Persistence\IlluminateDbIngredientRepository;
 use Cocktales\Domain\Instruction\Persistence\IlluminateDbInstructionRepository;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
@@ -156,6 +157,8 @@ class ContainerFactory
             \Cocktales\Domain\Ingredient\Persistence\Repository::class => \DI\object(IlluminateDbIngredientRepository::class),
 
             \Cocktales\Domain\Instruction\Persistence\Repository::class => \DI\object(IlluminateDbInstructionRepository::class),
+
+            \Cocktales\Domain\CocktailIngredient\Persistence\Repository::class => \DI\object(IlluminateDbCocktailIngredientRepository::class),
 
             Filesystem::class => \DI\factory(function (ContainerInterface $container) {
                 $config = $container->get(Config::class);

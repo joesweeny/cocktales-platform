@@ -3,6 +3,7 @@
 namespace Cocktales\Domain\CocktailIngredient\Persistence;
 
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
+use Cocktales\Domain\CocktailIngredient\Exception\RepositoryException;
 use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Support\Collection;
 
@@ -12,6 +13,7 @@ interface Repository
      * Insert a new CocktailIngredient record into the database
      *
      * @param CocktailIngredient $cocktailIngredient
+     * @throws RepositoryException
      */
     public function insertCocktailIngredient(CocktailIngredient $cocktailIngredient): void;
 

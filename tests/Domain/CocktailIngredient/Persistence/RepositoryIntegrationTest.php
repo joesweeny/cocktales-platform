@@ -101,6 +101,7 @@ class RepositoryIntegrationTest extends TestCase
         $this->assertCount(4, $fetched);
 
         foreach ($fetched as $item) {
+            $this->assertInstanceOf(CocktailIngredient::class, $item);
             $this->assertEquals('fe8f3ec8-1711-412c-8324-c1e1e5f19454', (string) $item->getCocktailId());
         }
     }

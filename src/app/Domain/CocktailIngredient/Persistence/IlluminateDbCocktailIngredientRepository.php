@@ -5,8 +5,11 @@ namespace Cocktales\Domain\CocktailIngredient\Persistence;
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
 use Cocktales\Domain\CocktailIngredient\Exception\RepositoryException;
 use Cocktales\Domain\CocktailIngredient\Hydration\Extractor;
+use Cocktales\Domain\CocktailIngredient\Hydration\Hydrator;
 use Cocktales\Framework\DateTime\Clock;
+use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
+use Illuminate\Support\Collection;
 
 class IlluminateDbCocktailIngredientRepository implements Repository
 {
@@ -42,13 +45,24 @@ class IlluminateDbCocktailIngredientRepository implements Repository
             ->exists()
         ) {
             throw new RepositoryException(
-                "CocktailIngredient with Cocktail {$cocktailIngredient->getCocktailId()} and Ingredient 
-                {$cocktailIngredient->getIngredientId()} already exists"
+                "CocktailIngredient with Cocktail {$cocktailIngredient->getCocktailId()} and Ingredient " .
+                "{$cocktailIngredient->getIngredientId()} already exists"
             );
         }
 
         $cocktailIngredient->setCreatedDate($this->clock->now());
 
         $this->connection->table(self::TABLE)->insert((array) Extractor::toRawData($cocktailIngredient));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCocktailIngredients(Uuid $cocktailId): Collection
+    {
+        return Collection::make($this->connection->table(self::TABLE)
+            ->where('cocktail_id', $cocktailId->toBinary())->get())->map(function (\stdClass $data) {
+                return Hydrator::fromRawData($data);
+        });
     }
 }

@@ -3,6 +3,7 @@
 namespace Cocktales\Domain\CocktailIngredient\Persistence;
 
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
+use Cocktales\Domain\CocktailIngredient\Exception\RepositoryException;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
@@ -59,5 +60,48 @@ class RepositoryIntegrationTest extends TestCase
         $total = $this->connection->table('cocktail_ingredient')->get();
 
         $this->assertCount(2, $total);
+    }
+
+    public function test_exception_thrown_if_attempting_to_insert_a_cocktail_ingredient_that_already_exists()
+    {
+        $this->repository->insertCocktailIngredient(new CocktailIngredient(
+            new Uuid('fe8f3ec8-1711-412c-8324-c1e1e5f19454'),
+            new Uuid('73f261d9-234e-4501-a5dc-8f4f0bc0623a'),
+            1,
+            50,
+            'ml'
+        ));
+
+        $this->expectException(RepositoryException::class);
+        $this->expectExceptionMessage('CocktailIngredient with Cocktail fe8f3ec8-1711-412c-8324-c1e1e5f19454 and Ingredient 73f261d9-234e-4501-a5dc-8f4f0bc0623a already exists');
+
+        $this->repository->insertCocktailIngredient(new CocktailIngredient(
+            new Uuid('fe8f3ec8-1711-412c-8324-c1e1e5f19454'),
+            new Uuid('73f261d9-234e-4501-a5dc-8f4f0bc0623a'),
+            1,
+            50,
+            'ml'
+        ));
+    }
+
+    public function test_get_cocktail_ingredients_returns_a_collection_of_cocktail_ingredients_linked_to_associated_cocktail_id()
+    {
+        for ($i = 1; $i < 5; $i++) {
+            $this->repository->insertCocktailIngredient(new CocktailIngredient(
+                new Uuid('fe8f3ec8-1711-412c-8324-c1e1e5f19454'),
+                Uuid::generate(),
+                $i,
+                50,
+                'ml'
+            ));
+        }
+
+        $fetched = $this->repository->getCocktailIngredients(new Uuid('fe8f3ec8-1711-412c-8324-c1e1e5f19454'));
+
+        $this->assertCount(4, $fetched);
+
+        foreach ($fetched as $item) {
+            $this->assertEquals('fe8f3ec8-1711-412c-8324-c1e1e5f19454', (string) $item->getCocktailId());
+        }
     }
 }

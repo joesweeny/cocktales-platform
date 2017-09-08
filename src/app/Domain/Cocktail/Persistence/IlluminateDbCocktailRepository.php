@@ -5,7 +5,10 @@ namespace Cocktales\Domain\Cocktail\Persistence;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\Cocktail\Exception\RepositoryException;
 use Cocktales\Domain\Cocktail\Hydration\Extractor;
+use Cocktales\Domain\Cocktail\Hydration\Hydrator;
 use Cocktales\Framework\DateTime\Clock;
+use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
 
 class IlluminateDbCocktailRepository implements Repository
@@ -48,5 +51,17 @@ class IlluminateDbCocktailRepository implements Repository
             ->insert((array) Extractor::toRawData($cocktail->setCreatedDate($this->clock->now())));
 
         return $cocktail;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCocktailById(Uuid $cocktailId): Cocktail
+    {
+        if (!$data = $this->connection->table(self::TABLE)->where('id', $cocktailId->toBinary())->first()) {
+            throw new NotFoundException("Cocktail with ID {$cocktailId} does not exist");
+        }
+
+        return Hydrator::fromRawData($data);
     }
 }

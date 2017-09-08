@@ -3,6 +3,8 @@
 namespace Cocktales\Domain\Cocktail\Persistence;
 
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
+use Cocktales\Domain\Cocktail\Exception\RepositoryException;
+use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
@@ -55,5 +57,44 @@ class RepositoryIntegrationTest extends TestCase
         $total = $this->connection->table('cocktail')->get();
 
         $this->assertCount(2, $total);
+    }
+
+    public function test_exception_is_thrown_if_attempting_to_insert_a_cocktail_that_already_exists()
+    {
+        $this->repository->insertCocktail((new Cocktail(
+            new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
+            new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
+            'The Titty Twister'
+        ))->setOrigin('Made in my garage when pissed'));
+
+        $this->expectException(RepositoryException::class);
+        $this->expectExceptionMessage('Cocktail with ID 0487d724-4ca0-4942-bf64-4cc53273bc2b already exists');
+        $this->repository->insertCocktail((new Cocktail(
+            new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
+            new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
+            'The Titty Twister'
+        ))->setOrigin('Made in my garage when pissed'));
+    }
+
+    public function test_cocktail_can_be_retrieved_by_id()
+    {
+        $this->repository->insertCocktail((new Cocktail(
+            new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
+            new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
+            'The Titty Twister'
+        ))->setOrigin('Made in my garage when pissed'));
+
+        $fetched = $this->repository->getCocktailById(new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'));
+
+        $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', (string) $fetched->getId());
+        $this->assertEquals('The Titty Twister', $fetched->getName());
+        $this->assertEquals('Made in my garage when pissed', $fetched->getOrigin());
+    }
+
+    public function test_exception_thrown_if_attempting_to_retrieve_a_cocktail_that_does_not_exist()
+    {
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Cocktail with ID 0487d724-4ca0-4942-bf64-4cc53273bc2b does not exist');
+        $this->repository->getCocktailById(new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'));
     }
 }

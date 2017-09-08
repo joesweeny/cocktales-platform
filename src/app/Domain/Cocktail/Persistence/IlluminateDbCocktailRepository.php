@@ -10,6 +10,7 @@ use Cocktales\Framework\DateTime\Clock;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Database\Connection;
+use Illuminate\Support\Collection;
 
 class IlluminateDbCocktailRepository implements Repository
 {
@@ -63,5 +64,18 @@ class IlluminateDbCocktailRepository implements Repository
         }
 
         return Hydrator::fromRawData($data);
+    }
+
+    /**
+     * Retrieve a collection of Cocktails linked to associated User
+     *
+     * @param Uuid $userId
+     * @return Collection
+     */
+    public function getCocktailsByUserId(Uuid $userId): Collection
+    {
+        return Collection::make($this->connection->table(self::TABLE)->where('user_id', $userId->toBinary())->get())->map(function (\stdClass $data) {
+            return Hydrator::fromRawData($data);
+        });
     }
 }

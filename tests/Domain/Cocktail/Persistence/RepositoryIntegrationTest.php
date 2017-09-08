@@ -97,4 +97,24 @@ class RepositoryIntegrationTest extends TestCase
         $this->expectExceptionMessage('Cocktail with ID 0487d724-4ca0-4942-bf64-4cc53273bc2b does not exist');
         $this->repository->getCocktailById(new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'));
     }
+
+    public function test_get_cocktails_by_user_id_returns_a_collection_of_cocktails_with_associated_user_id()
+    {
+        for ($i = 1; $i < 5; $i++) {
+            $this->repository->insertCocktail((new Cocktail(
+                Uuid::generate(),
+                new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
+                "Cocktail $i"
+            ))->setOrigin('Made in my garage when pissed'));
+        }
+
+        $fetched = $this->repository->getCocktailsByUserId(new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'));
+
+        $this->assertCount(4, $fetched);
+
+        foreach ($fetched as $cocktail) {
+            $this->assertInstanceOf(Cocktail::class, $cocktail);
+            $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', (string) $cocktail->getUserId());
+        }
+    }
 }

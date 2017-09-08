@@ -6,6 +6,7 @@ use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\Cocktail\Exception\RepositoryException;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
+use Illuminate\Support\Collection;
 
 interface Repository
 {
@@ -26,4 +27,12 @@ interface Repository
      * @return Cocktail
      */
     public function getCocktailById(Uuid $cocktailId): Cocktail;
+
+    /**
+     * Retrieve a collection of Cocktails linked to associated User
+     *
+     * @param Uuid $userId
+     * @return Collection
+     */
+    public function getCocktailsByUserId(Uuid $userId): Collection;
 }

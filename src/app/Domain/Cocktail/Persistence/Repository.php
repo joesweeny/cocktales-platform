@@ -32,7 +32,7 @@ interface Repository
      * Retrieve a collection of Cocktails linked to associated User
      *
      * @param Uuid $userId
-     * @return Collection
+     * @return Collection|Cocktail[]
      */
     public function getCocktailsByUserId(Uuid $userId): Collection;
 }

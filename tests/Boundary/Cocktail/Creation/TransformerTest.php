@@ -3,6 +3,8 @@
 namespace Cocktales\Boundary\Cocktail\Creation;
 
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
+use Cocktales\Domain\Instruction\Entity\Instruction;
+use Cocktales\Framework\Uuid\Uuid;
 use PHPUnit\Framework\TestCase;
 
 class TransformerTest extends TestCase
@@ -15,15 +17,14 @@ class TransformerTest extends TestCase
         $this->transformer = new Transformer;
     }
 
-    public function test_rawIngredientToObject_returns_an_ingredient_object_with_properties_set()
+    public function test_toCocktailIngredient_returns_an_ingredient_object_with_properties_set()
     {
         $ingredient = $this->transformer->toCocktailIngredient((object) [
-            'cocktailId' => 'fe8f3ec8-1711-412c-8324-c1e1e5f19454',
             'ingredientId' => '73f261d9-234e-4501-a5dc-8f4f0bc0623a',
             'orderNumber' => 1,
             'quantity' => 50,
             'measurement' => 'ml'
-        ]);
+        ], new Uuid('fe8f3ec8-1711-412c-8324-c1e1e5f19454'));
 
         $this->assertInstanceOf(CocktailIngredient::class, $ingredient);
         $this->assertEquals('fe8f3ec8-1711-412c-8324-c1e1e5f19454', (string) $ingredient->getCocktailId());
@@ -31,5 +32,18 @@ class TransformerTest extends TestCase
         $this->assertEquals(1, $ingredient->getOrderNumber());
         $this->assertEquals(50, $ingredient->getQuantity());
         $this->assertEquals('ml', $ingredient->getMeasurement());
+    }
+
+    public function test_toCocktailInstruction_returns_an_instruction_object_with_properties_set()
+    {
+        $instruction = $this->transformer->toCocktailInstruction((object) [
+            'orderNumber' => 4,
+            'text' => 'Shake well'
+        ], new Uuid('fe8f3ec8-1711-412c-8324-c1e1e5f19454'));
+
+        $this->assertInstanceOf(Instruction::class, $instruction);
+        $this->assertEquals('fe8f3ec8-1711-412c-8324-c1e1e5f19454', (string) $instruction->getCocktailId());
+        $this->assertEquals(4, $instruction->getOrderNumber());
+        $this->assertEquals('Shake well', $instruction->getText());
     }
 }

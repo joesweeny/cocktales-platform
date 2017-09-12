@@ -17,7 +17,7 @@ class TransformerTest extends TestCase
 
     public function test_rawIngredientToObject_returns_an_ingredient_object_with_properties_set()
     {
-        $ingredient = $this->transformer->rawIngredientToObject((object) [
+        $ingredient = $this->transformer->toCocktailIngredient((object) [
             'cocktailId' => 'fe8f3ec8-1711-412c-8324-c1e1e5f19454',
             'ingredientId' => '73f261d9-234e-4501-a5dc-8f4f0bc0623a',
             'orderNumber' => 1,

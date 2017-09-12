@@ -7,7 +7,7 @@ use Cocktales\Framework\Uuid\Uuid;
 
 class Transformer
 {
-    public function rawIngredientToObject(\stdClass $raw): CocktailIngredient
+    public function toCocktailIngredient(\stdClass $raw): CocktailIngredient
     {
         return new CocktailIngredient(
             new Uuid($raw->cocktailId),

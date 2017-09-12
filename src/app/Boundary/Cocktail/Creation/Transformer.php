@@ -6,35 +6,58 @@ use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
 use Cocktales\Domain\Instruction\Entity\Instruction;
 use Cocktales\Framework\Uuid\Uuid;
+use Illuminate\Support\Collection;
 
 class Transformer
 {
-    public function toCocktail(\stdClass $raw): Cocktail
+    public function toCocktail(\stdClass $raw, Uuid $userId): Cocktail
     {
         return (new Cocktail(
-            $raw->id? new Uuid($raw->id) : Uuid::generate(),
-            new Uuid($raw->userId),
+            $raw->id ? new Uuid($raw->id) : Uuid::generate(),
+            $userId,
             $raw->name
         ))->setOrigin($raw->origin);
     }
 
-    public function toCocktailIngredient(\stdClass $raw, Uuid $cocktailId): CocktailIngredient
+    /**
+     * @param array|\stdClass[] $ingredients
+     * @param Uuid $cocktailId
+     * @return Collection
+     */
+    public function toCocktailIngredients(array $ingredients, Uuid $cocktailId): Collection
     {
-        return new CocktailIngredient(
-            $cocktailId,
-            new Uuid($raw->ingredientId),
-            $raw->orderNumber,
-            $raw->quantity,
-            $raw->measurement
-        );
+        $cocktailIngredients = new Collection([]);
+
+        foreach ($ingredients as $ingredient) {
+            $cocktailIngredients->push(new CocktailIngredient(
+                $cocktailId,
+                new Uuid($ingredient->ingredientId),
+                $ingredient->orderNumber,
+                $ingredient->quantity,
+                $ingredient->measurement
+            ));
+        }
+
+        return $cocktailIngredients;
     }
 
-    public function toCocktailInstruction(\stdClass $raw, Uuid $cocktailId): Instruction
+    /**
+     * @param array|\stdClass[] $instructions
+     * @param Uuid $cocktailId
+     * @return Collection
+     */
+    public function toCocktailInstructions(array $instructions, Uuid $cocktailId): Collection
     {
-        return new Instruction(
-            $cocktailId,
-            $raw->orderNumber,
-            $raw->text
-        );
+        $cocktailInstructions = new Collection([]);
+
+        foreach ($instructions as $instruction) {
+            $cocktailInstructions->push(new Instruction(
+                $cocktailId,
+                $instruction->orderNumber,
+                $instruction->text
+            ));
+        }
+
+        return $cocktailInstructions;
     }
 }

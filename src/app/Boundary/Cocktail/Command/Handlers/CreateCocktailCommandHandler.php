@@ -28,10 +28,19 @@ class CreateCocktailCommandHandler
         $this->transformer = $transformer;
     }
 
-    public function handle(CreateCocktailCommand $command)
+    /**
+     * @param CreateCocktailCommand $command
+     * @throws \Cocktales\Domain\CocktailIngredient\Exception\RepositoryException
+     * @throws \Cocktales\Domain\Cocktail\Exception\DuplicateNameException
+     * @throws \Cocktales\Domain\Cocktail\Exception\RepositoryException
+     * @return void
+     */
+    public function handle(CreateCocktailCommand $command): void
     {
-        $cocktail = $this->transformer->toCocktail($command->getCocktail(), $command->getUserId());
-
-
+        $this->bartender->create(
+            $cocktail = $this->transformer->toCocktail($command->getCocktail(), $command->getUserId()),
+            $this->transformer->toCocktailIngredients($command->getIngredients(), $cocktail->getId())->toArray(),
+            $this->transformer->toCocktailInstructions($command->getInstructions(), $cocktail->getId())->toArray()
+        );
     }
 }

@@ -117,4 +117,27 @@ class RepositoryIntegrationTest extends TestCase
             $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', (string) $cocktail->getUserId());
         }
     }
+
+    public function test_cocktail_can_be_retrieved_by_name()
+    {
+        $this->repository->insertCocktail((new Cocktail(
+            new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
+            new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
+            'The Titty Twister'
+        ))->setOrigin('Made in my garage when pissed'));
+
+        $fetched = $this->repository->getCocktailByName('The Titty Twister');
+
+        $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', (string) $fetched->getId());
+        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', (string) $fetched->getUserId());
+        $this->assertEquals('The Titty Twister', $fetched->getName());
+        $this->assertEquals('Made in my garage when pissed', $fetched->getOrigin());
+    }
+
+    public function test_exception_is_thrown_if_attempting_to_retrieve_a_cocktail_with_a_name_that_does_not_exist()
+    {
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage("Cocktail 'Manhattan' does not exist");
+        $this->repository->getCocktailByName('Manhattan');
+    }
 }

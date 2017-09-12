@@ -78,4 +78,18 @@ class IlluminateDbCocktailRepository implements Repository
             return Hydrator::fromRawData($data);
         });
     }
+
+    /**
+     * @param string $name
+     * @throws NotFoundException
+     * @return Cocktail
+     */
+    public function getCocktailByName(string $name): Cocktail
+    {
+        if (!$data = $this->connection->table(self::TABLE)->where('name', $name)->first()) {
+            throw new NotFoundException("Cocktail '{$name}' does not exist");
+        }
+
+        return Hydrator::fromRawData($data);
+    }
 }

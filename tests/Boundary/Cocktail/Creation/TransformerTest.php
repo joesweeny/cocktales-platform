@@ -2,6 +2,7 @@
 
 namespace Cocktales\Boundary\Cocktail\Creation;
 
+use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
 use Cocktales\Domain\Instruction\Entity\Instruction;
 use Cocktales\Framework\Uuid\Uuid;
@@ -45,5 +46,21 @@ class TransformerTest extends TestCase
         $this->assertEquals('fe8f3ec8-1711-412c-8324-c1e1e5f19454', (string) $instruction->getCocktailId());
         $this->assertEquals(4, $instruction->getOrderNumber());
         $this->assertEquals('Shake well', $instruction->getText());
+    }
+
+    public function test_toCocktail_returns_a_cocktail_object_with_properties_set()
+    {
+        $cocktail = $this->transformer->toCocktail((object) [
+            'id' => 'fe8f3ec8-1711-412c-8324-c1e1e5f19454',
+            'userId' => '73f261d9-234e-4501-a5dc-8f4f0bc0623a',
+            'name' => 'Smoking Joe',
+            'origin' => 'Straight outta compton'
+        ]);
+
+        $this->assertInstanceOf(Cocktail::class, $cocktail);
+        $this->assertEquals('fe8f3ec8-1711-412c-8324-c1e1e5f19454', (string) $cocktail->getId());
+        $this->assertEquals('73f261d9-234e-4501-a5dc-8f4f0bc0623a', (string) $cocktail->getUserId());
+        $this->assertEquals('Smoking Joe', $cocktail->getName());
+        $this->assertEquals('Straight outta compton', $cocktail->getOrigin());
     }
 }

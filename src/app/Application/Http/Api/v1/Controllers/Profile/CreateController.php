@@ -2,7 +2,6 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\Profile;
 
-use Cocktales\Domain\Profile\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\UsernameValidationException;

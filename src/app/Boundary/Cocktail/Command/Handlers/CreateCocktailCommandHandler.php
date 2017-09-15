@@ -5,6 +5,7 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 use Cocktales\Boundary\Cocktail\Command\CreateCocktailCommand;
 use Cocktales\Boundary\Cocktail\Creation\Transformer;
 use Cocktales\Domain\Cocktail\Creation\Bartender;
+use Cocktales\Domain\Cocktail\Entity\Cocktail;
 
 class CreateCocktailCommandHandler
 {
@@ -33,11 +34,11 @@ class CreateCocktailCommandHandler
      * @throws \Cocktales\Domain\CocktailIngredient\Exception\RepositoryException
      * @throws \Cocktales\Domain\Cocktail\Exception\DuplicateNameException
      * @throws \Cocktales\Domain\Cocktail\Exception\RepositoryException
-     * @return void
+     * @return Cocktail
      */
-    public function handle(CreateCocktailCommand $command): void
+    public function handle(CreateCocktailCommand $command): Cocktail
     {
-        $this->bartender->create(
+        return $this->bartender->create(
             $cocktail = $this->transformer->toCocktail($command->getCocktail(), $command->getUserId()),
             $this->transformer->toCocktailIngredients($command->getIngredients(), $cocktail->getId())->toArray(),
             $this->transformer->toCocktailInstructions($command->getInstructions(), $cocktail->getId())->toArray()

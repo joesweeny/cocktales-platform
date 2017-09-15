@@ -48,14 +48,15 @@ class Bartender
      * @throws \Cocktales\Domain\Cocktail\Exception\DuplicateNameException
      * @throws \Cocktales\Domain\Cocktail\Exception\RepositoryException
      * @throws \Cocktales\Domain\CocktailIngredient\Exception\RepositoryException
+     * @return Cocktail
      */
-    public function create(Cocktail $cocktail, array $ingredients, array $instructions)
+    public function create(Cocktail $cocktail, array $ingredients, array $instructions): Cocktail
     {
         if (!$this->cocktails->canCreateCocktail($cocktail)) {
             throw new DuplicateNameException("A Cocktail with the name {$cocktail->getName()} already exists");
         }
 
-        $this->cocktails->createCocktail($cocktail);
+        $cocktail = $this->cocktails->createCocktail($cocktail);
 
         foreach ($ingredients as $ingredient) {
             $this->ingredients->insertCocktailIngredient($ingredient);
@@ -64,5 +65,7 @@ class Bartender
         foreach ($instructions as $instruction) {
             $this->instructions->insertInstruction($instruction);
         }
+
+        return $cocktail;
     }
 }

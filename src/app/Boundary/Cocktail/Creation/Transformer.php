@@ -31,7 +31,7 @@ class Transformer
         foreach ($ingredients as $ingredient) {
             $cocktailIngredients->push(new CocktailIngredient(
                 $cocktailId,
-                new Uuid($ingredient->ingredientId),
+                new Uuid($ingredient->id),
                 $ingredient->orderNumber,
                 $ingredient->quantity,
                 $ingredient->measurement

@@ -32,7 +32,7 @@ class CreateController
                 'cocktail' => $cocktail
             ]);
         } catch (DuplicateNameException $e) {
-            return JsendResponse::fail([
+            return JsendResponse::error([
                 'error' => $e->getMessage() . ' - please choose another name'
             ]);
         }

@@ -4,6 +4,7 @@ namespace Cocktales\Domain\Cocktail;
 
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\Cocktail\Persistence\Repository;
+use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 use Illuminate\Support\Collection;
 
@@ -50,5 +51,29 @@ class CocktailOrchestrator
     public function getCocktailsByUserId(Uuid $userId): Collection
     {
         return $this->repository->getCocktailsByUserId($userId);
+    }
+
+    /**
+     * @param string $name
+     * @return Cocktail
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
+    public function getCocktailByName(string $name): Cocktail
+    {
+        return $this->repository->getCocktailByName($name);
+    }
+
+    /**
+     * @param Cocktail $cocktail
+     * @return bool
+     */
+    public function canCreateCocktail(Cocktail $cocktail): bool
+    {
+        try {
+            $this->getCocktailByName($cocktail->getName());
+            return false;
+        } catch (NotFoundException $e) {
+            return true;
+        }
     }
 }

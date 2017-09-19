@@ -35,4 +35,11 @@ interface Repository
      * @return Collection|Cocktail[]
      */
     public function getCocktailsByUserId(Uuid $userId): Collection;
+
+    /**
+     * @param string $name
+     * @throws NotFoundException
+     * @return Cocktail
+     */
+    public function getCocktailByName(string $name): Cocktail;
 }

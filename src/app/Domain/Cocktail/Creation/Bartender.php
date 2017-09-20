@@ -6,9 +6,8 @@ use Cocktales\Domain\Cocktail\CocktailOrchestrator;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\Cocktail\Exception\DuplicateNameException;
 use Cocktales\Domain\CocktailIngredient\CocktailIngredientOrchestrator;
-use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
-use Cocktales\Domain\Instruction\Entity\Instruction;
 use Cocktales\Domain\Instruction\InstructionOrchestrator;
+use Cocktales\Framework\Uuid\Uuid;
 
 class Bartender
 {
@@ -65,5 +64,21 @@ class Bartender
         }
 
         return $createdCocktail;
+    }
+
+    /**
+     * @param Uuid $cocktailId
+     * @return Cocktail
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
+    public function serveCocktail(Uuid $cocktailId): Cocktail
+    {
+        $cocktail = $this->cocktails->getCocktailById($cocktailId);
+
+        $ingredients = $this->ingredients->getCocktailIngredients($cocktailId);
+
+        $instructions = $this->instructions->getInstructions($cocktailId);
+
+        return $cocktail->setIngredients($ingredients)->setInstructions($instructions);
     }
 }

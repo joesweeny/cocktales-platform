@@ -3,8 +3,8 @@
 namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 
 use Cocktales\Boundary\Cocktail\Command\GetCocktailByIdCommand;
+use Cocktales\Boundary\Cocktail\Serving\Bartender;
 use Cocktales\Domain\Cocktail\CocktailPresenter;
-use Cocktales\Domain\Cocktail\Creation\Bartender;
 use Cocktales\Domain\CocktailIngredient\CocktailIngredientPresenter;
 use Cocktales\Domain\Ingredient\IngredientOrchestrator;
 use Cocktales\Domain\Instruction\InstructionPresenter;
@@ -56,27 +56,6 @@ class GetCocktailByIdCommandHandler
 
     public function handle(GetCocktailByIdCommand $command): \stdClass
     {
-        $served = (object) [];
-
-        $cocktail = $this->bartender->serveCocktail($command->getCocktailId());
-
-        $served->cocktail = $this->cocktail->toDto($cocktail);
-
-        $ingredients = [];
-
-        foreach ($cocktail->getIngredients() as $ingredient) {
-            $ingredients[]= $this->ingredient->toDto(
-                $ingredient,
-                $this->orchestrator->getIngredientById($ingredient->getIngredientId())
-            );
-        }
-
-        $served->ingredients = $ingredients;
-        
-        $instructions = [];
-
-        foreach ($cocktail->getInstructions() as $instruction) {
-
-        }
+        return (object) [];
     }
 }

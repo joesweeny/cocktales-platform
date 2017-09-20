@@ -1,6 +1,6 @@
 <?php
 
-namespace Cocktales\Domain\Cocktail\Creation;
+namespace Cocktales\Boundary\Cocktail\Serving;
 
 use Cocktales\Domain\Cocktail\CocktailOrchestrator;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;

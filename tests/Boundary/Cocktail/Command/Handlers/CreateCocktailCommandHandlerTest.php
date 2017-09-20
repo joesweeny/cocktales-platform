@@ -5,7 +5,7 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 use Cocktales\Boundary\Cocktail\Command\CreateCocktailCommand;
 use Cocktales\Boundary\Cocktail\Creation\Transformer;
 use Cocktales\Domain\Cocktail\CocktailPresenter;
-use Cocktales\Domain\Cocktail\Creation\Bartender;
+use Cocktales\Domain\Cocktail\Creation\Mixer;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
 use Cocktales\Domain\Instruction\Entity\Instruction;
@@ -17,14 +17,14 @@ class CreateCocktailCommandHandlerTest extends TestCase
 {
     public function test_handle_successfully_creates_a_new_cocktail()
     {
-        /** @var Bartender $bartender */
-        $bartender = $this->prophesize(Bartender::class);
+        /** @var Mixer $mixer */
+        $mixer = $this->prophesize(Mixer::class);
         /** @var Transformer $transformer */
         $transformer = $this->prophesize(Transformer::class);
         /** @var CocktailPresenter $presenter */
         $presenter = $this->prophesize(CocktailPresenter::class);
         $handler = new CreateCocktailCommandHandler(
-            $bartender->reveal(),
+            $mixer->reveal(),
             $transformer->reveal(),
             $presenter->reveal()
         );
@@ -103,7 +103,7 @@ class CreateCocktailCommandHandlerTest extends TestCase
             ])
         );
 
-        $bartender->create($cocktail->setIngredients($ingredients)->setInstructions($instructions))->willReturn(
+        $mixer->createCocktail($cocktail->setIngredients($ingredients)->setInstructions($instructions))->willReturn(
             $cocktail = (new Cocktail(
                 new Uuid('eef97068-5f75-4129-957b-6d72499a3b95'),
                 new Uuid('83e0e8ff-66fe-4e35-8171-e7b701558209'),

@@ -43,29 +43,27 @@ class Bartender
 
     /**
      * @param Cocktail $cocktail
-     * @param array|CocktailIngredient[] $ingredients
-     * @param array|Instruction[] $instructions
      * @throws \Cocktales\Domain\Cocktail\Exception\DuplicateNameException
      * @throws \Cocktales\Domain\Cocktail\Exception\RepositoryException
      * @throws \Cocktales\Domain\CocktailIngredient\Exception\RepositoryException
      * @return Cocktail
      */
-    public function create(Cocktail $cocktail, array $ingredients, array $instructions): Cocktail
+    public function create(Cocktail $cocktail): Cocktail
     {
         if (!$this->cocktails->canCreateCocktail($cocktail)) {
             throw new DuplicateNameException("A Cocktail with the name {$cocktail->getName()} already exists");
         }
 
-        $cocktail = $this->cocktails->createCocktail($cocktail);
+        $createdCocktail = $this->cocktails->createCocktail($cocktail);
 
-        foreach ($ingredients as $ingredient) {
+        foreach ($cocktail->getIngredients() as $ingredient) {
             $this->ingredients->insertCocktailIngredient($ingredient);
         }
 
-        foreach ($instructions as $instruction) {
+        foreach ($cocktail->getInstructions() as $instruction) {
             $this->instructions->insertInstruction($instruction);
         }
 
-        return $cocktail;
+        return $createdCocktail;
     }
 }

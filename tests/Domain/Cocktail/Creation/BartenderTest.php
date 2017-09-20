@@ -10,6 +10,7 @@ use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
 use Cocktales\Domain\Instruction\Entity\Instruction;
 use Cocktales\Domain\Instruction\InstructionOrchestrator;
 use Cocktales\Framework\Uuid\Uuid;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
@@ -44,7 +45,7 @@ class BartenderTest extends TestCase
             'The Titty Twister'
         ))->setOrigin('Made in my garage when pissed');
 
-        $ingredients = [
+        $ingredients = new Collection([
             $ingredient1 = new CocktailIngredient(
                 new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
                 new Uuid('73f261d9-234e-4501-a5dc-8f4f0bc0623a'),
@@ -59,9 +60,9 @@ class BartenderTest extends TestCase
                 2,
                 'oz'
             )
-        ];
+        ]);
 
-        $instructions = [
+        $instructions = new Collection([
             $instruction1 = new Instruction(
                 new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
                 1,
@@ -72,7 +73,9 @@ class BartenderTest extends TestCase
                 1,
                 'Pour into glass'
             )
-        ];
+        ]);
+
+        $cocktail->setIngredients($ingredients)->setInstructions($instructions);
 
         $this->cocktails->canCreateCocktail($cocktail)->willReturn(true);
 
@@ -84,7 +87,7 @@ class BartenderTest extends TestCase
         $this->instructions->insertInstruction($instruction1)->shouldBeCalled();
         $this->instructions->insertInstruction($instruction2)->shouldBeCalled();
 
-        $this->bartender->create($cocktail, $ingredients, $instructions);
+        $this->bartender->create($cocktail);
     }
 
     public function test_exception_is_thrown_if_cocktail_name_is_already_taken()

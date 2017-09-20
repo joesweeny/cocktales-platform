@@ -7,6 +7,7 @@ use Cocktales\Boundary\Cocktail\Creation\Transformer;
 use Cocktales\Domain\Cocktail\CocktailPresenter;
 use Cocktales\Domain\Cocktail\Creation\Bartender;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
+use Illuminate\Support\Collection;
 
 class CreateCocktailCommandHandler
 {
@@ -45,10 +46,14 @@ class CreateCocktailCommandHandler
      */
     public function handle(CreateCocktailCommand $command): \stdClass
     {
+        $cocktail = $this->transformer->toCocktail($command->getCocktail(), $command->getUserId());
+
+        $ingredients = $this->transformer->toCocktailIngredients($command->getIngredients(), $cocktail->getId());
+
+        $instructions = $this->transformer->toCocktailInstructions($command->getInstructions(), $cocktail->getId());
+
         return $this->presenter->toDto($this->bartender->create(
-            $cocktail = $this->transformer->toCocktail($command->getCocktail(), $command->getUserId()),
-            $this->transformer->toCocktailIngredients($command->getIngredients(), $cocktail->getId())->toArray(),
-            $this->transformer->toCocktailInstructions($command->getInstructions(), $cocktail->getId())->toArray()
+            $cocktail->setIngredients($ingredients)->setInstructions($instructions)
         ));
     }
 }

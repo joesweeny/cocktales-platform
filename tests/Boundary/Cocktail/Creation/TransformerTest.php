@@ -22,13 +22,13 @@ class TransformerTest extends TestCase
     {
         $ingredients = [
             (object) [
-                'ingredientId' => '73f261d9-234e-4501-a5dc-8f4f0bc0623a',
+                'id' => '73f261d9-234e-4501-a5dc-8f4f0bc0623a',
                 'orderNumber' => 1,
                 'quantity' => 50,
                 'measurement' => 'ml'
             ],
             (object) [
-                'ingredientId' => '2ad51a5e-3b33-40f9-9143-ea261531ba2d',
+                'id' => '2ad51a5e-3b33-40f9-9143-ea261531ba2d',
                 'orderNumber' => 2,
                 'quantity' => 10,
                 'measurement' => 'oz'

@@ -4,6 +4,7 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 
 use Cocktales\Boundary\Cocktail\Command\CreateCocktailCommand;
 use Cocktales\Boundary\Cocktail\Creation\Transformer;
+use Cocktales\Domain\Cocktail\CocktailPresenter;
 use Cocktales\Domain\Cocktail\Creation\Bartender;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
@@ -20,9 +21,12 @@ class CreateCocktailCommandHandlerTest extends TestCase
         $bartender = $this->prophesize(Bartender::class);
         /** @var Transformer $transformer */
         $transformer = $this->prophesize(Transformer::class);
+        /** @var CocktailPresenter $presenter */
+        $presenter = $this->prophesize(CocktailPresenter::class);
         $handler = new CreateCocktailCommandHandler(
             $bartender->reveal(),
-            $transformer->reveal()
+            $transformer->reveal(),
+            $presenter->reveal()
         );
 
         $command = new CreateCocktailCommand(
@@ -99,7 +103,14 @@ class CreateCocktailCommandHandlerTest extends TestCase
             ])
         );
 
-        $bartender->create($cocktail, $ingredients->toArray(), $instructions->toArray())->shouldBeCalled();
+        $bartender->create($cocktail->setIngredients($ingredients)->setInstructions($instructions))->willReturn(
+            $cocktail = (new Cocktail(
+                new Uuid('eef97068-5f75-4129-957b-6d72499a3b95'),
+                new Uuid('83e0e8ff-66fe-4e35-8171-e7b701558209'),
+                'Woo Woo'
+            ))->setOrigin('Cult Classic'));
+
+        $presenter->toDto($cocktail)->shouldBeCalled();
 
         $handler->handle($command);
     }

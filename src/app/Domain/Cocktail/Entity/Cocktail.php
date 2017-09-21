@@ -5,6 +5,7 @@ namespace Cocktales\Domain\Cocktail\Entity;
 use Cocktales\Framework\Entity\PrivateAttributesTrait;
 use Cocktales\Framework\Entity\TimestampedTrait;
 use Cocktales\Framework\Uuid\Uuid;
+use Illuminate\Support\Collection;
 
 class Cocktail
 {
@@ -60,5 +61,25 @@ class Cocktail
     public function getOrigin(): string
     {
         return $this->get('origin', '');
+    }
+
+    public function setIngredients(Collection $ingredients): Cocktail
+    {
+        return $this->set('ingredients', $ingredients);
+    }
+
+    public function getIngredients(): Collection
+    {
+        return $this->get('ingredients', new Collection());
+    }
+
+    public function setInstructions(Collection $instructions): Cocktail
+    {
+        return $this->set('instructions', $instructions);
+    }
+
+    public function getInstructions(): Collection
+    {
+        return $this->get('instructions', new Collection());
     }
 }

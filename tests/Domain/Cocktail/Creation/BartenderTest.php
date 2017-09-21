@@ -2,49 +2,44 @@
 
 namespace Cocktales\Domain\Cocktail\Creation;
 
-use Cocktales\Domain\Cocktail\CocktailOrchestrator;
+use Cocktales\Boundary\Cocktail\Serving\Bartender;
+use Cocktales\Domain\Cocktail\CocktailPresenter;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
-use Cocktales\Domain\Cocktail\Exception\DuplicateNameException;
-use Cocktales\Domain\CocktailIngredient\CocktailIngredientOrchestrator;
+use Cocktales\Domain\CocktailIngredient\CocktailIngredientPresenter;
 use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
+use Cocktales\Domain\Ingredient\Entity\Ingredient;
+use Cocktales\Domain\Ingredient\Enum\Category;
+use Cocktales\Domain\Ingredient\Enum\Type;
+use Cocktales\Domain\Ingredient\IngredientOrchestrator;
 use Cocktales\Domain\Instruction\Entity\Instruction;
-use Cocktales\Domain\Instruction\InstructionOrchestrator;
+use Cocktales\Domain\Instruction\InstructionPresenter;
 use Cocktales\Framework\Uuid\Uuid;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 
 class BartenderTest extends TestCase
 {
-    /** @var  CocktailOrchestrator */
-    private $cocktails;
-    /** @var  CocktailIngredientOrchestrator */
-    private $ingredients;
-    /** @var  InstructionOrchestrator */
-    private $instructions;
-    /** @var  Bartender */
-    private $bartender;
-
-    public function setUp()
+    public function test_serve_cocktail_returns_an_std_class_object_containing_full_cocktail_information()
     {
-        $this->cocktails = $this->prophesize(CocktailOrchestrator::class);
-        $this->ingredients = $this->prophesize(CocktailIngredientOrchestrator::class);
-        $this->instructions = $this->prophesize(InstructionOrchestrator::class);
-        $this->bartender = new Bartender(
-            $this->cocktails->reveal(),
-            $this->ingredients->reveal(),
-            $this->instructions->reveal()
+        $cocktailPresenter = new CocktailPresenter;
+        $ingredientPresenter = new CocktailIngredientPresenter;
+        $instructionPresenter = new InstructionPresenter;
+        /** @var IngredientOrchestrator $orchestrator */
+        $orchestrator = $this->prophesize(IngredientOrchestrator::class);
+        $bartender = new Bartender(
+            $cocktailPresenter,
+            $ingredientPresenter,
+            $instructionPresenter,
+            $orchestrator->reveal()
         );
-    }
 
-    public function test_create_saves_cocktail_ingredients_and_instructions_to_the_database()
-    {
         $cocktail = (new Cocktail(
             new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
             new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
             'The Titty Twister'
-        ))->setOrigin('Made in my garage when pissed');
+        ))->setOrigin('Made in my garage when pissed')->setCreatedDate(new \DateTimeImmutable('2017-03-12'));
 
-        $ingredients = [
+        $cocktail->setIngredients(new Collection([
             $ingredient1 = new CocktailIngredient(
                 new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
                 new Uuid('73f261d9-234e-4501-a5dc-8f4f0bc0623a'),
@@ -55,52 +50,61 @@ class BartenderTest extends TestCase
             $ingredient2 = new CocktailIngredient(
                 new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
                 new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
-                1,
+                2,
                 2,
                 'oz'
             )
-        ];
+        ]));
 
-        $instructions = [
-            $instruction1 = new Instruction(
+        $cocktail->setInstructions(new Collection([
+            new Instruction(
                 new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
                 1,
                 'Pour into glass'
             ),
-            $instruction2 = new Instruction(
+            new Instruction(
                 new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
-                1,
-                'Pour into glass'
+                2,
+                'Drink'
             )
-        ];
+        ]));
 
-        $this->cocktails->canCreateCocktail($cocktail)->willReturn(true);
+        $orchestrator->getIngredientById($ingredient1->getIngredientId())->willReturn(
+            (new Ingredient('f5a366cf-15a0-4aca-a19e-e77c3e71815f'))
+                ->setName('Smirnoff Red')
+                ->setCategory(Category::SPIRIT())
+                ->setType(Type::VODKA())
+        );
 
-        $this->cocktails->createCocktail($cocktail)->shouldBeCalled();
+        $orchestrator->getIngredientById($ingredient2->getIngredientId())->willReturn(
+            (new Ingredient('f5a366cf-15a0-4aca-a19e-e77c3e71815f'))
+                ->setName('Smirnoff Black')
+                ->setCategory(Category::SPIRIT())
+                ->setType(Type::VODKA())
+        );
 
-        $this->ingredients->insertCocktailIngredient($ingredient1)->shouldBeCalled();
-        $this->ingredients->insertCocktailIngredient($ingredient2)->shouldBeCalled();
+        $drink = $bartender->serveCocktail($cocktail);
 
-        $this->instructions->insertInstruction($instruction1)->shouldBeCalled();
-        $this->instructions->insertInstruction($instruction2)->shouldBeCalled();
+        $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', $drink->cocktail->id);
+        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', $drink->cocktail->userId);
+        $this->assertEquals('The Titty Twister', $drink->cocktail->name);
+        $this->assertEquals('Made in my garage when pissed', $drink->cocktail->origin);
+        $this->assertEquals('2017-03-12', $drink->cocktail->createdAt);
 
-        $this->bartender->create($cocktail, $ingredients, $instructions);
-    }
+        $this->assertEquals('Smirnoff Red', $drink->ingredients[0]->name);
+        $this->assertEquals(1, $drink->ingredients[0]->order_number);
+        $this->assertEquals(50, $drink->ingredients[0]->quantity);
+        $this->assertEquals('ml', $drink->ingredients[0]->measurement);
 
-    public function test_exception_is_thrown_if_cocktail_name_is_already_taken()
-    {
-        $cocktail = (new Cocktail(
-            new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
-            new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
-            'The Titty Twister'
-        ))->setOrigin('Made in my garage when pissed');
+        $this->assertEquals('Smirnoff Black', $drink->ingredients[1]->name);
+        $this->assertEquals(2, $drink->ingredients[1]->order_number);
+        $this->assertEquals(2, $drink->ingredients[1]->quantity);
+        $this->assertEquals('oz', $drink->ingredients[1]->measurement);
 
-        $this->cocktails->canCreateCocktail($cocktail)->willReturn(false);
+        $this->assertEquals(1, $drink->instructions[0]->number);
+        $this->assertEquals('Pour into glass', $drink->instructions[0]->text);
 
-        $this->ingredients->insertCocktailIngredient(Argument::type(CocktailIngredient::class))->shouldNotBeCalled();
-        $this->instructions->insertInstruction(Argument::type(Instruction::class))->shouldNotBeCalled();
-
-        $this->expectException(DuplicateNameException::class);
-        $this->bartender->create($cocktail, [], []);
+        $this->assertEquals(2, $drink->instructions[1]->number);
+        $this->assertEquals('Drink', $drink->instructions[1]->text);
     }
 }

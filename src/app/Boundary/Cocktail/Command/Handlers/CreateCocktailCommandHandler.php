@@ -5,15 +5,10 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 use Cocktales\Boundary\Cocktail\Command\CreateCocktailCommand;
 use Cocktales\Boundary\Cocktail\Creation\Transformer;
 use Cocktales\Domain\Cocktail\CocktailPresenter;
-use Cocktales\Domain\Cocktail\Creation\Bartender;
-use Cocktales\Domain\Cocktail\Entity\Cocktail;
+use Cocktales\Domain\Cocktail\Creation\Mixer;
 
 class CreateCocktailCommandHandler
 {
-    /**
-     * @var Bartender
-     */
-    private $bartender;
     /**
      * @var Transformer
      */
@@ -22,16 +17,20 @@ class CreateCocktailCommandHandler
      * @var CocktailPresenter
      */
     private $presenter;
+    /**
+     * @var Mixer
+     */
+    private $mixer;
 
     /**
      * CreateCocktailCommandHandler constructor.
-     * @param Bartender $bartender
+     * @param Mixer $mixer
      * @param Transformer $transformer
      * @param CocktailPresenter $presenter
      */
-    public function __construct(Bartender $bartender, Transformer $transformer, CocktailPresenter $presenter)
+    public function __construct(Mixer $mixer, Transformer $transformer, CocktailPresenter $presenter)
     {
-        $this->bartender = $bartender;
+        $this->mixer = $mixer;
         $this->transformer = $transformer;
         $this->presenter = $presenter;
     }
@@ -45,10 +44,14 @@ class CreateCocktailCommandHandler
      */
     public function handle(CreateCocktailCommand $command): \stdClass
     {
-        return $this->presenter->toDto($this->bartender->create(
-            $cocktail = $this->transformer->toCocktail($command->getCocktail(), $command->getUserId()),
-            $this->transformer->toCocktailIngredients($command->getIngredients(), $cocktail->getId())->toArray(),
-            $this->transformer->toCocktailInstructions($command->getInstructions(), $cocktail->getId())->toArray()
+        $cocktail = $this->transformer->toCocktail($command->getCocktail(), $command->getUserId());
+
+        $ingredients = $this->transformer->toCocktailIngredients($command->getIngredients(), $cocktail->getId());
+
+        $instructions = $this->transformer->toCocktailInstructions($command->getInstructions(), $cocktail->getId());
+
+        return $this->presenter->toDto($this->mixer->createCocktail(
+            $cocktail->setIngredients($ingredients)->setInstructions($instructions)
         ));
     }
 }

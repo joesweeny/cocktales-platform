@@ -22,7 +22,7 @@ class Transformer
     /**
      * @param array|\stdClass[] $ingredients
      * @param Uuid $cocktailId
-     * @return Collection
+     * @return Collection|CocktailIngredient[]
      */
     public function toCocktailIngredients(array $ingredients, Uuid $cocktailId): Collection
     {

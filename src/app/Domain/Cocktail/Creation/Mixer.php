@@ -6,11 +6,10 @@ use Cocktales\Domain\Cocktail\CocktailOrchestrator;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\Cocktail\Exception\DuplicateNameException;
 use Cocktales\Domain\CocktailIngredient\CocktailIngredientOrchestrator;
-use Cocktales\Domain\CocktailIngredient\Entity\CocktailIngredient;
-use Cocktales\Domain\Instruction\Entity\Instruction;
 use Cocktales\Domain\Instruction\InstructionOrchestrator;
+use Cocktales\Framework\Uuid\Uuid;
 
-class Bartender
+class Mixer
 {
     /**
      * @var CocktailOrchestrator
@@ -42,30 +41,46 @@ class Bartender
     }
 
     /**
+     * Creates a new domain 'Cocktail' from raw data including Cocktail specific ingredient and instruction information
+     *
      * @param Cocktail $cocktail
-     * @param array|CocktailIngredient[] $ingredients
-     * @param array|Instruction[] $instructions
      * @throws \Cocktales\Domain\Cocktail\Exception\DuplicateNameException
      * @throws \Cocktales\Domain\Cocktail\Exception\RepositoryException
      * @throws \Cocktales\Domain\CocktailIngredient\Exception\RepositoryException
      * @return Cocktail
      */
-    public function create(Cocktail $cocktail, array $ingredients, array $instructions): Cocktail
+    public function createCocktail(Cocktail $cocktail): Cocktail
     {
         if (!$this->cocktails->canCreateCocktail($cocktail)) {
             throw new DuplicateNameException("A Cocktail with the name {$cocktail->getName()} already exists");
         }
 
-        $cocktail = $this->cocktails->createCocktail($cocktail);
+        $createdCocktail = $this->cocktails->createCocktail($cocktail);
 
-        foreach ($ingredients as $ingredient) {
+        foreach ($cocktail->getIngredients() as $ingredient) {
             $this->ingredients->insertCocktailIngredient($ingredient);
         }
 
-        foreach ($instructions as $instruction) {
+        foreach ($cocktail->getInstructions() as $instruction) {
             $this->instructions->insertInstruction($instruction);
         }
 
-        return $cocktail;
+        return $createdCocktail;
+    }
+
+    /**
+     * Retrieves a Cocktail from the database and seeks associated CocktailIngredients and Instructions from database
+     * to create a fully constructed Cocktail object
+     *
+     * @param Cocktail $cocktail
+     * @return Cocktail
+     */
+    public function mixCocktail(Cocktail $cocktail): Cocktail
+    {
+        $ingredients = $this->ingredients->getCocktailIngredients($cocktail->getId());
+
+        $instructions = $this->instructions->getInstructions($cocktail->getId());
+
+        return $cocktail->setIngredients($ingredients)->setInstructions($instructions);
     }
 }

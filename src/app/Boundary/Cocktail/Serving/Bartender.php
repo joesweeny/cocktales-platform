@@ -58,6 +58,27 @@ class Bartender
         return $drink;
     }
 
+    /**
+     * @param Collection $cocktails
+     * @return \stdClass
+     */
+    public function serveMultipleCocktails(Collection $cocktails): \stdClass
+    {
+        $drinks = (object) [
+            'cocktails' => []
+        ];
+
+        foreach ($cocktails as $cocktail) {
+            $drinks->cocktails[] = (object) [
+                'cocktail' => $this->cocktailPresenter->toDto($cocktail),
+                'ingredients' => $this->serveIngredients($cocktail->getIngredients()),
+                'instructions' => $this->provideInstructions($cocktail->getInstructions())
+            ];
+        }
+
+        return $drinks;
+    }
+
     private function serveIngredients(Collection $ingredients): array
     {
         $servedIngredients = [];

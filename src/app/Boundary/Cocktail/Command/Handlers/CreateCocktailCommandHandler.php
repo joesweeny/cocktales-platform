@@ -6,8 +6,6 @@ use Cocktales\Boundary\Cocktail\Command\CreateCocktailCommand;
 use Cocktales\Boundary\Cocktail\Creation\Transformer;
 use Cocktales\Domain\Cocktail\CocktailPresenter;
 use Cocktales\Domain\Cocktail\Creation\Mixer;
-use Cocktales\Domain\Cocktail\Entity\Cocktail;
-use Illuminate\Support\Collection;
 
 class CreateCocktailCommandHandler
 {

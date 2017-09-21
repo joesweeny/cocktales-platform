@@ -2,83 +2,84 @@
 
 namespace Cocktales\Boundary\Cocktail\Serving;
 
-use Cocktales\Domain\Cocktail\CocktailOrchestrator;
+use Cocktales\Domain\Cocktail\CocktailPresenter;
 use Cocktales\Domain\Cocktail\Entity\Cocktail;
-use Cocktales\Domain\Cocktail\Exception\DuplicateNameException;
-use Cocktales\Domain\CocktailIngredient\CocktailIngredientOrchestrator;
-use Cocktales\Domain\Instruction\InstructionOrchestrator;
-use Cocktales\Framework\Uuid\Uuid;
+use Cocktales\Domain\CocktailIngredient\CocktailIngredientPresenter;
+use Cocktales\Domain\Ingredient\IngredientOrchestrator;
+use Cocktales\Domain\Instruction\InstructionPresenter;
+use Illuminate\Support\Collection;
 
 class Bartender
 {
-    /**
-     * @var CocktailOrchestrator
-     */
-    private $cocktails;
-    /**
-     * @var CocktailIngredientOrchestrator
-     */
-    private $ingredients;
-    /**
-     * @var InstructionOrchestrator
-     */
-    private $instructions;
+    /** @var CocktailPresenter  */
+    private $cocktailPresenter;
+    /** @var CocktailIngredientPresenter  */
+    private $ingredientPresenter;
+    /** @var InstructionPresenter  */
+    private $instructionPresenter;
+    /** @var IngredientOrchestrator  */
+    private $orchestrator;
 
     /**
      * Bartender constructor.
-     * @param CocktailOrchestrator $cocktails
-     * @param CocktailIngredientOrchestrator $ingredients
-     * @param InstructionOrchestrator $instructions
+     * @param CocktailPresenter $cocktailPresenter
+     * @param CocktailIngredientPresenter $ingredientPresenter
+     * @param InstructionPresenter $instructionPresenter
+     * @param IngredientOrchestrator $orchestrator
      */
     public function __construct(
-        CocktailOrchestrator $cocktails,
-        CocktailIngredientOrchestrator $ingredients,
-        InstructionOrchestrator $instructions
+        CocktailPresenter $cocktailPresenter,
+        CocktailIngredientPresenter $ingredientPresenter,
+        InstructionPresenter $instructionPresenter,
+        IngredientOrchestrator $orchestrator
     ) {
-        $this->cocktails = $cocktails;
-        $this->ingredients = $ingredients;
-        $this->instructions = $instructions;
+        $this->cocktailPresenter = $cocktailPresenter;
+        $this->ingredientPresenter = $ingredientPresenter;
+        $this->instructionPresenter = $instructionPresenter;
+        $this->orchestrator = $orchestrator;
     }
 
     /**
+     * Takes a Cocktail object and returns human readable Cocktail, Ingredient and Instruction information
+     *
      * @param Cocktail $cocktail
-     * @throws \Cocktales\Domain\Cocktail\Exception\DuplicateNameException
-     * @throws \Cocktales\Domain\Cocktail\Exception\RepositoryException
-     * @throws \Cocktales\Domain\CocktailIngredient\Exception\RepositoryException
-     * @return Cocktail
+     * @return \stdClass
      */
-    public function create(Cocktail $cocktail): Cocktail
+    public function serveCocktail(Cocktail $cocktail): \stdClass
     {
-        if (!$this->cocktails->canCreateCocktail($cocktail)) {
-            throw new DuplicateNameException("A Cocktail with the name {$cocktail->getName()} already exists");
-        }
+        $drink = (object) [];
 
-        $createdCocktail = $this->cocktails->createCocktail($cocktail);
+        $drink->cocktail = $this->cocktailPresenter->toDto($cocktail);
 
-        foreach ($cocktail->getIngredients() as $ingredient) {
-            $this->ingredients->insertCocktailIngredient($ingredient);
-        }
+        $drink->ingredients = $this->serveIngredients($cocktail->getIngredients());
 
-        foreach ($cocktail->getInstructions() as $instruction) {
-            $this->instructions->insertInstruction($instruction);
-        }
+        $drink->instructions = $this->provideInstructions($cocktail->getInstructions());
 
-        return $createdCocktail;
+        return $drink;
     }
 
-    /**
-     * @param Uuid $cocktailId
-     * @return Cocktail
-     * @throws \Cocktales\Framework\Exception\NotFoundException
-     */
-    public function serveCocktail(Uuid $cocktailId): Cocktail
+    private function serveIngredients(Collection $ingredients): array
     {
-        $cocktail = $this->cocktails->getCocktailById($cocktailId);
+        $servedIngredients = [];
 
-        $ingredients = $this->ingredients->getCocktailIngredients($cocktailId);
+        foreach ($ingredients As $ingredient) {
+            $servedIngredients[]= $this->ingredientPresenter->toDto(
+                $ingredient,
+                $this->orchestrator->getIngredientById($ingredient->getIngredientId())
+            );
+        }
 
-        $instructions = $this->instructions->getInstructions($cocktailId);
+        return $servedIngredients;
+    }
 
-        return $cocktail->setIngredients($ingredients)->setInstructions($instructions);
+    private function provideInstructions(Collection $instructions): array
+    {
+        $list = [];
+
+        foreach ($instructions as $instruction) {
+            $list[]= $this->instructionPresenter->toDto($instruction);
+        }
+
+        return $list;
     }
 }

@@ -7,6 +7,7 @@ use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\Cocktail\Exception\DuplicateNameException;
 use Cocktales\Domain\CocktailIngredient\CocktailIngredientOrchestrator;
 use Cocktales\Domain\Instruction\InstructionOrchestrator;
+use Cocktales\Framework\Uuid\Uuid;
 
 class Mixer
 {
@@ -40,6 +41,8 @@ class Mixer
     }
 
     /**
+     * Creates a new domain 'Cocktail' from raw data including Cocktail specific ingredient and instruction information
+     *
      * @param Cocktail $cocktail
      * @throws \Cocktales\Domain\Cocktail\Exception\DuplicateNameException
      * @throws \Cocktales\Domain\Cocktail\Exception\RepositoryException
@@ -65,19 +68,22 @@ class Mixer
         return $createdCocktail;
     }
 
-//    /**
-//     * @param Uuid $cocktailId
-//     * @return Cocktail
-//     * @throws \Cocktales\Framework\Exception\NotFoundException
-//     */
-//    public function serveCocktail(Uuid $cocktailId): Cocktail
-//    {
-//        $cocktail = $this->cocktails->getCocktailById($cocktailId);
-//
-//        $ingredients = $this->ingredients->getCocktailIngredients($cocktailId);
-//
-//        $instructions = $this->instructions->getInstructions($cocktailId);
-//
-//        return $cocktail->setIngredients($ingredients)->setInstructions($instructions);
-//    }
+    /**
+     * Retrieves a Cocktail from the database and seeks associated CocktailIngredients and Instructions from database
+     * to create a fully constructed Cocktail object
+     *
+     * @param Uuid $cocktailId
+     * @return Cocktail
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
+    public function mixCocktail(Uuid $cocktailId): Cocktail
+    {
+        $cocktail = $this->cocktails->getCocktailById($cocktailId);
+
+        $ingredients = $this->ingredients->getCocktailIngredients($cocktailId);
+
+        $instructions = $this->instructions->getInstructions($cocktailId);
+
+        return $cocktail->setIngredients($ingredients)->setInstructions($instructions);
+    }
 }

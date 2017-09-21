@@ -72,17 +72,14 @@ class Mixer
      * Retrieves a Cocktail from the database and seeks associated CocktailIngredients and Instructions from database
      * to create a fully constructed Cocktail object
      *
-     * @param Uuid $cocktailId
+     * @param Cocktail $cocktail
      * @return Cocktail
-     * @throws \Cocktales\Framework\Exception\NotFoundException
      */
-    public function mixCocktail(Uuid $cocktailId): Cocktail
+    public function mixCocktail(Cocktail $cocktail): Cocktail
     {
-        $cocktail = $this->cocktails->getCocktailById($cocktailId);
+        $ingredients = $this->ingredients->getCocktailIngredients($cocktail->getId());
 
-        $ingredients = $this->ingredients->getCocktailIngredients($cocktailId);
-
-        $instructions = $this->instructions->getInstructions($cocktailId);
+        $instructions = $this->instructions->getInstructions($cocktail->getId());
 
         return $cocktail->setIngredients($ingredients)->setInstructions($instructions);
     }

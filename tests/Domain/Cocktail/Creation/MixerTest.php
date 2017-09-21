@@ -109,15 +109,13 @@ class MixerTest extends TestCase
 
     public function test_mix_cocktail_returns_a_cocktail_object_containing_cocktail_details_ingredients_and_instructions()
     {
-        $this->cocktails->getCocktailById($cocktailId = new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'))->willReturn(
-            $cocktail = (new Cocktail(
-                new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
-                new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
-                'The Titty Twister'
-            ))->setOrigin('Made in my garage when pissed')
-        );
+        $cocktail = (new Cocktail(
+            new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
+            new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'),
+            'The Titty Twister'
+        ))->setOrigin('Made in my garage when pissed');
 
-        $this->ingredients->getCocktailIngredients($cocktailId)->willReturn(
+        $this->ingredients->getCocktailIngredients($cocktail->getId())->willReturn(
             $ingredients = new Collection([
                 $ingredient1 = new CocktailIngredient(
                     new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
@@ -136,7 +134,7 @@ class MixerTest extends TestCase
             ])
         );
 
-        $this->instructions->getInstructions($cocktailId)->willReturn(
+        $this->instructions->getInstructions($cocktail->getId())->willReturn(
             $instructions = new Collection([
                 $instruction1 = new Instruction(
                     new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
@@ -151,7 +149,7 @@ class MixerTest extends TestCase
             ])
         );
 
-        $cocktail = $this->mixer->mixCocktail($cocktailId);
+        $cocktail = $this->mixer->mixCocktail($cocktail);
 
         $this->assertInstanceOf(Cocktail::class, $cocktail);
         $this->assertEquals('The Titty Twister', $cocktail->getName());

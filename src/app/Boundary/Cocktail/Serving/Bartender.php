@@ -40,7 +40,7 @@ class Bartender
     }
 
     /**
-     * Takes a Cocktail object and returns human readable Cocktail, Ingredient and Instruction information
+     * Takes a Cocktail object and returns user readable Cocktail, Ingredient and Instruction information
      *
      * @param Cocktail $cocktail
      * @return \stdClass

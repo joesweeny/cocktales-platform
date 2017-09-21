@@ -4,10 +4,7 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 
 use Cocktales\Boundary\Cocktail\Command\GetCocktailByIdCommand;
 use Cocktales\Boundary\Cocktail\Serving\Bartender;
-use Cocktales\Domain\Cocktail\CocktailPresenter;
-use Cocktales\Domain\CocktailIngredient\CocktailIngredientPresenter;
-use Cocktales\Domain\Ingredient\IngredientOrchestrator;
-use Cocktales\Domain\Instruction\InstructionPresenter;
+use Cocktales\Domain\Cocktail\Creation\Mixer;
 
 class GetCocktailByIdCommandHandler
 {
@@ -16,46 +13,25 @@ class GetCocktailByIdCommandHandler
      */
     private $bartender;
     /**
-     * @var CocktailPresenter
+     * @var Mixer
      */
-    private $cocktail;
-    /**
-     * @var CocktailIngredientPresenter
-     */
-    private $ingredient;
-    /**
-     * @var InstructionPresenter
-     */
-    private $instruction;
-    /**
-     * @var IngredientOrchestrator
-     */
-    private $orchestrator;
+    private $mixer;
 
     /**
      * GetCocktailByIdCommandHandler constructor.
      * @param Bartender $bartender
-     * @param CocktailPresenter $cocktail
-     * @param CocktailIngredientPresenter $ingredient
-     * @param InstructionPresenter $instruction
-     * @param IngredientOrchestrator $orchestrator
+     * @param Mixer $mixer
      */
-    public function __construct(
-        Bartender $bartender,
-        CocktailPresenter $cocktail,
-        CocktailIngredientPresenter $ingredient,
-        InstructionPresenter $instruction,
-        IngredientOrchestrator $orchestrator
-    ) {
+    public function __construct(Bartender $bartender, Mixer $mixer)
+    {
         $this->bartender = $bartender;
-        $this->cocktail = $cocktail;
-        $this->ingredient = $ingredient;
-        $this->instruction = $instruction;
-        $this->orchestrator = $orchestrator;
+        $this->mixer = $mixer;
     }
 
     public function handle(GetCocktailByIdCommand $command): \stdClass
     {
-        return (object) [];
+        $cocktail = $this->mixer->mixCocktail($command->getCocktailId());
+
+        return $this->bartender->serveCocktail($cocktail);
     }
 }

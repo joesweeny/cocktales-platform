@@ -82,4 +82,14 @@ class Cocktail
     {
         return $this->get('instructions', new Collection());
     }
+
+    public function setMatchIngredientCount(int $count): Cocktail
+    {
+        return $this->set('matched_ingredient_count', $count);
+    }
+
+    public function getMatchingIngredientCount(): int
+    {
+        return $this->get('matched_ingredient_count', 0);
+    }
 }

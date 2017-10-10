@@ -42,4 +42,9 @@ interface Repository
      * @return Cocktail
      */
     public function getCocktailByName(string $name): Cocktail;
+
+    /**
+     * @param array $ingredientIds
+     */
+    public function getCocktailsMatchingIngredients(array $ingredientIds);
 }

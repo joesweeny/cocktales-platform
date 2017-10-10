@@ -58,6 +58,7 @@ class GetByUserControllerIntegrationTest extends TestCase
 
         $this->assertEquals('success', $jsend->status);
         $this->assertInstanceOf(\stdClass::class, $jsend->data->cocktails);
+        $this->assertNotEmpty($jsend->data->cocktails->cocktails);
     }
 
     public function test_returns_success_and_an_emtpy_array_if_user_does_not_have_cocktails_or_user_does_not_exist()

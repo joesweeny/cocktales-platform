@@ -12,7 +12,10 @@ class Hydrator
         return (new Cocktail(
             Uuid::createFromBinary($data->id),
             Uuid::createFromBinary($data->user_id),
-            $data->name
-        ))->setOrigin($data->origin)->setCreatedDate((new \DateTimeImmutable)->setTimestamp($data->created_at));
+            $data->name)
+        )->setOrigin($data->origin)
+            ->setCreatedDate((new \DateTimeImmutable)
+            ->setTimestamp($data->created_at))
+            ->setMatchIngredientCount($data->count ?: 0);
     }
 }

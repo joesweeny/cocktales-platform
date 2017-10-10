@@ -65,4 +65,24 @@ class IlluminateDbCocktailIngredientRepository implements Repository
                 return Hydrator::fromRawData($data);
         });
     }
+
+    /**
+     * @param array $ingredientIds
+     * @return Collection
+     */
+    public function getCocktailsMatchingIngredients(array $ingredientIds)
+    {
+        $ingredientIds = implode(',', $ingredientIds);
+
+        return $this->connection->table('cocktail')
+            ->selectRaw("*, (SELECT
+                count(ingredient_id)
+                  FROM cocktail_ingredient
+                    WHERE cocktail.id = cocktail_id
+                      AND ingredient_id IS IN ({$ingredientIds}))
+                        AS count")
+            ->having('count', '>=', 1)
+            ->orderBy('count', 'DESC')
+            ->get();
+    }
 }

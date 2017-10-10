@@ -151,7 +151,7 @@ class RepositoryIntegrationTest extends TestCase
         $this->repository->getCocktailByName('Manhattan');
     }
 
-    public function test_cocktails_with_matching_ingredient_ids_can_be_retrieved_in_order_of_ingredients_matched()
+    public function test_cocktails_with_matching_ingredient_ids_can_be_retrieved_in_order_of_most_ingredients_matched()
     {
         $this->addIngredients();
         $this->addCocktails();

@@ -15,7 +15,8 @@ class HydratorTest extends TestCase
             'user_id' => (new Uuid('f5a366cf-15a0-4aca-a19e-e77c3e71815f'))->toBinary(),
             'name' => 'Woo Woo',
             'origin' => 'Cult classic',
-            'created_at' => 1489276800
+            'created_at' => 1489276800,
+            'count' => 4
         ]);
 
         $this->assertInstanceOf(Cocktail::class, $cocktail);
@@ -24,5 +25,6 @@ class HydratorTest extends TestCase
         $this->assertEquals('Woo Woo', $cocktail->getName());
         $this->assertEquals('Cult classic', $cocktail->getOrigin());
         $this->assertEquals(new \DateTimeImmutable('2017-03-12 00:00:00'), $cocktail->getCreatedDate());
+        $this->assertEquals(4, $cocktail->getMatchingIngredientCount());
     }
 }

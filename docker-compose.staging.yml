@@ -1,0 +1,7 @@
+version: '2'
+services:
+
+  web:
+    image: 120332857682.dkr.ecr.us-east-2.amazonaws.com/cocktales-staging:latest
+    env_file:
+      - /opt/src/.env

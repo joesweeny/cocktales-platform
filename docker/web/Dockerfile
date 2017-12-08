@@ -17,8 +17,10 @@ RUN apt-get update && apt-get install -y libmagickwand-6.q16-dev --no-install-re
     && pecl install imagick \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini
 
-ADD ./docker/php-fpm/php.ini /usr/local/etc/php/php.ini
+ADD ./docker/web/php.ini /usr/local/etc/php/php.ini
 
-ADD ./ /opt/
+ADD ./src /opt/src/
+ADD ./bin /opt/bin/
 
+EXPOSE 80
 WORKDIR /opt

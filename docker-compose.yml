@@ -1,27 +1,12 @@
 version: '2'
 services:
 
-  php-cli:
+  web:
     build:
-      dockerfile: ./docker/php-cli/Dockerfile
-      context: ./
-    volumes:
-      - .:/opt
-    environment:
-      - DB_DSN=mysql:host=mysql;dbname=cocktales
-      - DB_USER=dev
-      - DB_PASS=password
-
-  php-fpm:
-    build:
-      dockerfile: ./docker/php-fpm/Dockerfile
+      dockerfile: ./docker/web/Dockerfile
       context: ./
     volumes:
      - .:/opt
-    environment:
-     - DB_DSN=mysql:host=mysql;dbname=cocktales
-     - DB_USER=dev
-     - DB_PASS=password
 
   nginx:
     build:
@@ -32,7 +17,7 @@ services:
     volumes:
      - .:/opt
     links:
-     - php-fpm
+     - web
 
   mysql:
     image: 'mysql:5.6'

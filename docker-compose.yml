@@ -5,19 +5,10 @@ services:
     build:
       dockerfile: ./docker/web/Dockerfile
       context: ./
-    volumes:
-     - .:/opt
-
-  nginx:
-    build:
-      dockerfile: ./docker/nginx/Dockerfile
-      context: ./
     ports:
-     - "80"
+      - "80"
     volumes:
      - .:/opt
-    links:
-     - web
 
   mysql:
     image: 'mysql:5.6'

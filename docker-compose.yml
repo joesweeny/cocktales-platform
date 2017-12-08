@@ -6,7 +6,7 @@ services:
       dockerfile: ./docker/web/Dockerfile
       context: ./
     volumes:
-     - .:/opt
+     - ./:/opt
 
   nginx:
     build:
@@ -24,7 +24,7 @@ services:
     ports:
      - '3306:3306'
     volumes:
-     - .:/opt
+     - ./:/opt
     environment:
      - MYSQL_ROOT_PASSWORD=password
      - MYSQL_DATABASE=cocktales

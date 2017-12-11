@@ -24,7 +24,7 @@ class SessionTokenFactory
             Uuid::generate(),
             $userId,
             $this->clock->now()->getTimestamp(),
-            $this->clock->now()->addHours(5)->getTimestamp()
+            $this->clock->now()->addHours(4)->getTimestamp()
         );
     }
 }

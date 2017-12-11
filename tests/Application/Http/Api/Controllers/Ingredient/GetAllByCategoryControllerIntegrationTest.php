@@ -43,12 +43,12 @@ class GetAllByCategoryControllerIntegrationTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('success', $jsend->status);
 
-        $this->assertEquals('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5', $jsend->data->allIngredientsByCategory->MIXER[0]->id);
+        $this->assertEquals('6a56edad-530f-4b75-9389-050e2aa3c34a', $jsend->data->allIngredientsByCategory->MIXER[0]->id);
         $this->assertEquals('Bacardi Breezer', $jsend->data->allIngredientsByCategory->MIXER[0]->name);
         $this->assertEquals('Mixer', $jsend->data->allIngredientsByCategory->MIXER[0]->category);
         $this->assertEquals('Alcopop', $jsend->data->allIngredientsByCategory->MIXER[0]->type);
 
-        $this->assertEquals('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5', $jsend->data->allIngredientsByCategory->SPIRIT[0]->id);
+        $this->assertEquals('672f0f74-190a-4e73-ba82-84f6aed308ad', $jsend->data->allIngredientsByCategory->SPIRIT[0]->id);
         $this->assertEquals("Gordon's Gin", $jsend->data->allIngredientsByCategory->SPIRIT[0]->name);
         $this->assertEquals('Spirit', $jsend->data->allIngredientsByCategory->SPIRIT[0]->category);
         $this->assertEquals('Gin', $jsend->data->allIngredientsByCategory->SPIRIT[0]->type);
@@ -66,12 +66,12 @@ class GetAllByCategoryControllerIntegrationTest extends TestCase
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
 
-        $this->orchestrator->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->orchestrator->insertIngredient((new Ingredient('6a56edad-530f-4b75-9389-050e2aa3c34a'))
             ->setName('Bacardi Breezer')
             ->setCategory(Category::MIXER())
             ->setType(Type::ALCOPOP()));
 
-        $this->orchestrator->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->orchestrator->insertIngredient((new Ingredient('672f0f74-190a-4e73-ba82-84f6aed308ad'))
             ->setName("Gordon's Gin")
             ->setCategory(Category::SPIRIT())
             ->setType(Type::GIN()));

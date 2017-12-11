@@ -49,7 +49,7 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
 
         $this->assertCount(1, $total);
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('6a56edad-530f-4b75-9389-050e2aa3c34a'))
             ->setName('Smirnoff Black')
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
@@ -69,7 +69,7 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
         $this->expectException(IngredientRepositoryException::class);
         $this->expectExceptionMessage('Ingredient with name Smirnoff Red already exists');
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('6a56edad-530f-4b75-9389-050e2aa3c34a'))
             ->setName('Smirnoff Red')
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
@@ -82,17 +82,17 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('6a56edad-530f-4b75-9389-050e2aa3c34a'))
             ->setName('Bacardi Breezer')
             ->setCategory(Category::MIXER())
             ->setType(Type::ALCOPOP()));
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('8248febd-7d92-4ea0-947f-179f320310c8'))
             ->setName("Gordon's Gin")
             ->setCategory(Category::SPIRIT())
             ->setType(Type::GIN()));
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('a4a93668-6e61-4a81-93b4-b2404dbe9788'))
             ->setName('Orange Juice')
             ->setCategory(Category::MIXER())
             ->setType(Type::FRUIT_JUICE()));
@@ -119,12 +119,12 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('a4a93668-6e61-4a81-93b4-b2404dbe9788'))
             ->setName('Smirnoff Black')
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('8248febd-7d92-4ea0-947f-179f320310c8'))
             ->setName('Orange Juice')
             ->setCategory(Category::MIXER())
             ->setType(Type::FRUIT_JUICE()));
@@ -145,12 +145,12 @@ class IlluminateDbIngredientRepositoryIntegrationTest extends TestCase
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('8248febd-7d92-4ea0-947f-179f320310c8'))
             ->setName('Smirnoff Black')
             ->setCategory(Category::SPIRIT())
             ->setType(Type::VODKA()));
 
-        $this->repository->insertIngredient((new Ingredient('e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5'))
+        $this->repository->insertIngredient((new Ingredient('a4a93668-6e61-4a81-93b4-b2404dbe9788'))
             ->setName('Orange Juice')
             ->setCategory(Category::MIXER())
             ->setType(Type::FRUIT_JUICE()));

@@ -42,7 +42,7 @@ class UserOrchestratorTest extends TestCase
         $this->assertCount(1, $this->connection->table('user')->get());
 
         $this->orchestrator->createUser(
-            (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            (new User('a4a93668-6e61-4a81-93b4-b2404dbe9788'))
                 ->setEmail('andrea@example.com')
                 ->setPasswordHash(PasswordHash::createFromRaw('password'))
         );

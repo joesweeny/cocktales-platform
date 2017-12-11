@@ -32,7 +32,7 @@ class Version20171211193616_AddPrimaryKeysAndIndexes extends AbstractMigration
     public function down(Schema $schema)
     {
         $this->setUp();
-        
+
         $table = $schema->getTable('user');
         $table->setPrimaryKey([]);
 

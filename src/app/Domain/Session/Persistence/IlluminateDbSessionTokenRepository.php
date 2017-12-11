@@ -53,7 +53,7 @@ class IlluminateDbSessionTokenRepository implements Repository
      */
     public function getToken(Uuid $token): SessionToken
     {
-        if (!$row = $this->table()->where('token', $token->getToken()->toBinary())->first()) {
+        if (!$row = $this->table()->where('token', $token->toBinary())->first()) {
             throw new NotFoundException("Token with value {$token} does not exist");
         }
 

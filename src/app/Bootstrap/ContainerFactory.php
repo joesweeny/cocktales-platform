@@ -13,6 +13,7 @@ use Cocktales\Domain\CocktailIngredient\Persistence\IlluminateDbCocktailIngredie
 use Cocktales\Domain\Ingredient\Persistence\IlluminateDbIngredientRepository;
 use Cocktales\Domain\Instruction\Persistence\IlluminateDbInstructionRepository;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
+use Cocktales\Domain\Session\Persistence\IlluminateDbSessionTokenRepository;
 use Cocktales\Domain\User\Persistence\IlluminateDbUserRepository;
 use Cocktales\Domain\User\Persistence\Repository;
 use Cocktales\Framework\CommandBus\CommandBus;
@@ -163,6 +164,8 @@ class ContainerFactory
             \Cocktales\Domain\CocktailIngredient\Persistence\Repository::class => \DI\object(IlluminateDbCocktailIngredientRepository::class),
 
             \Cocktales\Domain\Cocktail\Persistence\Repository::class => \DI\object(IlluminateDbCocktailRepository::class),
+
+            \Cocktales\Domain\Session\Persistence\Repository::class => \DI\object(IlluminateDbSessionTokenRepository::class),
 
             Filesystem::class => \DI\factory(function (ContainerInterface $container) {
                 $config = $container->get(Config::class);

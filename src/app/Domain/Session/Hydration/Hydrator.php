@@ -12,8 +12,8 @@ class Hydrator
         return new SessionToken(
             Uuid::createFromBinary($data->token),
             Uuid::createFromBinary($data->user_id),
-            $data->created_at,
-            $data->expiry
+            (new \DateTimeImmutable)->setTimestamp($data->created_at),
+            (new \DateTimeImmutable)->setTimestamp($data->expiry)
         );
     }
 }

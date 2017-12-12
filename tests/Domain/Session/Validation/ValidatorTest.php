@@ -40,8 +40,8 @@ class ValidatorTest extends TestCase
             $token = new SessionToken(
                 new Uuid('ed542c55-3fa8-40a9-bbd0-4efa0a5a211a'),
                 $id = new Uuid('e2ae6ff5-ae6d-4a47-a3a4-5844d5b861ed'),
-                1513023602,
-                1513023602
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2017-12-11 20:20:02')
             )
         );
 
@@ -54,8 +54,8 @@ class ValidatorTest extends TestCase
             $token = new SessionToken(
                 new Uuid('ed542c55-3fa8-40a9-bbd0-4efa0a5a211a'),
                 $id = new Uuid('e2ae6ff5-ae6d-4a47-a3a4-5844d5b861ed'),
-                1513023602,
-                1764547200
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2025-12-01 12:00:00')
             )
         );
 
@@ -68,8 +68,8 @@ class ValidatorTest extends TestCase
             $token = new SessionToken(
                 new Uuid('ed542c55-3fa8-40a9-bbd0-4efa0a5a211a'),
                 new Uuid('e2ae6ff5-ae6d-4a47-a3a4-5844d5b861ed'),
-                1513023602,
-                1764547200
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2025-12-01 12:00:00')
             )
         );
 

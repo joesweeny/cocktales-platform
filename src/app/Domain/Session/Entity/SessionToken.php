@@ -23,12 +23,12 @@ class SessionToken
      */
     private $expiry;
 
-    public function __construct(Uuid $token, Uuid $userId, int $createdAt, int $expiry)
+    public function __construct(Uuid $token, Uuid $userId, \DateTimeImmutable $createdAt, \DateTimeImmutable $expiry)
     {
         $this->token = $token;
         $this->userId = $userId;
-        $this->createdAt = (new \DateTimeImmutable)->setTimestamp($createdAt);
-        $this->expiry = (new \DateTimeImmutable)->setTimestamp($expiry);
+        $this->createdAt = $createdAt;
+        $this->expiry = $expiry;
     }
 
     public function getToken(): Uuid

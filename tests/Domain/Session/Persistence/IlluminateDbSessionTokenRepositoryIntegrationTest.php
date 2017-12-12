@@ -40,8 +40,8 @@ class IlluminateDbSessionTokenRepositoryIntegrationTest extends TestCase
             new SessionToken(
                 new Uuid('a4a93668-6e61-4a81-93b4-b2404dbe9788'),
                 new Uuid('e2ae6ff5-ae6d-4a47-a3a4-5844d5b861ed'),
-                1513023602,
-                1513023602
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2017-12-11 20:20:02')
             )
         );
 
@@ -52,8 +52,8 @@ class IlluminateDbSessionTokenRepositoryIntegrationTest extends TestCase
             new SessionToken(
                 new Uuid('ed542c55-3fa8-40a9-bbd0-4efa0a5a211a'),
                 new Uuid('e2ae6ff5-ae6d-4a47-a3a4-5844d5b861ed'),
-                1513023602,
-                1513023602
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2017-12-11 20:20:02')
             )
         );
 
@@ -67,8 +67,8 @@ class IlluminateDbSessionTokenRepositoryIntegrationTest extends TestCase
             new SessionToken(
                 new Uuid('a4a93668-6e61-4a81-93b4-b2404dbe9788'),
                 new Uuid('e2ae6ff5-ae6d-4a47-a3a4-5844d5b861ed'),
-                1513023602,
-                1513023602
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2017-12-11 20:20:02')
             )
         );
 
@@ -83,8 +83,8 @@ class IlluminateDbSessionTokenRepositoryIntegrationTest extends TestCase
             new SessionToken(
                 new Uuid('a4a93668-6e61-4a81-93b4-b2404dbe9788'),
                 new Uuid('e2ae6ff5-ae6d-4a47-a3a4-5844d5b861ed'),
-                1513023602,
-                1513023602
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2017-12-11 20:20:02')
             )
         );
 

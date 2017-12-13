@@ -2,6 +2,7 @@
 
 namespace Cocktales\Application\Http;
 
+use Cocktales\Framework\Middleware\ApiGuard;
 use Interop\Container\ContainerInterface;
 use Cocktales\Framework\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
@@ -46,6 +47,7 @@ class HttpServer
 
         return $pipe
             ->pipe('/', new CallableMiddlewareWrapper($this->container->get(SessionMiddleware::class), $prototype))
+            ->pipe('/api', $this->container->get(ApiGuard::class))
 
             ->process($request, $this->container->get(Router::class));
     }

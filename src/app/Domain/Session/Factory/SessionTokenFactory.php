@@ -23,8 +23,8 @@ class SessionTokenFactory
         return new SessionToken(
             Uuid::generate(),
             $userId,
-            $this->clock->now()->getTimestamp(),
-            $this->clock->now()->addHours(4)->getTimestamp()
+            $this->clock->now(),
+            $this->clock->now()->addHours(4)
         );
     }
 }

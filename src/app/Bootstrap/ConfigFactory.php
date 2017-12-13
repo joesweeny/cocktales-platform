@@ -12,6 +12,8 @@ class ConfigFactory
     public static function create(): Config
     {
         return new Config([
+            'base-uri' => self::fromEnv('BASE_URI'),
+
             'database' => [
                 'default' => [
                     'pdo' => [
@@ -28,6 +30,13 @@ class ConfigFactory
                 'key' => self::fromEnv('AWS_ACCESS_KEY_ID'),
 
                 'secret' => self::fromEnv('AWS_SECRET_KEY')
+            ],
+
+            'log' => [
+                /**
+                 * Which psr/log implementation to use. Options: monolog, null
+                 */
+                'logger' => self::fromEnv('LOG_LOGGER') ?: 'monolog'
             ]
         ]);
     }

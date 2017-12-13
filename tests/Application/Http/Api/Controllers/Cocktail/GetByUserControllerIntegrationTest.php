@@ -12,6 +12,11 @@ use Cocktales\Domain\Ingredient\Enum\Type;
 use Cocktales\Domain\Ingredient\IngredientOrchestrator;
 use Cocktales\Domain\Instruction\Entity\Instruction;
 use Cocktales\Domain\Instruction\InstructionOrchestrator;
+use Cocktales\Domain\Session\Entity\SessionToken;
+use Cocktales\Domain\Session\TokenOrchestrator;
+use Cocktales\Domain\User\Entity\User;
+use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Framework\Password\PasswordHash;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
@@ -36,6 +41,10 @@ class GetByUserControllerIntegrationTest extends TestCase
     private $cocktailIngredientOrchestrator;
     /** @var  InstructionOrchestrator */
     private $instructionOrchestrator;
+    /** @var  User */
+    private $user;
+    /** @var  SessionToken */
+    private $token;
 
     public function setUp()
     {
@@ -44,13 +53,22 @@ class GetByUserControllerIntegrationTest extends TestCase
         $this->ingredientOrchestrator = $this->container->get(IngredientOrchestrator::class);
         $this->cocktailIngredientOrchestrator = $this->container->get(CocktailIngredientOrchestrator::class);
         $this->instructionOrchestrator = $this->container->get(InstructionOrchestrator::class);
+        $this->user = $this->container->get(UserOrchestrator::class)->createUser(
+            (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
+        );
+        $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
     public function test_returns_success_response_with_multiple_cocktail_information()
     {
         $this->createCocktails();
 
-        $request = new ServerRequest('GET', '/api/v1/cocktail/get-by-user', [], '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}');
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/cocktail/get-by-user',
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
+        );
 
         $response = $this->handle($this->container, $request);
 
@@ -63,7 +81,12 @@ class GetByUserControllerIntegrationTest extends TestCase
 
     public function test_returns_success_and_an_emtpy_array_if_user_does_not_have_cocktails_or_user_does_not_exist()
     {
-        $request = new ServerRequest('GET', '/api/v1/cocktail/get-by-user', [], '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}');
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/cocktail/get-by-user',
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
+        );
 
         $response = $this->handle($this->container, $request);
 

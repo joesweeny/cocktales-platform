@@ -2,7 +2,9 @@
 
 namespace Cocktales\Boundary\User\Command;
 
-class ValidateUserCredentialsCommand
+use Cocktales\Framework\CommandBus\Command;
+
+class LoginUserCommand implements Command
 {
     /**
      * @var string

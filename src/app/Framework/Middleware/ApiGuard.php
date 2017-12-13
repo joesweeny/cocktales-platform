@@ -44,8 +44,16 @@ class ApiGuard implements ServerMiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
     {
-//        dd($request);
-        if (in_array($request->getUri()->getPath(), $this->allowedPaths, true)) {
+        $uri = $request->getUri();
+
+        // Stratigility mutates the `Uri` object before passing it to middleware by
+        // removing the path used to bind the middleware. If the OriginalMessages
+        // middleware is used we can access the originalUri attribute.
+        if ($request->getAttribute('originalUri')) {
+            $uri = $request->getAttribute('originalUri');
+        }
+        
+        if (in_array($uri->getPath(), $this->allowedPaths, true)) {
             return $delegate->process($request);
         }
 

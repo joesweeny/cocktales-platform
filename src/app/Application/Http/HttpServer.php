@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use PSR7Session\Http\SessionMiddleware;
 use Zend\Diactoros\Response;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Zend\Stratigility\Middleware\OriginalMessages;
 use Zend\Stratigility\MiddlewarePipe;
 
 class HttpServer
@@ -46,7 +47,7 @@ class HttpServer
         $prototype = new Response;
 
         return $pipe
-            ->pipe('/', new CallableMiddlewareWrapper($this->container->get(SessionMiddleware::class), $prototype))
+            ->pipe('/', new CallableMiddlewareWrapper(new OriginalMessages, new Response))
             ->pipe('/api', $this->container->get(ApiGuard::class))
 
             ->process($request, $this->container->get(Router::class));

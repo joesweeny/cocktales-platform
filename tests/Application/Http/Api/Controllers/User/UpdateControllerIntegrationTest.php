@@ -2,6 +2,8 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
+use Cocktales\Domain\Session\Entity\SessionToken;
+use Cocktales\Domain\Session\TokenOrchestrator;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Password\PasswordHash;
@@ -22,21 +24,29 @@ class UpdateControllerIntegrationTest extends TestCase
     private $container;
     /** @var  UserOrchestrator */
     private $orchestrator;
+    /** @var  User */
+    private $user;
+    /** @var  SessionToken */
+    private $token;
 
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->orchestrator = $this->container->get(UserOrchestrator::class);
+        $this->user = $this->orchestrator->createUser(
+            (new User('93449e9d-4082-4305-8840-fa1673bcf915'))
+                ->setEmail('joe@mail.com')
+                ->setPasswordHash(PasswordHash::createFromRaw('password'))
+        );
+        $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
     public function test_success_response_is_received()
     {
-        $this->createUser();
-
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            [],
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
             '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
         );
 
@@ -53,8 +63,8 @@ class UpdateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            [],
-            '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            '{"id":"cac217cd-8fab-4951-ada1-914e7f588fa8","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -67,13 +77,12 @@ class UpdateControllerIntegrationTest extends TestCase
 
     public function test_fail_response_is_received_if_user_email_is_already_taken_by_another_user()
     {
-        $this->createUser();
         $this->createAdditionalUser();
 
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            [],
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
             '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"andrea@mail.com","oldPassword":"", "newPassword":""}'
         );
 
@@ -87,12 +96,11 @@ class UpdateControllerIntegrationTest extends TestCase
 
     public function test_fail_response_is_received_if_old_password_does_not_match_password_stored_for_user()
     {
-        $this->createUser();
 
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            [],
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
             '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@email.com","oldPassword":"wrongPassword", "newPassword":"newPass"}'
         );
 
@@ -102,15 +110,6 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $this->assertEquals('fail', $jsend->status);
         $this->assertEquals('Password does not match the password on record - please try again', $jsend->data->error);
-    }
-
-    private function createUser()
-    {
-        $this->orchestrator->createUser(
-            (new User('93449e9d-4082-4305-8840-fa1673bcf915'))
-                ->setEmail('joe@mail.com')
-                ->setPasswordHash(PasswordHash::createFromRaw('password'))
-        );
     }
 
     private function createAdditionalUser()

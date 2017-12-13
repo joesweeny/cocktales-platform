@@ -2,6 +2,8 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
+use Cocktales\Domain\Session\Entity\SessionToken;
+use Cocktales\Domain\Session\TokenOrchestrator;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\UserOrchestrator;
 use Cocktales\Framework\Password\PasswordHash;
@@ -22,31 +24,47 @@ class GetControllerIntegrationTest extends TestCase
     private $container;
     /** @var  UserOrchestrator */
     private $orchestrator;
+    /** @var  User */
+    private $user;
+    /** @var  SessionToken */
+    private $token;
 
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->orchestrator = $this->container->get(UserOrchestrator::class);
+        $this->user = $this->orchestrator->createUser(
+            (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
+        );
+        $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
     public function test_success_response_is_received_with_user_details()
     {
-        $this->createUser();
-
-        $request = new ServerRequest('get', '/api/v1/user/get', [], '{"id":"93449e9d-4082-4305-8840-fa1673bcf915"}');
+        $request = new ServerRequest(
+            'get',
+            '/api/v1/user/get',
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            '{"id":"f530caab-1767-4f0c-a669-331a7bf0fc85"}'
+        );
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
-        $this->assertEquals('93449e9d-4082-4305-8840-fa1673bcf915', $jsend->data->user->id);
-        $this->assertEquals('joe@mail.com', $jsend->data->user->email);
+        $this->assertEquals('f530caab-1767-4f0c-a669-331a7bf0fc85', $jsend->data->user->id);
+        $this->assertEquals('joe@joe.com', $jsend->data->user->email);
     }
 
     public function test_fail_response_received_if_user_details_cannot_be_retrieved()
     {
-        $request = new ServerRequest('get', '/api/v1/user/get', [], '{"id":"93449e9d-4082-4305-8840-fa1673bcf915"}');
+        $request = new ServerRequest(
+            'get',
+            '/api/v1/user/get',
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            '{"id":"93449e9d-4082-4305-8840-fa1673bcf915"}'
+        );
 
         $response = $this->handle($this->container, $request);
 
@@ -54,14 +72,5 @@ class GetControllerIntegrationTest extends TestCase
 
         $this->assertEquals('fail', $jsend->status);
         $this->assertEquals('Unable to retrieve user', $jsend->data->error);
-    }
-
-    private function createUser()
-    {
-        $this->orchestrator->createUser(
-            (new User('93449e9d-4082-4305-8840-fa1673bcf915'))
-                ->setEmail('joe@mail.com')
-                ->setPasswordHash(PasswordHash::createFromRaw('password'))
-        );
     }
 }

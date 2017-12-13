@@ -14,6 +14,7 @@ use Cocktales\Domain\Ingredient\Persistence\IlluminateDbIngredientRepository;
 use Cocktales\Domain\Instruction\Persistence\IlluminateDbInstructionRepository;
 use Cocktales\Domain\Profile\Persistence\IlluminateDbProfileRepository;
 use Cocktales\Domain\Session\Persistence\IlluminateDbSessionTokenRepository;
+use Cocktales\Domain\Session\Validation\Validator;
 use Cocktales\Domain\User\Persistence\IlluminateDbUserRepository;
 use Cocktales\Domain\User\Persistence\Repository;
 use Cocktales\Framework\CommandBus\CommandBus;
@@ -33,6 +34,10 @@ use Cocktales\Framework\Routing\Router;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use PSR7Session\Http\SessionMiddleware;
 use PSR7Session\Time\SystemCurrentTime;
 
@@ -139,6 +144,28 @@ class ContainerFactory
 
             ImageManager::class => \DI\factory(function (ContainerInterface $container) {
                 return new ImageManager(['driver' => 'imagick']);
+            }),
+
+            LoggerInterface::class => \DI\factory(function (ContainerInterface $container) {
+                switch ($logger = $container->get(Config::class)->get('log.logger')) {
+                    case 'monolog':
+                        $logger = new Logger('error');
+                        $logger->pushHandler(new ErrorLogHandler);
+                        return $logger;
+
+                    case 'null':
+                        return new NullLogger;
+
+                    default:
+                        throw new \UnexpectedValueException("Logger '$logger' not recognised");
+                }
+            }),
+
+            \Cocktales\Domain\Session\Validation\Validator::class => \DI\factory(function (ContainerInterface $container) {
+                return new Validator(
+                    $container->get(Clock::class),
+                    $container->get(LoggerInterface::class)
+                );
             })
             
         ];

@@ -2,6 +2,11 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\Avatar;
 
+use Cocktales\Domain\Session\Entity\SessionToken;
+use Cocktales\Domain\Session\TokenOrchestrator;
+use Cocktales\Domain\User\Entity\User;
+use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Framework\Password\PasswordHash;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
 use Cocktales\Testing\Traits\UsesHttpServer;
@@ -21,16 +26,27 @@ class CreateControllerIntegrationTest extends TestCase
     private $container;
     /** @var  Filesystem */
     private $filesystem;
+    /** @var  SessionToken */
+    private $token;
+    /** @var  User */
+    private $user;
 
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->filesystem = $this->container->get(Filesystem::class);
+        $this->user = $this->container->get(UserOrchestrator::class)->createUser(
+            (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
+        );
+        $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
     public function test_success_response_is_received_if_avatar_is_created_successfully()
     {
-        $request = (new ServerRequest('post', '/api/v1/avatar/create', [],
+        $request = (new ServerRequest(
+            'post',
+            '/api/v1/avatar/create',
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
             '{
                "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481" 
             }'

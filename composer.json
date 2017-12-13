@@ -12,7 +12,7 @@
         "php-di/php-di": "^5.4",
         "zendframework/zend-diactoros": "^1.4",
         "adamnicholson/bag": "dev-master",
-        "zendframework/zend-stratigility": "^1.1",
+        "zendframework/zend-stratigility": "^1.3",
         "nikic/fast-route": "^1.2",
         "illuminate/database": "^5.4",
         "doctrine/dbal": "^2.5",
@@ -29,7 +29,8 @@
         "symfony/psr-http-message-bridge": "^1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "josegonzalez/dotenv": "^3.1",
-        "myclabs/php-enum": "^1.5"
+        "myclabs/php-enum": "^1.5",
+        "monolog/monolog": "^1.23"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0",

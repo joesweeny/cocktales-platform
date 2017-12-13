@@ -6,6 +6,11 @@ use Cocktales\Domain\Ingredient\Entity\Ingredient;
 use Cocktales\Domain\Ingredient\Enum\Category;
 use Cocktales\Domain\Ingredient\Enum\Type;
 use Cocktales\Domain\Ingredient\IngredientOrchestrator;
+use Cocktales\Domain\Session\Entity\SessionToken;
+use Cocktales\Domain\Session\TokenOrchestrator;
+use Cocktales\Domain\User\Entity\User;
+use Cocktales\Domain\User\UserOrchestrator;
+use Cocktales\Framework\Password\PasswordHash;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
 use Cocktales\Testing\Traits\UsesHttpServer;
@@ -23,18 +28,30 @@ class GetAllByTypeControllerIntegrationTest extends TestCase
     private $container;
     /** @var  IngredientOrchestrator */
     private $orchestrator;
+    /** @var  User */
+    private $user;
+    /** @var  SessionToken */
+    private $token;
 
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->orchestrator = $this->container->get(IngredientOrchestrator::class);
+        $this->user = $this->container->get(UserOrchestrator::class)->createUser(
+            (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
+        );
+        $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
     public function test_success_response_is_received_with_ingredients_details()
     {
         $this->createIngredients();
 
-        $request = new ServerRequest('GET', '/api/v1/ingredient/all-by-type');
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/ingredient/all-by-type',
+            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]]
+        );
 
         $response = $this->handle($this->container, $request);
 

@@ -5,6 +5,7 @@ namespace Cocktales\Domain\Session;
 use Cocktales\Domain\Session\Entity\SessionToken;
 use Cocktales\Domain\Session\Exception\SessionTokenValidationException;
 use Cocktales\Domain\Session\Validation\Validator;
+use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -98,5 +99,24 @@ class SessionManagerTest extends TestCase
         $this->orchestrator->updateToken(Argument::any())->shouldNotBeCalled();
 
         $this->manager->handleToken($tokenId, $userId);
+    }
+
+    public function test_exception_is_thrown_if_token_is_not_found()
+    {
+        $this->orchestrator->getToken(
+            $tokenId = new Uuid('d3531cef-794e-4333-b925-b45b80b8f591')
+        )->willThrow(new NotFoundException());
+
+        $this->validator->validate(Argument::any())->shouldNotBeCalled();
+
+        $this->refresher->expiresWithinHour(Argument::any())->shouldNotBeCalled();
+
+        $this->refresher->refreshToHour(Argument::any())->shouldNotBeCalled();
+
+        $this->orchestrator->updateToken(Argument::any())->shouldNotBeCalled();
+
+        $this->expectException(SessionTokenValidationException::class);
+        $this->manager->handleToken($tokenId, new Uuid('d745e7e1-331a-433b-a58a-63aea4271653'));
+
     }
 }

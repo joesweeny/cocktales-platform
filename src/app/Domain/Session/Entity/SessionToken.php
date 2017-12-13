@@ -54,5 +54,7 @@ class SessionToken
     public function setExpiry(\DateTimeImmutable $expiry)
     {
         $this->expiry = $expiry;
+
+        return $this;
     }
 }

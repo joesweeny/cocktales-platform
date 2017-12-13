@@ -25,8 +25,8 @@ class LoginController
         $body = json_decode($request->getBody()->getContents());
 
         $data = (object) [
-            'email' => $body->email,
-            'password' => $body->password
+            'email' => $body->email ?? '',
+            'password' => $body->password ?? ''
         ];
 
         try {

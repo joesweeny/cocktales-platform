@@ -5,6 +5,7 @@ namespace Cocktales\Domain\Session;
 use Cocktales\Domain\Session\Entity\SessionToken;
 use Cocktales\Domain\Session\Exception\SessionTokenValidationException;
 use Cocktales\Domain\Session\Validation\Validator;
+use Cocktales\Framework\DateTime\Clock;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 use PHPUnit\Framework\TestCase;
@@ -21,16 +22,20 @@ class SessionManagerTest extends TestCase
     private $refresher;
     /** @var  SessionManager */
     private $manager;
+    /** @var  Clock */
+    private $clock;
 
     public function setUp()
     {
         $this->orchestrator = $this->prophesize(TokenOrchestrator::class);
         $this->validator = $this->prophesize(Validator::class);
         $this->refresher = $this->prophesize(TokenRefresher::class);
+        $this->clock = $this->prophesize(Clock::class);
         $this->manager = new SessionManager(
             $this->orchestrator->reveal(),
             $this->validator->reveal(),
-            $this->refresher->reveal()
+            $this->refresher->reveal(),
+            $this->clock->reveal()
         );
     }
 
@@ -117,6 +122,33 @@ class SessionManagerTest extends TestCase
 
         $this->expectException(SessionTokenValidationException::class);
         $this->manager->handleToken($tokenId, new Uuid('d745e7e1-331a-433b-a58a-63aea4271653'));
+    }
 
+    public function test_expire_token_retrieves_token_sets_expiry_to_now_and_updates_in_database()
+    {
+        $this->orchestrator->getToken($tokenId = new Uuid('d3531cef-794e-4333-b925-b45b80b8f591'))->willReturn(
+            $token = new SessionToken(
+                $tokenId,
+                new Uuid('d745e7e1-331a-433b-a58a-63aea4271653'),
+                new \DateTimeImmutable(),
+                (new \DateTimeImmutable)->add(new \DateInterval('P1D'))
+        ));
+
+        $this->clock->now()->willReturn($date = new \DateTimeImmutable());
+
+        $this->orchestrator->updateToken($token->setExpiry($date))->shouldBeCalled();
+        $this->manager->expireToken($tokenId);
+    }
+
+    public function test_exception_is_thrown_if_attempting_to_expire_a_token_that_doesnt_exist()
+    {
+        $this->orchestrator->getToken(
+            $tokenId = new Uuid('d3531cef-794e-4333-b925-b45b80b8f591')
+        )->willThrow(new NotFoundException());
+
+        $this->orchestrator->updateToken(Argument::any())->shouldNotBeCalled();
+
+        $this->expectException(SessionTokenValidationException::class);
+        $this->manager->expireToken($tokenId);
     }
 }

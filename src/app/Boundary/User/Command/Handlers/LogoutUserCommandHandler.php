@@ -3,42 +3,35 @@
 namespace Cocktales\Boundary\User\Command\Handlers;
 
 use Cocktales\Boundary\User\Command\LogoutUserCommand;
-use Cocktales\Domain\Session\TokenOrchestrator;
-use Cocktales\Framework\DateTime\Clock;
-use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Domain\Session\Exception\SessionTokenValidationException;
+use Cocktales\Domain\Session\SessionManager;
 use Psr\Log\LoggerInterface;
 
 class LogoutUserCommandHandler
 {
-    /**
-     * @var TokenOrchestrator
-     */
-    private $tokenOrchestrator;
+
     /**
      * @var LoggerInterface
      */
     private $logger;
     /**
-     * @var Clock
+     * @var SessionManager
      */
-    private $clock;
+    private $manager;
 
-    public function __construct(TokenOrchestrator $tokenOrchestrator, LoggerInterface $logger, Clock $clock)
+    public function __construct(LoggerInterface $logger, SessionManager $manager)
     {
-        $this->tokenOrchestrator = $tokenOrchestrator;
         $this->logger = $logger;
-        $this->clock = $clock;
+        $this->manager = $manager;
     }
 
     public function handle(LogoutUserCommand $command): void
     {
         try {
-            $token = $this->tokenOrchestrator->getToken($command->getToken());
-
-            $this->tokenOrchestrator->updateToken($token->setExpiry($this->clock->now()));
+            $this->manager->expireToken($command->getToken());
 
             return;
-        } catch (NotFoundException $e) {
+        } catch (SessionTokenValidationException $e) {
             $this->logger->error(
                 "An attempt an invalid attempt has been made to logout. User {$command->getUserId()}. Token {$command->getToken()}"
             );

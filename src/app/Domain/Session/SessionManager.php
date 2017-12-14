@@ -5,6 +5,7 @@ namespace Cocktales\Domain\Session;
 use Cocktales\Domain\Session\Entity\SessionToken;
 use Cocktales\Domain\Session\Exception\SessionTokenValidationException;
 use Cocktales\Domain\Session\Validation\Validator;
+use Cocktales\Framework\DateTime\Clock;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 
@@ -22,12 +23,21 @@ class SessionManager
      * @var TokenRefresher
      */
     private $refresher;
+    /**
+     * @var Clock
+     */
+    private $clock;
 
-    public function __construct(TokenOrchestrator $orchestrator, Validator $validator, TokenRefresher $refresher)
-    {
+    public function __construct(
+        TokenOrchestrator $orchestrator,
+        Validator $validator,
+        TokenRefresher $refresher,
+        Clock $clock
+    ) {
         $this->orchestrator = $orchestrator;
         $this->validator = $validator;
         $this->refresher = $refresher;
+        $this->clock = $clock;
     }
 
     /**
@@ -46,6 +56,23 @@ class SessionManager
         } catch (NotFoundException $e) {
             throw new SessionTokenValidationException($e->getMessage());
         }
+    }
+
+    /**
+     * @param Uuid $token
+     * @return void
+     * @throws \Cocktales\Domain\Session\Exception\SessionTokenValidationException
+     */
+    public function expireToken(Uuid $token): void
+    {
+        try {
+            $token = $this->orchestrator->getToken($token);
+
+            $this->orchestrator->updateToken($token->setExpiry($this->clock->now()));
+        }catch (NotFoundException $e) {
+            throw new SessionTokenValidationException($e->getMessage());
+        }
+
     }
 
     /**

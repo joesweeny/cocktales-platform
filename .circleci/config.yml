@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /opt
     docker:
-      - image: joesweeny/php-awscli-docker-compose
+      - image: joesweeny/php-awscli-docker-compose:v1
 
     steps:
       - checkout

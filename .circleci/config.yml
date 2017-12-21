@@ -19,7 +19,7 @@ jobs:
           name: Test Release Image
           command: |
             composer install --ignore-platform-reqs
-            docker-compose -f docker-compose.yml run web /bin/test
+            docker-compose -f docker-compose.yml run web /opt/opt/bin/test
 
       - run:
           name: Teardown

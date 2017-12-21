@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: /opt
+    working_directory: /
     docker:
       - image: joesweeny/php-awscli-docker-compose:v2
 

@@ -13,11 +13,10 @@ jobs:
             sudo apt-get update \
             sudo apt-get install -y curl \
             sudo apt-get install php \
-            curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
-            curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig \
-            php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" \
-            php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --snapshot \
-            rm -f /tmp/composer-setup.*
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+            php composer-setup.php
+            php -r "unlink('composer-setup.php');"
 
       - run:
           name: Build Release Image

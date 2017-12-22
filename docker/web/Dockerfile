@@ -27,4 +27,5 @@ ADD ./bin /opt/bin/
 
 EXPOSE 80
 WORKDIR /opt
+ENTRYPOINT ["/bin/bash"]
 CMD ["/usr/bin/supervisord"]

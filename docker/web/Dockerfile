@@ -6,7 +6,7 @@ RUN apt-get install -y \
         nginx \
         libcurl4-gnutls-dev \
         libsqlite3-0 \
-        curl
+        curl 
 
 RUN docker-php-ext-install -j$(nproc) \
     pdo_mysql \
@@ -27,5 +27,4 @@ ADD ./bin /opt/bin/
 
 EXPOSE 80
 WORKDIR /opt
-ENTRYPOINT ["/bin/bash"]
 CMD ["/usr/bin/supervisord"]

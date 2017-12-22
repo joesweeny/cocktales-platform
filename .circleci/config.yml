@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    working_directory: /opt
     machine:
       image: circleci/classic:201711-01
 
@@ -32,7 +31,7 @@ jobs:
       - run:
           name: Test Release Image
           command: |
-            docker-compose -f docker-compose.yml run web /opt/bin/test
+            docker-compose -f docker-compose.yml run web /project/bin/test
 #            composer install --ignore-platform-reqs
 
       - run:

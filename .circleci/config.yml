@@ -10,9 +10,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt-get update \
-            sudo apt-get install -y curl\
-            sudo apt-get install php
+#            sudo apt-get update \
+#            sudo apt-get install -y curl\
+#            sudo apt-get install php
 
       - run:
           name: Build Release Image

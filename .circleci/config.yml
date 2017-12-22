@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /opt
     docker:
-      - image: joesweeny/php-awscli-docker-compose:v3
+      - image: circleci/php:7.1.4-fpm-browsers
 
     steps:
       - checkout

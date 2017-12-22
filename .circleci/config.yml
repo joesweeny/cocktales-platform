@@ -14,7 +14,7 @@ jobs:
             sudo apt-get install -y curl\
             sudo apt-get install -y git \
             sudo apt-get install php \
-          
+
       - run:
           name: Build Release Image
           command: |
@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Test Release Image
           command: |
-            docker-compose -f docker-compose.yml run web /project/bin/test
+            docker-compose -f docker-compose.yml run web bash ls
 #            composer install --ignore-platform-reqs
 
       - run:

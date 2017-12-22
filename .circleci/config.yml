@@ -3,22 +3,37 @@ jobs:
   build:
     working_directory: /opt
     machine:
-      image: joesweeny/php-aws-cli-docker:v3
+      image: circleci/classic:201711-01
 
     steps:
       - checkout
 
+#      - run:
+#          name: Install dependencies
+#          command: |
+#            sudo apt-get update \
+#            sudo apt-get install -y curl \
+#            sudo apt-get install php \
+#            php -v \
+#            docker -v \
+#            docker-compose -v
+
+#            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#            php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+#            php composer-setup.php
+#            php -r "unlink('composer-setup.php');"
+
       - run:
           name: Build Release Image
           command: |
-            composer install --ignore-platform-reqs --no-dev --optimize-autoloader
             docker-compose -f docker-compose.yml up -d --build
+#            composer install --ignore-platform-reqs --no-dev --optimize-autoloader
 
       - run:
           name: Test Release Image
           command: |
-            composer install --ignore-platform-reqs
             docker-compose -f docker-compose.yml run web /opt/bin/test
+#            composer install --ignore-platform-reqs
 
       - run:
           name: Teardown

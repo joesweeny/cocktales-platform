@@ -18,28 +18,25 @@ jobs:
               docker-compose==1.12.0 \
               awscli==1.11.76 \
               php \
-              curl
 
       - run:
           name: Install Composer
           command: |
-            curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
-            curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig \
-            # Make sure we're installing what we think we're installing!
-            php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" \
-            php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --snapshot \
-            rm -f /tmp/composer-setup.*
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('https://composer.github.io/installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer invalid'; unlink('composer-setup.php'); } echo PHP_EOL;"
+            php composer-setup.php
+            php -r "unlink('composer-setup.php');"
 
       - run:
           name: Build Release Image
           command: |
-            composer install --ignore-platform-reqs --no-dev --optimize-autoloader
+            php composer.phar install --ignore-platform-reqs --no-dev --optimize-autoloader
             docker-compose -f docker-compose.yml up -d --build
 
       - run:
           name: Test Release Image
           command: |
-            composer install --ignore-platform-reqs
+            php composer.phar install --ignore-platform-reqs
             docker-compose -f docker-compose.yml run web /opt/bin/test
 
       - run:

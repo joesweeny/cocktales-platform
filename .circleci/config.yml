@@ -1,8 +1,7 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/php:7.1.4-fpm-browsers
+    machine: true
 
     steps:
       - checkout
@@ -16,7 +15,7 @@ jobs:
       - run:
           name: Test Release Image
           command: |
-            docker-compose -f docker-compose.yml run --entrypoint='/bin/sh' web /opt/bin/test
+            docker-compose -f docker-compose.yml run web /opt/bin/test
 
       - run:
           name: Teardown

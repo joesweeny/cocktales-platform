@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    machine:
+      image: circleci/classic:201711-01
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update \
+            sudo apt-get install -y curl\
+            sudo apt-get install -y git \
+            sudo apt-get install php \
+
+      - run:
+          name: Build Release Image
+          command: |
+            docker-compose -f docker-compose.yml up -d --build
+#            composer install --ignore-platform-reqs --no-dev --optimize-autoloader
+
+      - run:
+          name: Test Release Image
+          command: |
+            docker-compose -f docker-compose.yml run web bash ls
+#            composer install --ignore-platform-reqs
+
+      - run:
+          name: Teardown
+          command: |
+            docker-compose -f docker-compose.yml down -v

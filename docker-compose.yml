@@ -9,11 +9,13 @@ services:
       - "80"
     volumes:
      - .:/opt
+    environment:
+     - DB_DSN=mysql:host=mysql;dbname=cocktales
+     - DB_USER=dev
+     - DB_PASS=password
 
   mysql:
     image: 'mysql:5.6'
-    ports:
-     - '3306:3306'
     volumes:
      - ./:/opt
     environment:

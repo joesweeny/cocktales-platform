@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    working_directory: /opt
     machine: true
       image: circleci/classic:201711-01
 

@@ -22,7 +22,7 @@ jobs:
             composer install --ignore-platform-reqs
             docker-compose -f docker-compose.yml run web /opt/bin/test
 
-      - run
+      - run:
           name: Teardown
           command: |
             docker-compose -f docker-compose.yml down -v

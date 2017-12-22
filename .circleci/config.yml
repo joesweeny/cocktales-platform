@@ -19,7 +19,7 @@ jobs:
           name: Test Release Image
           command: |
             composer install --ignore-platform-reqs
-            docker-compose -f docker-compose.yml run web bash pwd
+            docker-compose -f docker-compose.yml run --entrypoint='/bin/bash' web bash pwd
 
       - run:
           name: Teardown

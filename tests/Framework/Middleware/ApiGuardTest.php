@@ -32,6 +32,7 @@ class ApiGuardTest extends TestCase
         $this->config = $this->container->get(Config::class);
         $this->middleware = new ApiGuard($this->bus->reveal(), $this->config);
         $this->delegate = $this->prophesize(DelegateInterface::class);
+        $this->container->get(Config::class)->set('base-uri', 'http://cocktales.io');
     }
 
     public function test_user_is_redirected_to_login_page_if_no_auth_or_user_credentials_are_provided()
@@ -39,7 +40,7 @@ class ApiGuardTest extends TestCase
         $request = (new ServerRequest)->withUri(new Uri('https://cocktales.io/api/v1/user/get'));
 
         $response = $this->middleware->process($request, $this->delegate->reveal());
-
+        
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('http://cocktales.io/user/login', $response->getHeaderLine('location'));
     }

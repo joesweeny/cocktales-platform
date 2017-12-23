@@ -13,8 +13,13 @@ jobs:
           command: |
             sudo add-apt-repository ppa:ondrej/php \
             sudo apt-get update \
-            sudo apt-get install php7.1 \
-            curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+            sudo apt-get install php7.1
+
+      - run:
+          name: Install Composer
+          command: |
+            curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer \
+            composer -v
 
       - run:
           name: Build Release Image

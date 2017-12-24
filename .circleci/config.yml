@@ -18,9 +18,6 @@ jobs:
 
   build:
     working_directory: ~/cocktalesplatform
-    machine:
-      image: circleci/classic:201711-01
-
     steps:
       - checkout
       - run:
@@ -31,9 +28,6 @@ jobs:
 
   test:
     working_directory: ~/cocktalesplatform
-    machine:
-      image: circleci/classic:201711-01
-
     steps:
       - checkout
       - run:

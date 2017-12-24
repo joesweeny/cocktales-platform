@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/opt
+    working_directory: ~/cocktalesplatform
     machine:
       image: circleci/classic:201711-01
 
@@ -38,3 +38,10 @@ jobs:
           name: Teardown
           command: |
             docker-compose -f docker-compose.yml down -v
+
+#  tag-and-push:
+#    steps:
+#      - run:
+#          name: Tag and Push Release Image
+#          command:
+

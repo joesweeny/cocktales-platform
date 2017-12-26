@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-and-test:
+  build-test-deploy:
     working_directory: ~/cocktalesplatform
     machine:
       image: circleci/classic:201711-01
@@ -28,25 +28,13 @@ jobs:
             composer install --ignore-platform-reqs
             docker-compose -f docker-compose.yml run web bash /opt/bin/test
 
-  staging-deploy:
-    working_directory: ~/cocktalesplatform
-    machine:
-      image: circleci/classic:201711-01
-
-    steps:
-      - run:
-          name: Tag and push image
-          commands: |
-            ls
-
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build-and-test
-      - staging-deploy:
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              only: feature/circle
+      - deploy:
+           name: Push application Docker image
+           command: |
+             if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
+               composer -v
+               php -v
+               docker-compose -v
+             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo "Hello World"
+             fi

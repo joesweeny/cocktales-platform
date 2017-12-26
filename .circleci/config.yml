@@ -29,12 +29,14 @@ jobs:
             docker-compose -f docker-compose.yml run web bash /opt/bin/test
 
       - deploy:
-           name: Push application Docker image
+           name: Deploy to Staging/Production
            command: |
              if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
-              login="$(aws ecr get-login)"
+              curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+              python get-pip.py
+              pip install awscli
+              login="$(aws ecr get-login --no-include-email --region us-east-2)"
               ${login}
               docker tag "${DOCKER_IMAGE}:latest" "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}"
               docker push "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}
              fi
-             

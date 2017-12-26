@@ -4,6 +4,8 @@ jobs:
     working_directory: ~/cocktalesplatform
     machine:
       image: circleci/classic:201711-01
+      - setup_remote_docker:
+          reusable: true
 
     steps:
       - checkout
@@ -23,7 +25,7 @@ jobs:
 #      image: circleci/classic:201711-01
 
     steps:
-      - checkout
+#      - checkout
       - run:
           name: Build Release Image
           command: |
@@ -37,7 +39,7 @@ jobs:
 #      image: circleci/classic:201711-01
 
     steps:
-      - checkout
+#      - checkout
       - run:
           name: Test Release Image
           command: |

@@ -37,6 +37,6 @@ jobs:
               pip install awscli
               login="$(aws ecr get-login --no-include-email --region us-east-2)"
               ${login}
-              docker tag "${DOCKER_IMAGE}:latest" "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}"
-              docker push "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}"
+              docker tag "${DOCKER_IMAGE}:latest" "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA1}"
+              docker push "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA1}"
              fi

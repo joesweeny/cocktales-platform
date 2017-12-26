@@ -32,10 +32,9 @@ jobs:
            name: Push application Docker image
            command: |
              if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
-               composer -v
-               php -v
-               docker-compose -v
+              login="$(aws ecr get-login)"
+              ${login}
+              docker tag "${DOCKER_IMAGE}:latest" "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}"
+              docker push "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}
              fi
-             if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
-                echo "Hello World"
-             fi
+             

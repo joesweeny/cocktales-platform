@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Tag and push image
           commands: |
-            docker images
+            ls
 
 workflows:
   version: 2

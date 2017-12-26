@@ -38,5 +38,5 @@ jobs:
               login="$(aws ecr get-login --no-include-email --region us-east-2)"
               ${login}
               docker tag "${DOCKER_IMAGE}:latest" "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}"
-              docker push "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}
+              docker push "${ECR_ENDPOINT}/${DOCKER_IMAGE}:${CIRCLE_SHA}"
              fi

@@ -35,6 +35,4 @@ jobs:
                composer -v
                php -v
                docker-compose -v
-             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              echo "Hello World"
              fi

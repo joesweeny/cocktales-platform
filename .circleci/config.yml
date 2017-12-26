@@ -4,10 +4,9 @@ jobs:
     working_directory: ~/cocktalesplatform
     machine:
       image: circleci/classic:201711-01
+      docker_layer_caching: true
 
     steps:
-      - setup_remote_docker:
-          reusable: true
       - checkout
       - run:
           name: Install dependencies

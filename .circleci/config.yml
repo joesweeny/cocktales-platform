@@ -31,7 +31,7 @@ jobs:
       - deploy:
            name: Deploy to Staging/Production
            command: |
-             if [ "${CIRCLE_BRANCH}" == "master" || "${CIRCLE_BRANCH}" = "feature/circle" ]; then
+             if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
               curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
               python get-pip.py
               pip install awscli

@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-test-deploy:
+  build:
     working_directory: ~/cocktalesplatform
     machine:
       image: circleci/classic:201711-01

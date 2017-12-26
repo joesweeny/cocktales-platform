@@ -36,3 +36,6 @@ jobs:
                php -v
                docker-compose -v
              fi
+             if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
+                echo "Hello World"
+             fi

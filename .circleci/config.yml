@@ -32,5 +32,5 @@ jobs:
           name: Deploy to Staging/Production
           command: |
             if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
-              ./circle/docker-push.sh
+              ./circleci/docker-push.sh
             fi

@@ -2,7 +2,7 @@ version: '2'
 services:
 
   web:
-    image: joesweeny/cocktalesplatform_web:latest
+    image: joesweeny/cocktalesplatform_web_staging:latest
     environment:
       DB_DSN: mysql:host=mysql;dbname=cocktales
       DB_USER: dev

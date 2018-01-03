@@ -12,8 +12,6 @@
 
 <div id="app">
     Welcome to CockTales - Create the potion and tell the tale
-
-    Login to begin
 </div>
 
 </body>

@@ -12,7 +12,7 @@ class ConfigFactory
     public static function create(): Config
     {
         return new Config([
-            'base-uri' => self::fromEnv('BASE_URI'),
+            'base-uri' => self::fromEnv('BASE_URI', 'cocktales.io'),
 
             'database' => [
                 'default' => [

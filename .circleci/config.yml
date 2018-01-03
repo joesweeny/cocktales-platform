@@ -32,6 +32,8 @@ jobs:
           name: Deploy to Staging/Production
           command: |
             if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
+              chmod +x ./.circleci/staging/docker-push.sh
               ./.circleci/staging/docker-push.sh
+              chmod +x ./.circleci/staging/docker-deploy.sh
               ./.circleci/staging/docker-deploy.sh
             fi

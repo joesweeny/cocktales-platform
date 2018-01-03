@@ -12,7 +12,7 @@ class ConfigFactory
     public static function create(): Config
     {
         return new Config([
-            'base-uri' => self::fromEnv('BASE_URI'),
+            'base-uri' => self::fromEnv('BASE_URI', 'cocktales.io'),
 
             'database' => [
                 'default' => [
@@ -25,7 +25,7 @@ class ConfigFactory
             ],
 
             'aws' => [
-                'filesystem_enabled' => self::fromEnv('AWS_FILESYSTEM_ENABLED', false),
+                'filesystem_enabled' => self::fromEnv('AWS_FILESYSTEM_ENABLED', false) === 'true',
 
                 'key' => self::fromEnv('AWS_ACCESS_KEY_ID'),
 

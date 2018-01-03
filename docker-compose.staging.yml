@@ -2,6 +2,12 @@ version: '2'
 services:
 
   web:
-    image: 120332857682.dkr.ecr.us-east-2.amazonaws.com/cocktalesplatform_web:latest
-    env_file:
-      - /opt/src/.env
+    image: joesweeny/cocktalesplatform_web_staging:latest
+    environment:
+      DB_DSN: mysql:host=mysql;dbname=cocktales
+      DB_USER: dev
+      DB_PASS: password
+      AWS_FILESYSTEM_ENABLED: 'false'
+      JOE: 'joe'
+    ports:
+      - "80:80"

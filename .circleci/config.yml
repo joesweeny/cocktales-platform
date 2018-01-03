@@ -28,9 +28,9 @@ jobs:
             composer install --ignore-platform-reqs
             docker-compose -f docker-compose.yml run web bash /opt/bin/test
 
-       - deploy:
-            name: Deploy to Staging/Production
-            command: |
-              if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
-                ./circle/docker-push.sh
-              fi
+      - deploy:
+          name: Deploy to Staging/Production
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "feature/circle" ]; then
+              ./circle/docker-push.sh
+            fi

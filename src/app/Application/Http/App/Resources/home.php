@@ -11,7 +11,7 @@
 <body>
 
 <div id="app">
-    Welcome to CockTales
+    Welcome to CockTales - Create the potion and tell the tale
 </div>
 
 </body>

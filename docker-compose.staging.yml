@@ -8,3 +8,5 @@ services:
       DB_USER: dev
       DB_PASS: password
       AWS_FILESYSTEM_ENABLED: 'false'
+    ports:
+      - "80:80"

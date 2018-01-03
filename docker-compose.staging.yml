@@ -3,5 +3,8 @@ services:
 
   web:
     image: 120332857682.dkr.ecr.us-east-2.amazonaws.com/cocktalesplatform_web:latest
-    env_file:
-      - /opt/src/.env
+    environment:
+      DB_DSN: mysql:host=mysql;dbname=cocktales
+      DB_USER: dev
+      DB_PASS: password
+      AWS_FILESYSTEM_ENABLED: 'false'

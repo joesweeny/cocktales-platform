@@ -8,21 +8,19 @@ services:
     ports:
       - "80"
     volumes:
-     - .:/opt
+      - .:/opt
     environment:
-     - DB_DSN=mysql:host=mysql;dbname=cocktales
-     - DB_USER=dev
-     - DB_PASS=password
-     - AWS_FILESYSTEM_ENABLED=false
-     - AWS_ACCESS_KEY_ID=
-     - AWS_SECRET_KEY=
+      DB_DSN: mysql:host=mysql;dbname=cocktales
+      DB_USER: dev
+      DB_PASS: password
+      AWS_FILESYSTEM_ENABLED: 'false'
 
   mysql:
     image: 'mysql:5.6'
     volumes:
      - ./:/opt
     environment:
-     - MYSQL_ROOT_PASSWORD=password
-     - MYSQL_DATABASE=cocktales
-     - MYSQL_USER=dev
-     - MYSQL_PASSWORD=password
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: cocktales
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: password

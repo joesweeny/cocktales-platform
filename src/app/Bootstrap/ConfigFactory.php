@@ -25,7 +25,7 @@ class ConfigFactory
             ],
 
             'aws' => [
-                'filesystem_enabled' => self::fromEnv('AWS_FILESYSTEM_ENABLED', false),
+                'filesystem_enabled' => self::fromEnv('AWS_FILESYSTEM_ENABLED', false) === 'true',
 
                 'key' => self::fromEnv('AWS_ACCESS_KEY_ID'),
 

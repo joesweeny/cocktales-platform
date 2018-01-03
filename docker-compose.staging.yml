@@ -2,7 +2,7 @@ version: '2'
 services:
 
   web:
-    image: 120332857682.dkr.ecr.us-east-2.amazonaws.com/cocktalesplatform_web:latest
+    image: joesweeny/cocktalesplatform_web:latest
     environment:
       DB_DSN: mysql:host=mysql;dbname=cocktales
       DB_USER: dev

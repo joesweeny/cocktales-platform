@@ -35,5 +35,5 @@ jobs:
               chmod +x ./.circleci/docker-push.sh
               ./.circleci/docker-push.sh
               chmod +x ./.circleci/docker-deploy-pull.sh
-              ./.circleci/docker-deploy-pull.sh
+              ./.circleci/docker-deploy.sh
             fi

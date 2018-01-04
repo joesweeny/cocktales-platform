@@ -10,6 +10,7 @@ use Cocktales\Framework\Uuid\Uuid;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class SessionManagerTest extends TestCase
 {
@@ -21,16 +22,20 @@ class SessionManagerTest extends TestCase
     private $refresher;
     /** @var  SessionManager */
     private $manager;
+    /** @var  LoggerInterface */
+    private $logger;
 
     public function setUp()
     {
         $this->orchestrator = $this->prophesize(TokenOrchestrator::class);
         $this->validator = $this->prophesize(Validator::class);
         $this->refresher = $this->prophesize(TokenRefresher::class);
+        $this->logger = $this->prophesize(LoggerInterface::class);
         $this->manager = new SessionManager(
             $this->orchestrator->reveal(),
             $this->validator->reveal(),
-            $this->refresher->reveal()
+            $this->refresher->reveal(),
+            $this->logger->reveal()
         );
     }
 
@@ -114,6 +119,10 @@ class SessionManagerTest extends TestCase
         $this->refresher->refreshToHour(Argument::any())->shouldNotBeCalled();
 
         $this->orchestrator->updateToken(Argument::any())->shouldNotBeCalled();
+
+        $this->logger->error(
+            'A user has attempted to again access with an invalid id and token combination', Argument::type([])
+        )->shouldBeCalled();
 
         $this->expectException(SessionTokenValidationException::class);
         $this->manager->handleToken($tokenId, new Uuid('d745e7e1-331a-433b-a58a-63aea4271653'));

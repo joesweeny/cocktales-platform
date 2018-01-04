@@ -66,7 +66,7 @@ class GetByUserControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'GET',
             '/api/v1/cocktail/get-by-user',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
         );
 
@@ -84,7 +84,7 @@ class GetByUserControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'GET',
             '/api/v1/cocktail/get-by-user',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
         );
 

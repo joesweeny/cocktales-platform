@@ -47,7 +47,7 @@ class CreateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'POST',
             '/api/v1/cocktail/create',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
                 "userId": "a88cffac-f628-445c-9f55-ae99a0542fe6",
                 "cocktail": {
@@ -100,7 +100,7 @@ class CreateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'POST',
             '/api/v1/cocktail/create',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
                 "userId": "a88cffac-f628-445c-9f55-ae99a0542fe6",
                 "cocktail": {

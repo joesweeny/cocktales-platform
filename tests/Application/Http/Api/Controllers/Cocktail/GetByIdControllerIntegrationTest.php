@@ -66,7 +66,7 @@ class GetByIdControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'GET',
             '/api/v1/cocktail/get-by-id',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"cocktailId":"0487d724-4ca0-4942-bf64-4cc53273bc2b"}'
         );
 
@@ -83,7 +83,7 @@ class GetByIdControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'GET',
             '/api/v1/cocktail/get-by-id',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"cocktailId":"0487d724-4ca0-4942-bf64-4cc53273bc2b"}'
         );
 

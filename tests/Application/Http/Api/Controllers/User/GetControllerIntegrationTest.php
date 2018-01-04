@@ -44,7 +44,7 @@ class GetControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'get',
             '/api/v1/user/get',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"id":"f530caab-1767-4f0c-a669-331a7bf0fc85"}'
         );
 
@@ -62,7 +62,7 @@ class GetControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'get',
             '/api/v1/user/get',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"id":"93449e9d-4082-4305-8840-fa1673bcf915"}'
         );
 

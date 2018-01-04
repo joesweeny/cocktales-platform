@@ -2,23 +2,17 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
-use Cocktales\Boundary\User\Command\LoginUserCommand;
+use Cocktales\Boundary\Session\Command\CreateSessionTokenCommand;
+use Cocktales\Boundary\User\Command\ValidateUserCredentialsCommand;
 use Cocktales\Domain\User\Exception\UserValidationException;
-use Cocktales\Framework\CommandBus\CommandBus;
+use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
 class LoginController
 {
-    /**
-     * @var CommandBus
-     */
-    private $bus;
-
-    public function __construct(CommandBus $bus)
-    {
-        $this->bus = $bus;
-    }
+    use ControllerService;
 
     public function __invoke(ServerRequestInterface $request): JsendResponse
     {
@@ -30,12 +24,18 @@ class LoginController
         ];
 
         try {
-            $token = $this->bus->execute(new LoginUserCommand($data->email, $data->password));
+            $user = $this->bus->execute(new ValidateUserCredentialsCommand($data->email, $data->password));
+            $token = $this->bus->execute(new CreateSessionTokenCommand($user->id));
 
             return JsendResponse::success([
-                'token' => $token
+                'token' => $token,
+                'user' => $user->id
             ]);
         } catch (UserValidationException $e) {
+            return JsendResponse::error([
+                'error' => 'Unable to verify user credentials'
+            ]);
+        } catch (NotFoundException $e) {
             return JsendResponse::fail([
                 'error' => 'Unable to verify user credentials'
             ]);

@@ -59,7 +59,8 @@ class ApiGuardTest extends TestCase
     {
         $request = (new ServerRequest)
             ->withUri(new Uri('https://cocktales.io/api/v1/user/get'))
-            ->withHeader('AuthorizationToken', ['262a3987-426e-4de4-b06f-2353c0ae1505', 'f530caab-1767-4f0c-a669-331a7bf0fc85']);
+            ->withHeader('AuthorizationToken', '262a3987-426e-4de4-b06f-2353c0ae1505')
+            ->withHeader('AuthenticationToken', 'f530caab-1767-4f0c-a669-331a7bf0fc85');
 
         $this->bus->execute(
             new ValidateSessionTokenCommand(
@@ -77,7 +78,8 @@ class ApiGuardTest extends TestCase
     {
         $request = (new ServerRequest)
             ->withUri(new Uri('https://cocktales.io/api/v1/user/get'))
-            ->withHeader('AuthorizationToken', ['262a3987-426e-4de4-b06f-2353c0ae1505', 'f530caab-1767-4f0c-a669-331a7bf0fc85']);
+            ->withHeader('AuthorizationToken', '262a3987-426e-4de4-b06f-2353c0ae1505')
+            ->withHeader('AuthenticationToken', 'f530caab-1767-4f0c-a669-331a7bf0fc85');
 
         $this->bus->execute(
             new ValidateSessionTokenCommand(

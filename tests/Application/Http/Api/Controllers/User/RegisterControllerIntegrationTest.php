@@ -49,7 +49,7 @@ class RegisterControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals('error', $jsend->status);
         $this->assertEquals('A user has already registered with this email address', $jsend->data->error);
     }
 }

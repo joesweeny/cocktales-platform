@@ -47,7 +47,7 @@ class CreateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/profile/create',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
                 "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481",
                 "username":"joe",
@@ -77,7 +77,7 @@ class CreateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/profile/create',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
                 "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481",
                 "username":"joe",

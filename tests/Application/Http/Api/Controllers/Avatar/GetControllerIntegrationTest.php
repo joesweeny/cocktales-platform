@@ -51,7 +51,7 @@ class GetControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'GET',
             '/api/v1/avatar/get',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"user_id" : "dc5b6421-d452-4862-b741-d43383c3fe1d"}'
         );
 

@@ -57,8 +57,8 @@ class ApiGuard implements ServerMiddlewareInterface
             return $delegate->process($request);
         }
 
-        $token = $request->getHeader('AuthorizationToken')[0] ?? '';
-        $userId = $request->getHeader('AuthorizationToken')[1] ?? '';
+        $token = $request->getHeaderLine('AuthorizationToken') ?? '';
+        $userId = $request->getHeaderLine('AuthenticationToken') ?? '';
 
         if (!$token || !$userId) {
             return new RedirectResponse("{$this->config->get('base-uri')}/user/login");

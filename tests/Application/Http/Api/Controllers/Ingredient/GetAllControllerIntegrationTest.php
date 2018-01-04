@@ -50,7 +50,7 @@ class GetAllControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'GET',
             '/api/v1/ingredient/all',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]]
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
         );
 
         $response = $this->handle($this->container, $request);

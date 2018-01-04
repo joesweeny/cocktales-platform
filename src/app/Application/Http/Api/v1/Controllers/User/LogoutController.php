@@ -27,15 +27,15 @@ class LogoutController
 
     public function __invoke(ServerRequestInterface $request): JsendResponse
     {
-        $token = $request->getHeader('AuthorizationToken')[0] ?? '';
-        $userId = $request->getHeader('AuthorizationToken')[1] ?? '';
+        $token = $request->getHeaderLine('AuthorizationToken') ?? '';
+        $userId = $request->getHeaderLine('AuthenticationToken') ?? '';
 
-        if (!$token || $userId) {
+        if (!$token || !$userId) {
             $this->logger->error('A logout attempt has failed due to missing information', [
                 'token' => $token,
                 'userId' => $userId
             ]);
-            return JsendResponse::success();
+            return JsendResponse::fail('Unable to verify');
         }
 
         $this->bus->execute(new LogoutUserCommand($token, $userId));

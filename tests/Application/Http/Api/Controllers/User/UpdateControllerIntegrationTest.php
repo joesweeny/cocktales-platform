@@ -46,7 +46,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
         );
 
@@ -63,7 +63,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"id":"cac217cd-8fab-4951-ada1-914e7f588fa8","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
         );
 
@@ -82,7 +82,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"andrea@mail.com","oldPassword":"", "newPassword":""}'
         );
 
@@ -100,7 +100,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
-            ['AuthorizationToken' => [(string) $this->token->getToken(), (string) $this->user->getId()]],
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@email.com","oldPassword":"wrongPassword", "newPassword":"newPass"}'
         );
 

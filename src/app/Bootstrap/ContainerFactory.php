@@ -35,6 +35,7 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
 use Monolog\Handler\ErrorLogHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -151,6 +152,7 @@ class ContainerFactory
                     case 'monolog':
                         $logger = new Logger('error');
                         $logger->pushHandler(new ErrorLogHandler);
+                        $logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
                         return $logger;
 
                     case 'null':

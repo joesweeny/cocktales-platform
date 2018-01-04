@@ -3,6 +3,9 @@
 namespace Cocktales\Application\Http;
 
 use Cocktales\Framework\Middleware\ApiGuard;
+use Cocktales\Framework\Middleware\ErrorHandler;
+use Cocktales\Framework\Middleware\HtmlErrorResponseFactory;
+use Cocktales\Framework\Middleware\PsrLogger;
 use Interop\Container\ContainerInterface;
 use Cocktales\Framework\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
@@ -48,6 +51,12 @@ class HttpServer
 
         return $pipe
             ->pipe('/', new CallableMiddlewareWrapper(new OriginalMessages, new Response))
+
+            ->pipe('/', new ErrorHandler(
+                $this->container->get(HtmlErrorResponseFactory::class),
+                $this->container->get(PsrLogger::class)
+            ))
+
             ->pipe('/api', $this->container->get(ApiGuard::class))
 
             ->process($request, $this->container->get(Router::class));

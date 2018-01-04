@@ -49,7 +49,7 @@ class LoginControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals('error', $jsend->status);
         $this->assertEquals('Unable to verify user credentials', $jsend->data->error);
     }
 
@@ -61,7 +61,7 @@ class LoginControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals('error', $jsend->status);
         $this->assertEquals('Unable to verify user credentials', $jsend->data->error);
     }
 }

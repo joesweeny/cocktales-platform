@@ -7,6 +7,7 @@ use Cocktales\Boundary\User\Command\ValidateUserCredentialsCommand;
 use Cocktales\Domain\User\Exception\UserValidationException;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
 class LoginController
@@ -31,6 +32,10 @@ class LoginController
                 'user' => $user->id
             ]);
         } catch (UserValidationException $e) {
+            return JsendResponse::error([
+                'error' => 'Unable to verify user credentials'
+            ]);
+        } catch (NotFoundException $e) {
             return JsendResponse::fail([
                 'error' => 'Unable to verify user credentials'
             ]);

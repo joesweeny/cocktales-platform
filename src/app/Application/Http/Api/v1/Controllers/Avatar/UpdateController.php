@@ -4,7 +4,10 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Avatar;
 
 use Cocktales\Boundary\Avatar\Command\UpdateAvatarCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
+use Cocktales\Framework\JsendResponse\JsendError;
+use Cocktales\Framework\JsendResponse\JsendErrorResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
@@ -34,12 +37,39 @@ class UpdateController
     {
         $request = $this->factory->createRequest($request);
 
-        $body = json_decode($request->getContent());
+        $errors = $this->validateRequest(
+            $body = json_decode($request->getContent()),
+            $avatar = $request->files->get('avatar')
+        );
 
-        $avatar = $this->bus->execute(new UpdateAvatarCommand($body->user_id, $request->files->get('avatar')));
+        if (!empty($errors)) {
+            return new JsendErrorResponse($errors);
+        }
 
-        return JsendResponse::success([
+        $avatar = $this->bus->execute(new UpdateAvatarCommand($body->user_id, $avatar));
+
+        return new JsendSuccessResponse([
             'avatar' => $avatar
         ]);
+    }
+
+    /**
+     * @param mixed $body
+     * @param mixed $avatar
+     * @return array
+     */
+    private function validateRequest($body, $avatar): array
+    {
+        $errors = [];
+
+        if (!isset($body->user_id)) {
+            $errors[] = new JsendError("Required field 'User Id' is missing");
+        }
+
+        if (!$avatar) {
+            $errors[] = new JsendError("Required file 'Avatar' is missing");
+        }
+
+        return $errors;
     }
 }

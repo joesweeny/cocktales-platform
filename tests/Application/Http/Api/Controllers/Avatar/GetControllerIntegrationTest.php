@@ -62,4 +62,24 @@ class GetControllerIntegrationTest extends TestCase
         $this->assertEquals('success', $jsend->status);
         $this->assertEquals('filename.jpg', $jsend->data->avatar->filename);
     }
+
+    public function test_error_response_is_returned_if_user_id_field_is_missing()
+    {
+        $this->orchestrator->createAvatar((new Avatar)
+            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+            ->setFilename('filename.jpg'));
+
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/avatar/get',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('error', $jsend->status);
+        $this->assertEquals("Required field 'User Id' is missing", $jsend->data->errors[0]->message);
+    }
 }

@@ -91,6 +91,24 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->deleteDirectory();
     }
 
+    public function test_error_response_is_return_if_either_user_id_or_avatar_file_is_missing_from_request()
+    {
+        $request = new ServerRequest(
+            'post',
+            '/api/v1/avatar/update',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('error', $jsend->status);
+        $this->assertCount(2, $jsend->data->errors);
+        $this->assertEquals("Required field 'User Id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required file 'Avatar' is missing", $jsend->data->errors[1]->message);
+    }
+
     private function createAvatar()
     {
         $request = (new ServerRequest(

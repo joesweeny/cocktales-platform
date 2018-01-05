@@ -40,7 +40,6 @@ class UpdateControllerIntegrationTest extends TestCase
             (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
         );
         $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
-
     }
 
     public function test_success_response_is_received()
@@ -52,7 +51,7 @@ class UpdateControllerIntegrationTest extends TestCase
             '/api/v1/profile/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "user_id":"b5acd30c-085e-4dee-b8a9-19e725dc62c3",
+                "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85",
                 "username":"joe",
                 "first_name":"Joe",
                 "last_name":"Sweeny",
@@ -66,6 +65,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('joe', $jsend->data->profile->username);
         $this->assertEquals('Joe', $jsend->data->profile->first_name);
         $this->assertEquals('Sweeny', $jsend->data->profile->last_name);
@@ -73,31 +73,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->assertEquals('Loving life', $jsend->data->profile->slogan);
     }
 
-    public function test_fail_response_is_received_if_user_id_is_not_found()
-    {
-        $request = new ServerRequest(
-            'post',
-            '/api/v1/profile/update',
-            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{
-                "user_id":"b5acd30c-085e-4dee-b8a9-19e725dc62c3",
-                "username":"joe",
-                "first_name":"Joe",
-                "last_name":"Sweeny",
-                "location":"Consett",
-                "slogan":"Loving life"
-            }'
-        );
-
-        $response = $this->handle($this->container, $request);
-
-        $jsend = json_decode($response->getBody()->getContents());
-
-        $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals('Unable to process request - please try again', $jsend->data->error);
-    }
-
-    public function test_fail_response_received_if_username_is_already_taken_by_another_user()
+    public function test_error_response_returned_if_username_is_already_taken_by_another_user()
     {
         $this->createProfile();
 
@@ -108,7 +84,7 @@ class UpdateControllerIntegrationTest extends TestCase
             '/api/v1/profile/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "user_id":"b5acd30c-085e-4dee-b8a9-19e725dc62c3",
+                "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85",
                 "username":"andrea",
                 "first_name":"Joe",
                 "last_name":"Sweeny",
@@ -121,15 +97,16 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals('Username is already taken', $jsend->data->error);
+        $this->assertEquals('error', $jsend->status);
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('Username is already taken', $jsend->data->errors[0]->message);
     }
 
     private function createProfile()
     {
         $this->orchestrator->createProfile(
             (new Profile)
-                ->setUserId(new Uuid('b5acd30c-085e-4dee-b8a9-19e725dc62c3'))
+                ->setUserId(new Uuid('f530caab-1767-4f0c-a669-331a7bf0fc85'))
                 ->setUsername('joe')
                 ->setFirstName('Joe')
                 ->setLastName('Sweeny')

@@ -38,10 +38,11 @@ class LoginControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue(isset($jsend->data->token));
     }
 
-    public function test_fail_response_is_sent_if_user_credentials_validation_fails()
+    public function test_error_response_is_sent_if_user_credentials_validation_fails()
     {
         $request = new ServerRequest('post', '/api/v1/user/login', [], '{"email":"joe@joe.com","password":"wrong"}');
 
@@ -50,18 +51,21 @@ class LoginControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('error', $jsend->status);
-        $this->assertEquals('Unable to verify user credentials', $jsend->data->error);
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('Unable to verify user credentials', $jsend->data->errors[0]->message);
     }
 
-    public function test_fail_response_is_sent_if_either_email_or_password_is_missing()
+    public function test_400_response_is_returned_if_either_email_or_password_is_missing()
     {
-        $request = new ServerRequest('post', '/api/v1/user/login', [], '{"password":"wrong"}');
+        $request = new ServerRequest('post', '/api/v1/user/login', []);
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
-        $this->assertEquals('Unable to verify user credentials', $jsend->data->error);
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals("Required field 'email' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required field 'password' is missing", $jsend->data->errors[1]->message);
     }
 }

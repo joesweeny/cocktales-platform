@@ -59,6 +59,7 @@ class CreateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('8897fa60-e66f-41fb-86a2-9828b1785481.jpg', $jsend->data->avatar->filename);
 
         $this->deleteDirectory();
@@ -76,10 +77,11 @@ class CreateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertCount(2, $jsend->data->errors);
-        $this->assertEquals("Required field 'User Id' is missing", $jsend->data->errors[0]->message);
-        $this->assertEquals("Required file 'Avatar' is missing", $jsend->data->errors[1]->message);
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required file 'avatar' is missing", $jsend->data->errors[1]->message);
     }
 
     private function deleteDirectory()

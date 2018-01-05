@@ -45,7 +45,7 @@ class GetControllerIntegrationTest extends TestCase
             'get',
             '/api/v1/user/get',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"id":"f530caab-1767-4f0c-a669-331a7bf0fc85"}'
+            '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -53,24 +53,46 @@ class GetControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('f530caab-1767-4f0c-a669-331a7bf0fc85', $jsend->data->user->id);
         $this->assertEquals('joe@joe.com', $jsend->data->user->email);
     }
 
-    public function test_fail_response_received_if_user_details_cannot_be_retrieved()
+    public function test_404_response_returned_if_user_details_cannot_be_retrieved()
     {
         $request = new ServerRequest(
             'get',
             '/api/v1/user/get',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"id":"93449e9d-4082-4305-8840-fa1673bcf915"}'
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915"}'
         );
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals('Unable to retrieve user', $jsend->data->error);
+        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(
+            'User with ID 93449e9d-4082-4305-8840-fa1673bcf915 does not exist',
+            $jsend->data->errors[0]->message
+        );
+    }
+
+    public function test_400_response_returned_if_user_id_field_is_not_set_is_request_body()
+    {
+        $request = new ServerRequest(
+            'get',
+            '/api/v1/user/get',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
     }
 }

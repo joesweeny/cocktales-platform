@@ -3,11 +3,14 @@
 namespace Cocktales\Application\Http\Api\v1\Controllers\Avatar;
 
 use Cocktales\Boundary\Avatar\Command\CreateAvatarCommand;
+use Cocktales\Domain\Avatar\Exception\AvatarRepositoryException;
 use Cocktales\Framework\CommandBus\CommandBus;
+use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
 use Cocktales\Framework\JsendResponse\JsendErrorResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
+use League\Flysystem\FileExistsException;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
@@ -48,14 +51,22 @@ class CreateController
         );
 
         if (!empty($errors)) {
-            return new JsendErrorResponse($errors);
+            return new JsendBadRequestResponse($errors);
         }
 
-        $avatar = $this->bus->execute(new CreateAvatarCommand($body->user_id, $avatar));
+        try {
+            $avatar = $this->bus->execute(new CreateAvatarCommand($body->user_id, $avatar));
 
-        return new JsendSuccessResponse([
-            'avatar' => $avatar
-        ]);
+            return new JsendSuccessResponse([
+                'avatar' => $avatar
+            ]);
+
+        } catch (AvatarRepositoryException | FileExistsException $e) {
+            return new JsendErrorResponse([
+                    new JsendError("An avatar already exists for user {$body->user_id}")
+                ]
+            );
+        }
     }
 
     /**
@@ -68,11 +79,11 @@ class CreateController
         $errors = [];
 
         if (!isset($body->user_id)) {
-            $errors[] = new JsendError("Required field 'User Id' is missing");
+            $errors[] = new JsendError("Required field 'user_id' is missing");
         }
 
         if (!$avatar) {
-            $errors[] = new JsendError("Required file 'Avatar' is missing");
+            $errors[] = new JsendError("Required file 'avatar' is missing");
         }
 
         return $errors;

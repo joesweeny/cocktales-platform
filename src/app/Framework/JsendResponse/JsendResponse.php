@@ -26,8 +26,14 @@ class JsendResponse extends JsonResponse
             case 'success':
                 $statusCode = 200;
                 break;
+            case 'bad_request':
+                $statusCode = 400;
+                break;
             case 'fail':
                 $statusCode = 401;
+                break;
+            case 'not_found':
+                $statusCode = 404;
                 break;
             case 'error':
                 $statusCode = 500;

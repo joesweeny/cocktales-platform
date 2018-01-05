@@ -79,7 +79,24 @@ class GetControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
-        $this->assertEquals("Required field 'User Id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+    }
+
+    public function test_404_error_code_response_if_avatar_is_not_found()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/avatar/get',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"user_id" : "dc5b6421-d452-4862-b741-d43383c3fe1d"}'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }

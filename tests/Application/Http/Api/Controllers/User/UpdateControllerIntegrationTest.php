@@ -47,7 +47,7 @@ class UpdateControllerIntegrationTest extends TestCase
             'post',
             '/api/v1/user/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -55,27 +55,11 @@ class UpdateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('joe@newEmail.com', $jsend->data->user->email);
     }
 
-    public function test_fail_response_is_received_if_user_id_is_not_found()
-    {
-        $request = new ServerRequest(
-            'post',
-            '/api/v1/user/update',
-            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"id":"cac217cd-8fab-4951-ada1-914e7f588fa8","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
-        );
-
-        $response = $this->handle($this->container, $request);
-
-        $jsend = json_decode($response->getBody()->getContents());
-
-        $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals('Unable to process request - please try again', $jsend->data->error);
-    }
-
-    public function test_fail_response_is_received_if_user_email_is_already_taken_by_another_user()
+    public function test_error_response_is_returned_if_user_email_is_already_taken_by_another_user()
     {
         $this->createAdditionalUser();
 
@@ -83,33 +67,35 @@ class UpdateControllerIntegrationTest extends TestCase
             'post',
             '/api/v1/user/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"andrea@mail.com","oldPassword":"", "newPassword":""}'
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"andrea@mail.com","oldPassword":"", "newPassword":""}'
         );
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals('A user has already registered with this email address', $jsend->data->error);
+        $this->assertEquals('error', $jsend->status);
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('A user has already registered with this email address', $jsend->data->errors[0]->message);
     }
 
-    public function test_fail_response_is_received_if_old_password_does_not_match_password_stored_for_user()
+    public function test_error_response_is_returned_if_old_password_does_not_match_password_stored_for_user()
     {
 
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@email.com","oldPassword":"wrongPassword", "newPassword":"newPass"}'
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@email.com","oldPassword":"wrongPassword", "newPassword":"newPass"}'
         );
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals('Password does not match the password on record - please try again', $jsend->data->error);
+        $this->assertEquals('error', $jsend->status);
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('Password does not match the password on record - please try again', $jsend->data->errors[0]->message);
     }
 
     private function createAdditionalUser()

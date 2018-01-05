@@ -67,7 +67,7 @@ class GetByIdControllerIntegrationTest extends TestCase
             'GET',
             '/api/v1/cocktail/get-by-id',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"cocktailId":"0487d724-4ca0-4942-bf64-4cc53273bc2b"}'
+            '{"cocktail_id":"0487d724-4ca0-4942-bf64-4cc53273bc2b"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -75,24 +75,42 @@ class GetByIdControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertInstanceOf(\stdClass::class, $jsend->data->cocktail);
     }
 
-    public function test_returns_error_response_if_cocktail_does_not_exist()
+    public function test_returns_404_response_if_cocktail_does_not_exist()
     {
         $request = new ServerRequest(
             'GET',
             '/api/v1/cocktail/get-by-id',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"cocktailId":"0487d724-4ca0-4942-bf64-4cc53273bc2b"}'
+            '{"cocktail_id":"0487d724-4ca0-4942-bf64-4cc53273bc2b"}'
         );
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
-        $this->assertEquals('Cocktail does not exist', $jsend->data->error);
+        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals('Cocktail with ID 0487d724-4ca0-4942-bf64-4cc53273bc2b does not exist', $jsend->data->errors[0]->message);
+    }
+
+    public function test_400_response_returned_if_cocktail_id_is_not_provided_in_request_body()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/cocktail/get-by-id',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[0]->message);
     }
 
     private function createCocktail()

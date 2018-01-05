@@ -67,7 +67,7 @@ class GetByUserControllerIntegrationTest extends TestCase
             'GET',
             '/api/v1/cocktail/get-by-user',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
+            '{"user_id":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -75,17 +75,18 @@ class GetByUserControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
-        $this->assertInstanceOf(\stdClass::class, $jsend->data->cocktails);
-        $this->assertNotEmpty($jsend->data->cocktails->cocktails);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue(is_array($jsend->data->cocktails));
+        $this->assertNotEmpty($jsend->data->cocktails);
     }
 
-    public function test_returns_success_and_an_emtpy_array_if_user_does_not_have_cocktails_or_user_does_not_exist()
+    public function test_returns_success_and_an_emtpy_array_if_user_does_not_have_cocktails()
     {
         $request = new ServerRequest(
             'GET',
             '/api/v1/cocktail/get-by-user',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"userId":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
+            '{"user_id":"f5a366cf-15a0-4aca-a19e-e77c3e71815f"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -93,7 +94,7 @@ class GetByUserControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
-        $this->assertEmpty($jsend->data->cocktails->cocktails);
+        $this->assertEmpty($jsend->data->cocktails);
     }
 
     private function createCocktails()

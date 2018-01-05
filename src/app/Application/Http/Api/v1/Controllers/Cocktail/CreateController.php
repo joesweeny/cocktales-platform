@@ -5,7 +5,7 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Cocktail;
 use Cocktales\Boundary\Cocktail\Command\CreateCocktailCommand;
 use Cocktales\Domain\Cocktail\Exception\DuplicateNameException;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CreateController

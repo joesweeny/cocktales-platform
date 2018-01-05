@@ -4,8 +4,8 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
 use Cocktales\Boundary\User\Command\GetUserByIdCommand;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class GetController

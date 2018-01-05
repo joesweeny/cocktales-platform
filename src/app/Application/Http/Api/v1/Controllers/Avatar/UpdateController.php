@@ -4,7 +4,7 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Avatar;
 
 use Cocktales\Boundary\Avatar\Command\UpdateAvatarCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
-use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 

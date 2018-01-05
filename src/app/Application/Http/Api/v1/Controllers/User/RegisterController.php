@@ -4,10 +4,10 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
 use Cocktales\Boundary\Session\Command\CreateSessionTokenCommand;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Boundary\User\Command\RegisterUserCommand;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RegisterController

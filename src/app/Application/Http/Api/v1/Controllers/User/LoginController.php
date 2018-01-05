@@ -6,8 +6,8 @@ use Cocktales\Boundary\Session\Command\CreateSessionTokenCommand;
 use Cocktales\Boundary\User\Command\ValidateUserCredentialsCommand;
 use Cocktales\Domain\User\Exception\UserValidationException;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class LoginController

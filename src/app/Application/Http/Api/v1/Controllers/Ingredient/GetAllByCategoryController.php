@@ -4,7 +4,7 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Ingredient;
 
 use Cocktales\Boundary\Ingredient\Command\GetIngredientsSortedByCategoryCommand;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 
 class GetAllByCategoryController
 {

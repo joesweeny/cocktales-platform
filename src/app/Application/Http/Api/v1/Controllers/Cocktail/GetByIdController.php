@@ -4,8 +4,8 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Cocktail;
 
 use Cocktales\Boundary\Cocktail\Command\GetCocktailByIdCommand;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class GetByIdController

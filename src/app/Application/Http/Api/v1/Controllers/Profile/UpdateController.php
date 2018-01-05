@@ -3,11 +3,10 @@
 namespace Cocktales\Application\Http\Api\v1\Controllers\Profile;
 
 use Cocktales\Boundary\Profile\Command\UpdateProfileCommand;
-use Cocktales\Domain\Profile\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\UsernameValidationException;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class UpdateController

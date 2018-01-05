@@ -3,12 +3,11 @@
 namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
 use Cocktales\Boundary\User\Command\UpdateUserCommand;
-use Cocktales\Domain\User\Hydration\Hydrator;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\UserEmailValidationException;
 use Cocktales\Framework\Exception\UserPasswordValidationException;
+use Cocktales\Framework\JsendResponse\JsendResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class UpdateController

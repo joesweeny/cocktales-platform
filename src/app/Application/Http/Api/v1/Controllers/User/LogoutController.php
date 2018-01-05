@@ -4,7 +4,10 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
 use Cocktales\Boundary\User\Command\LogoutUserCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
-use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
+use Cocktales\Framework\JsendResponse\JsendError;
+use Cocktales\Framework\JsendResponse\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 
@@ -35,11 +38,14 @@ class LogoutController
                 'token' => $token,
                 'userId' => $userId
             ]);
-            return JsendResponse::fail('Unable to verify');
+            return new JsendBadRequestResponse([
+                    new JsendError('Unable to verify credentials')
+                ]
+            );
         }
 
         $this->bus->execute(new LogoutUserCommand($token, $userId));
 
-        return JsendResponse::success();
+        return new JsendSuccessResponse();
     }
 }

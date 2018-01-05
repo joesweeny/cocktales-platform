@@ -49,7 +49,7 @@ class CreateControllerIntegrationTest extends TestCase
             '/api/v1/cocktail/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "userId": "a88cffac-f628-445c-9f55-ae99a0542fe6",
+                "user_id": "a88cffac-f628-445c-9f55-ae99a0542fe6",
                 "cocktail": {
                         "name": "Sex on the Beach",
                         "origin": "Ibiza"
@@ -86,6 +86,7 @@ class CreateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Sex on the Beach', $jsend->data->cocktail->name);
     }
 
@@ -102,7 +103,7 @@ class CreateControllerIntegrationTest extends TestCase
             '/api/v1/cocktail/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "userId": "a88cffac-f628-445c-9f55-ae99a0542fe6",
+                "user_id": "a88cffac-f628-445c-9f55-ae99a0542fe6",
                 "cocktail": {
                         "name": "Sex on the Beach",
                         "origin": "Ibiza"
@@ -141,7 +142,57 @@ class CreateControllerIntegrationTest extends TestCase
         $this->assertEquals('error', $jsend->status);
         $this->assertEquals(
             'A Cocktail with the name Sex on the Beach already exists - please choose another name',
-            $jsend->data->error
+            $jsend->data->errors[0]->message
         );
+    }
+
+    public function test_error_response_returned_with_detailed_errors_if_information_is_missing()
+    {
+        $request = new ServerRequest(
+            'POST',
+            '/api/v1/cocktail/create',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertCount(8, $jsend->data->errors);
+    }
+
+    public function test_error_response_returned_with_detailed_errors_if_information_in_is_an_incorrect_format()
+    {
+        $request = new ServerRequest(
+            'POST',
+            '/api/v1/cocktail/create',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{
+                "user_id": "a88cffac-f628-445c-9f55-ae99a0542fe6",
+                "cocktail": "Sex on the Beach",
+                "ingredients": 
+                    {
+                        "id": "801194b1-11d2-47ec-bf5b-38ddc4a4cd69",
+                        "orderNumber": 1,
+                        "quantity": 50,
+                        "measurement": "ml"
+                    },
+                "instructions":
+                    {
+                        "orderNumber": 1,
+                        "text": "Shake well"
+                    }
+            }'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertCount(4, $jsend->data->errors);
     }
 }

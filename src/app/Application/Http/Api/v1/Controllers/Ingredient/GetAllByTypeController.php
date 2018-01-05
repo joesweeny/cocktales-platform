@@ -4,7 +4,8 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Ingredient;
 
 use Cocktales\Boundary\Ingredient\Command\GetIngredientsSortedByTypeCommand;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 
 class GetAllByTypeController
 {
@@ -12,7 +13,7 @@ class GetAllByTypeController
 
     public function __invoke(): JsendResponse
     {
-        return JsendResponse::success([
+        return new JsendSuccessResponse([
             'allIngredientsByType' => $this->bus->execute(new GetIngredientsSortedByTypeCommand)
         ]);
     }

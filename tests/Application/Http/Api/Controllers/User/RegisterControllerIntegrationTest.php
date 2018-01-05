@@ -35,10 +35,11 @@ class RegisterControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('joe@email.com', $jsend->data->user->email);
     }
 
-    public function test_fail_response_is_received_if_user_creation_process_fails()
+    public function test_error_response_is_returned_if_user_creation_process_fails()
     {
         $this->container->get(UserOrchestrator::class)->createUser(
             (new User)->setEmail('joe@email.com')->setPasswordHash(PasswordHash::createFromRaw('pass')));
@@ -50,6 +51,7 @@ class RegisterControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('error', $jsend->status);
-        $this->assertEquals('A user has already registered with this email address', $jsend->data->error);
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('A user has already registered with this email address', $jsend->data->errors[0]->message);
     }
 }

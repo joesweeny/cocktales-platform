@@ -50,7 +50,7 @@ class UpdateControllerIntegrationTest extends TestCase
             '/api/v1/avatar/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-               "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481" 
+               "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85" 
             }'
         ))->withUploadedFiles([
             'avatar' => new UploadedFile('./src/public/img/default_avatar.jpg', 22000, UPLOAD_ERR_OK, 'default_avatar.jpg', 'image/jpeg')
@@ -61,7 +61,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
-        $this->assertEquals('8897fa60-e66f-41fb-86a2-9828b1785481.jpg', $jsend->data->avatar->filename);
+        $this->assertEquals('f530caab-1767-4f0c-a669-331a7bf0fc85.jpg', $jsend->data->avatar->filename);
 
         $this->deleteDirectory();
     }
@@ -75,7 +75,7 @@ class UpdateControllerIntegrationTest extends TestCase
             '/api/v1/avatar/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-               "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481" 
+               "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85" 
             }'
         ))->withUploadedFiles([
             'avatar' => new UploadedFile('./src/public/img/default_avatar.png', 22000, UPLOAD_ERR_OK, 'default_avatar.png', 'image/png')
@@ -86,10 +86,51 @@ class UpdateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
-        $this->assertEquals('8897fa60-e66f-41fb-86a2-9828b1785481.png', $jsend->data->avatar->filename);
+        $this->assertEquals('f530caab-1767-4f0c-a669-331a7bf0fc85.png', $jsend->data->avatar->filename);
 
         $this->deleteDirectory();
     }
+
+    public function test_error_response_is_return_if_either_user_id_or_avatar_file_is_missing_from_request()
+    {
+        $request = new ServerRequest(
+            'post',
+            '/api/v1/avatar/update',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertCount(2, $jsend->data->errors);
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required file 'avatar' is missing", $jsend->data->errors[1]->message);
+    }
+
+    public function test_404_response_returned_if_user_id_is_not_a_valid_user_id()
+    {
+      $request = (new ServerRequest(
+            'post',
+            '/api/v1/avatar/update',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{
+               "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85" 
+            }'
+        ))->withUploadedFiles([
+            'avatar' => new UploadedFile('./src/public/img/default_avatar.png', 22000, UPLOAD_ERR_OK, 'default_avatar.png', 'image/png')
+        ]);
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
 
     private function createAvatar()
     {
@@ -98,7 +139,7 @@ class UpdateControllerIntegrationTest extends TestCase
             '/api/v1/avatar/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-               "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481" 
+               "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85" 
             }'
         ))->withUploadedFiles([
             'avatar' => new UploadedFile('./src/public/img/default_avatar.jpg', 22000, UPLOAD_ERR_OK, 'default_avatar.jpg', 'image/jpeg')

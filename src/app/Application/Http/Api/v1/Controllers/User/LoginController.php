@@ -6,8 +6,13 @@ use Cocktales\Boundary\Session\Command\CreateSessionTokenCommand;
 use Cocktales\Boundary\User\Command\ValidateUserCredentialsCommand;
 use Cocktales\Domain\User\Exception\UserValidationException;
 use Cocktales\Framework\Controller\ControllerService;
-use Cocktales\Framework\Controller\JsendResponse;
 use Cocktales\Framework\Exception\NotFoundException;
+use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
+use Cocktales\Framework\JsendResponse\JsendError;
+use Cocktales\Framework\JsendResponse\JsendErrorResponse;
+use Cocktales\Framework\JsendResponse\JsendNotFoundResponse;
+use Cocktales\Framework\JsendResponse\JsendResponse;
+use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class LoginController
@@ -18,27 +23,39 @@ class LoginController
     {
         $body = json_decode($request->getBody()->getContents());
 
-        $data = (object) [
-            'email' => $body->email ?? '',
-            'password' => $body->password ?? ''
-        ];
+        $errors = $this->validateRequest($body);
+
+        if (!empty($errors)) {
+            return new JsendBadRequestResponse($errors);
+        }
 
         try {
-            $user = $this->bus->execute(new ValidateUserCredentialsCommand($data->email, $data->password));
+            $user = $this->bus->execute(new ValidateUserCredentialsCommand($body->email, $body->password));
             $token = $this->bus->execute(new CreateSessionTokenCommand($user->id));
 
-            return JsendResponse::success([
+            return new JsendSuccessResponse([
                 'token' => $token,
                 'user' => $user->id
             ]);
-        } catch (UserValidationException $e) {
-            return JsendResponse::error([
-                'error' => 'Unable to verify user credentials'
-            ]);
-        } catch (NotFoundException $e) {
-            return JsendResponse::fail([
-                'error' => 'Unable to verify user credentials'
+        } catch (UserValidationException | NotFoundException $e) {
+            return new JsendErrorResponse([
+                new JsendError('Unable to verify user credentials')
             ]);
         }
+    }
+
+    private function validateRequest($body): array
+    {
+        $errors = [];
+
+        if (!isset($body->email)) {
+            $errors[] = new JsendError("Required field 'email' is missing");
+        }
+
+        if (!isset($body->password)) {
+            $errors[] = new JsendError("Required field 'password' is missing");
+        }
+
+        return $errors;
     }
 }

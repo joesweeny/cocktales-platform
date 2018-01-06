@@ -5,6 +5,7 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 use Cocktales\Boundary\Cocktail\Command\GetCocktailsByIngredientsCommand;
 use Cocktales\Boundary\Cocktail\Serving\Bartender;
 use Cocktales\Domain\Cocktail\CocktailOrchestrator;
+use Cocktales\Framework\Uuid\Uuid;
 
 class GetCocktailsByIngredientsCommandHandler
 {
@@ -29,7 +30,11 @@ class GetCocktailsByIngredientsCommandHandler
      */
     public function handle(GetCocktailsByIngredientsCommand $command): array
     {
-        $cocktails = $this->orchestrator->getCocktailsMatchingIngredients($command->getIngredientIds());
+        $cocktails = $this->orchestrator->getCocktailsMatchingIngredients(
+            array_map(function (string $id) {
+                return new Uuid($id);
+            }, $command->getIngredientIds())
+        );
 
         return $this->bartender->serveMultipleCocktails($cocktails);
     }

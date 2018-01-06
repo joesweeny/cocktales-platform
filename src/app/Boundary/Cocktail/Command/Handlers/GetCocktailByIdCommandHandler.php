@@ -5,7 +5,6 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 use Cocktales\Boundary\Cocktail\Command\GetCocktailByIdCommand;
 use Cocktales\Boundary\Cocktail\Serving\Bartender;
 use Cocktales\Domain\Cocktail\CocktailOrchestrator;
-use Cocktales\Domain\Cocktail\Creation\Mixer;
 
 class GetCocktailByIdCommandHandler
 {
@@ -14,10 +13,6 @@ class GetCocktailByIdCommandHandler
      */
     private $bartender;
     /**
-     * @var Mixer
-     */
-    private $mixer;
-    /**
      * @var CocktailOrchestrator
      */
     private $orchestrator;
@@ -25,20 +20,23 @@ class GetCocktailByIdCommandHandler
     /**
      * GetCocktailByIdCommandHandler constructor.
      * @param Bartender $bartender
-     * @param Mixer $mixer
      * @param CocktailOrchestrator $orchestrator
      */
-    public function __construct(Bartender $bartender, Mixer $mixer, CocktailOrchestrator $orchestrator)
+    public function __construct(Bartender $bartender, CocktailOrchestrator $orchestrator)
     {
         $this->bartender = $bartender;
-        $this->mixer = $mixer;
         $this->orchestrator = $orchestrator;
     }
 
+    /**
+     * @param GetCocktailByIdCommand $command
+     * @return \stdClass
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
     public function handle(GetCocktailByIdCommand $command): \stdClass
     {
-        $cocktail = $this->mixer->mixCocktail($this->orchestrator->getCocktailById($command->getCocktailId()));
-
-        return $this->bartender->serveCocktail($cocktail);
+        return $this->bartender->serveCocktail(
+            $this->orchestrator->getCocktailById($command->getCocktailId())
+        );
     }
 }

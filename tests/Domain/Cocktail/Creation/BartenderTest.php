@@ -232,48 +232,48 @@ class BartenderTest extends TestCase
 
         $drinks = $this->bartender->serveMultipleCocktails($cocktails);
 
-        $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', $drinks->cocktails[0]->cocktail->id);
-        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', $drinks->cocktails[0]->cocktail->userId);
-        $this->assertEquals('The Titty Twister', $drinks->cocktails[0]->cocktail->name);
-        $this->assertEquals('Made in my garage when pissed', $drinks->cocktails[0]->cocktail->origin);
-        $this->assertEquals('2017-03-12', $drinks->cocktails[0]->cocktail->createdAt);
+        $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', $drinks['cocktails'][0]->cocktail->id);
+        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', $drinks['cocktails'][0]->cocktail->userId);
+        $this->assertEquals('The Titty Twister', $drinks['cocktails'][0]->cocktail->name);
+        $this->assertEquals('Made in my garage when pissed', $drinks['cocktails'][0]->cocktail->origin);
+        $this->assertEquals('2017-03-12', $drinks['cocktails'][0]->cocktail->createdAt);
 
-        $this->assertEquals('Smirnoff Red', $drinks->cocktails[0]->ingredients[0]->name);
-        $this->assertEquals(1, $drinks->cocktails[0]->ingredients[0]->order_number);
-        $this->assertEquals(50, $drinks->cocktails[0]->ingredients[0]->quantity);
-        $this->assertEquals('ml', $drinks->cocktails[0]->ingredients[0]->measurement);
+        $this->assertEquals('Smirnoff Red', $drinks['cocktails'][0]->ingredients[0]->name);
+        $this->assertEquals(1, $drinks['cocktails'][0]->ingredients[0]->order_number);
+        $this->assertEquals(50, $drinks['cocktails'][0]->ingredients[0]->quantity);
+        $this->assertEquals('ml', $drinks['cocktails'][0]->ingredients[0]->measurement);
 
-        $this->assertEquals('Smirnoff Black', $drinks->cocktails[0]->ingredients[1]->name);
-        $this->assertEquals(2, $drinks->cocktails[0]->ingredients[1]->order_number);
-        $this->assertEquals(2, $drinks->cocktails[0]->ingredients[1]->quantity);
-        $this->assertEquals('oz', $drinks->cocktails[0]->ingredients[1]->measurement);
+        $this->assertEquals('Smirnoff Black', $drinks['cocktails'][0]->ingredients[1]->name);
+        $this->assertEquals(2, $drinks['cocktails'][0]->ingredients[1]->order_number);
+        $this->assertEquals(2, $drinks['cocktails'][0]->ingredients[1]->quantity);
+        $this->assertEquals('oz', $drinks['cocktails'][0]->ingredients[1]->measurement);
 
-        $this->assertEquals(1, $drinks->cocktails[0]->instructions[0]->number);
-        $this->assertEquals('Pour into glass', $drinks->cocktails[0]->instructions[0]->text);
+        $this->assertEquals(1, $drinks['cocktails'][0]->instructions[0]->number);
+        $this->assertEquals('Pour into glass', $drinks['cocktails'][0]->instructions[0]->text);
 
-        $this->assertEquals(2, $drinks->cocktails[0]->instructions[1]->number);
-        $this->assertEquals('Drink', $drinks->cocktails[0]->instructions[1]->text);
+        $this->assertEquals(2, $drinks['cocktails'][0]->instructions[1]->number);
+        $this->assertEquals('Drink', $drinks['cocktails'][0]->instructions[1]->text);
 
-        $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', $drinks->cocktails[1]->cocktail->id);
-        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', $drinks->cocktails[1]->cocktail->userId);
-        $this->assertEquals('The Titty Twister', $drinks->cocktails[1]->cocktail->name);
-        $this->assertEquals('Made in my garage when pissed', $drinks->cocktails[1]->cocktail->origin);
-        $this->assertEquals('2017-03-12', $drinks->cocktails[1]->cocktail->createdAt);
+        $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', $drinks['cocktails'][1]->cocktail->id);
+        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', $drinks['cocktails'][1]->cocktail->userId);
+        $this->assertEquals('The Titty Twister', $drinks['cocktails'][1]->cocktail->name);
+        $this->assertEquals('Made in my garage when pissed', $drinks['cocktails'][1]->cocktail->origin);
+        $this->assertEquals('2017-03-12', $drinks['cocktails'][1]->cocktail->createdAt);
 
-        $this->assertEquals('Smirnoff Red', $drinks->cocktails[1]->ingredients[0]->name);
-        $this->assertEquals(1, $drinks->cocktails[1]->ingredients[0]->order_number);
-        $this->assertEquals(50, $drinks->cocktails[1]->ingredients[0]->quantity);
-        $this->assertEquals('ml', $drinks->cocktails[1]->ingredients[0]->measurement);
+        $this->assertEquals('Smirnoff Red', $drinks['cocktails'][1]->ingredients[0]->name);
+        $this->assertEquals(1, $drinks['cocktails'][1]->ingredients[0]->order_number);
+        $this->assertEquals(50, $drinks['cocktails'][1]->ingredients[0]->quantity);
+        $this->assertEquals('ml', $drinks['cocktails'][1]->ingredients[0]->measurement);
 
-        $this->assertEquals('Smirnoff Black', $drinks->cocktails[1]->ingredients[1]->name);
-        $this->assertEquals(2, $drinks->cocktails[1]->ingredients[1]->order_number);
-        $this->assertEquals(2, $drinks->cocktails[1]->ingredients[1]->quantity);
-        $this->assertEquals('oz', $drinks->cocktails[1]->ingredients[1]->measurement);
+        $this->assertEquals('Smirnoff Black', $drinks['cocktails'][1]->ingredients[1]->name);
+        $this->assertEquals(2, $drinks['cocktails'][1]->ingredients[1]->order_number);
+        $this->assertEquals(2, $drinks['cocktails'][1]->ingredients[1]->quantity);
+        $this->assertEquals('oz', $drinks['cocktails'][1]->ingredients[1]->measurement);
 
-        $this->assertEquals(1, $drinks->cocktails[1]->instructions[0]->number);
-        $this->assertEquals('Pour into glass', $drinks->cocktails[1]->instructions[0]->text);
+        $this->assertEquals(1, $drinks['cocktails'][1]->instructions[0]->number);
+        $this->assertEquals('Pour into glass', $drinks['cocktails'][1]->instructions[0]->text);
 
-        $this->assertEquals(2, $drinks->cocktails[1]->instructions[1]->number);
-        $this->assertEquals('Drink', $drinks->cocktails[1]->instructions[1]->text);
+        $this->assertEquals(2, $drinks['cocktails'][1]->instructions[1]->number);
+        $this->assertEquals('Drink', $drinks['cocktails'][1]->instructions[1]->text);
     }
 }

@@ -121,7 +121,10 @@ class IlluminateDbCocktailRepository implements Repository
             ->setInstructions($this->instructionRepo->getInstructions($cocktail->getId()));
     }
 
-    public function getCocktailsMatchingIngredients(array $ingredientIds)
+    /**
+     * @inheritdoc
+     */
+    public function getCocktailsMatchingIngredients(array $ingredientIds): Collection
     {
         $ingredientIds = array_map(function (Uuid $id) {
                 return $id->toBinary();

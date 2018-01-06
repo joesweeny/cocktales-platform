@@ -5,7 +5,6 @@ namespace Cocktales\Boundary\Cocktail\Command\Handlers;
 use Cocktales\Boundary\Cocktail\Command\GetCocktailsByUserCommand;
 use Cocktales\Boundary\Cocktail\Serving\Bartender;
 use Cocktales\Domain\Cocktail\CocktailOrchestrator;
-use Cocktales\Domain\Cocktail\Creation\Mixer;
 use Illuminate\Support\Collection;
 
 class GetCocktailsByUserCommandHandler
@@ -15,10 +14,6 @@ class GetCocktailsByUserCommandHandler
      */
     private $orchestrator;
     /**
-     * @var Mixer
-     */
-    private $mixer;
-    /**
      * @var Bartender
      */
     private $bartender;
@@ -26,22 +21,20 @@ class GetCocktailsByUserCommandHandler
     /**
      * GetCocktailsByUserCommandHandler constructor.
      * @param CocktailOrchestrator $orchestrator
-     * @param Mixer $mixer
      * @param Bartender $bartender
      */
-    public function __construct(CocktailOrchestrator $orchestrator, Mixer $mixer, Bartender $bartender)
+    public function __construct(CocktailOrchestrator $orchestrator, Bartender $bartender)
     {
         $this->orchestrator = $orchestrator;
-        $this->mixer = $mixer;
         $this->bartender = $bartender;
     }
 
-    public function handle(GetCocktailsByUserCommand $command): \stdClass
+    public function handle(GetCocktailsByUserCommand $command): array
     {
         $mixedCocktails = new Collection();
 
         foreach ($this->orchestrator->getCocktailsByUserId($command->getUserId()) as $cocktail) {
-            $mixedCocktails->push($this->mixer->mixCocktail($cocktail));
+            $mixedCocktails->push($cocktail);
         }
 
         return $this->bartender->serveMultipleCocktails($mixedCocktails);

@@ -63,6 +63,11 @@ class CocktailOrchestrator
         return $this->repository->getCocktailByName($name);
     }
 
+    public function getCocktailsMatchingIngredients(array $ingredientIds): Collection
+    {
+        return $this->repository->getCocktailsMatchingIngredients($ingredientIds);
+    }
+
     /**
      * @param Cocktail $cocktail
      * @return bool

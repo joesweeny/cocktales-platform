@@ -45,6 +45,7 @@ interface Repository
 
     /**
      * @param array $ingredientIds
+     * @return Collection|Cocktail[]
      */
-    public function getCocktailsMatchingIngredients(array $ingredientIds);
+    public function getCocktailsMatchingIngredients(array $ingredientIds): Collection;
 }

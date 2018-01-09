@@ -4,37 +4,36 @@ namespace Cocktales\Boundary\Avatar\Command;
 
 use Cocktales\Framework\CommandBus\Command;
 use Cocktales\Framework\Uuid\Uuid;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UpdateAvatarCommand implements Command
 {
     /**
-     * @var Uuid
+     * @var string
      */
     private $userId;
     /**
-     * @var UploadedFile
+     * @var string
      */
-    private $file;
+    private $fileContents;
 
     /**
      * UpdateAvatarCommand constructor.
      * @param string $userId
-     * @param UploadedFile $file
+     * @param string $fileContents
      */
-    public function __construct(string $userId, UploadedFile $file)
+    public function __construct(string $userId, string $fileContents)
     {
-        $this->userId = new Uuid($userId);
-        $this->file = $file;
+        $this->userId = $userId;
+        $this->fileContents = $fileContents;
     }
 
     public function getUserId(): Uuid
     {
-        return $this->userId;
+        return new Uuid($this->userId);
     }
 
-    public function getFile(): UploadedFile
+    public function getFileContents(): string
     {
-        return $this->file;
+        return $this->fileContents;
     }
 }

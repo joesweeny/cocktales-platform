@@ -2,6 +2,7 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\Profile;
 
+use Cocktales\Bootstrap\Config;
 use Cocktales\Domain\Profile\Entity\Profile;
 use Cocktales\Domain\Profile\ProfileOrchestrator;
 use Cocktales\Domain\Session\Entity\SessionToken;
@@ -36,6 +37,7 @@ class CreateControllerIntegrationTest extends TestCase
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->orchestrator = $this->container->get(ProfileOrchestrator::class);
+        $this->container->get(Config::class)->set('log.logger', 'null');
         $this->user = $this->container->get(UserOrchestrator::class)->createUser(
             (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
         );
@@ -49,7 +51,7 @@ class CreateControllerIntegrationTest extends TestCase
             '/api/v1/profile/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481",
+                "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85",
                 "username":"joe",
                 "first_name":"Joe",
                 "last_name":"Sweeny",
@@ -80,7 +82,7 @@ class CreateControllerIntegrationTest extends TestCase
             '/api/v1/profile/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "user_id":"8897fa60-e66f-41fb-86a2-9828b1785481",
+                "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85",
                 "username":"joe",
                 "first_name":"Joe",
                 "last_name":"Sweeny",

@@ -2,24 +2,13 @@
 
 namespace Cocktales\Domain\Avatar;
 
-use Cocktales\Domain\Avatar\Entity\Avatar;
-use Cocktales\Domain\Avatar\Persistence\Repository;
-use Cocktales\Framework\Image\ImageOptimizer;
+use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
-use Intervention\Image\Image;
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AvatarOrchestrator
 {
-    /**
-     * @var Repository
-     */
-    private $repository;
-    /**
-     * @var ImageOptimizer
-     */
-    private $optimizer;
     /**
      * @var Filesystem
      */
@@ -27,83 +16,51 @@ class AvatarOrchestrator
 
     /**
      * AvatarOrchestrator constructor.
-     * @param Repository $repository
-     * @param ImageOptimizer $optimizer
      * @param Filesystem $filesystem
      */
-    public function __construct(Repository $repository, ImageOptimizer $optimizer, Filesystem $filesystem)
+    public function __construct(Filesystem $filesystem)
     {
-        $this->repository = $repository;
-        $this->optimizer = $optimizer;
         $this->filesystem = $filesystem;
     }
 
     /**
-     * @param Avatar $avatar
-     * @return Avatar
-     * @throws \Cocktales\Domain\Avatar\Exception\AvatarRepositoryException
+     * @param Uuid $userId
+     * @param string $contents
      */
-    public function createAvatar(Avatar $avatar): Avatar
+    public function createAvatar(Uuid $userId, string $contents): void
     {
-        return $this->repository->createAvatar($avatar);
+        $this->filesystem->put("/avatar/{$userId}", $contents);
     }
 
     /**
      * @param Uuid $userId
-     * @return Avatar
+     * @return string
      * @throws \Cocktales\Framework\Exception\NotFoundException
      */
-    public function getAvatarByUserId(Uuid $userId): Avatar
+    public function getAvatarByUserId(Uuid $userId): string
     {
-        return $this->repository->getAvatarByUserId($userId);
+        if (!$this->filesystem->has("/avatar/{$userId}")) {
+            throw new NotFoundException("Avatar for User {$userId} does not exist");
+        }
+
+        try {
+            if (!$content = $this->filesystem->read("/avatar/{$userId}")) {
+                throw new NotFoundException("Unable to retrieve avatar file contents for User {$userId}");
+            }
+        } catch (FileNotFoundException $e) {
+            throw new NotFoundException("Avatar for User {$userId} does not exist");
+        }
+
+        return $content;
     }
 
     /**
      * @param Uuid $userId
-     * @param callable $updater
-     * @return Avatar
-     * @throws \Cocktales\Framework\Exception\NotFoundException
-     */
-    public function updateAvatar(Uuid $userId, callable $updater): Avatar
-    {
-        return $this->repository->updateAvatar($userId, $updater);
-    }
-
-    /**
-     * @param UploadedFile $file
-     * @param string $path
+     * @param string $contents
      * @return void
      */
-    public function saveThumbnailToStorage(UploadedFile $file, string $path): void
+    public function updateAvatar(Uuid $userId, string $contents): void
     {
-        $this->filesystem->put($path, $this->createThumbnail($file)->stream()->__toString());
-    }
-
-    /**
-     * @param UploadedFile $file
-     * @param string $path
-     * @return void
-     */
-    public function saveStandardSizeToStorage(UploadedFile $file, string $path): void
-    {
-        $this->filesystem->put($path, $this->createStandardSize($file)->stream()->__toString());
-    }
-
-    /**
-     * @param UploadedFile $file
-     * @return \Intervention\Image\Image
-     */
-    private function createThumbnail(UploadedFile $file): Image
-    {
-        return $this->optimizer->createThumbnail($file);
-    }
-
-    /**
-     * @param UploadedFile $file
-     * @return Image
-     */
-    private function createStandardSize(UploadedFile $file): Image
-    {
-        return $this->optimizer->createStandardSize($file);
+        $this->filesystem->put("/avatar/{$userId}", $contents);
     }
 }

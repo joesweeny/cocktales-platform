@@ -37,7 +37,8 @@ class GetController
             ]);
 
         } catch (NotFoundException $e) {
-            return new JsendNotFoundResponse();
+            return new JsendNotFoundResponse([new JsendError("Avatar linked to User {$body->user_id} does not exist")]
+            );
         }
     }
 }

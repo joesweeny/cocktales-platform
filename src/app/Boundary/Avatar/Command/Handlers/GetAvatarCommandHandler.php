@@ -2,7 +2,6 @@
 
 namespace Cocktales\Boundary\Avatar\Command\Handlers;
 
-use Cocktales\Boundary\Avatar\AvatarPresenter;
 use Cocktales\Boundary\Avatar\Command\GetAvatarCommand;
 use Cocktales\Domain\Avatar\AvatarOrchestrator;
 
@@ -12,31 +11,23 @@ class GetAvatarCommandHandler
      * @var AvatarOrchestrator
      */
     private $orchestrator;
-    /**
-     * @var AvatarPresenter
-     */
-    private $presenter;
 
     /**
      * GetAvatarCommandHandler constructor.
      * @param AvatarOrchestrator $orchestrator
-     * @param AvatarPresenter $presenter
      */
-    public function __construct(AvatarOrchestrator $orchestrator, AvatarPresenter $presenter)
+    public function __construct(AvatarOrchestrator $orchestrator)
     {
         $this->orchestrator = $orchestrator;
-        $this->presenter = $presenter;
     }
 
     /**
      * @param GetAvatarCommand $command
-     * @return \stdClass
      * @throws \Cocktales\Framework\Exception\NotFoundException
+     * @return string
      */
-    public function handle(GetAvatarCommand $command): \stdClass
+    public function handle(GetAvatarCommand $command): string
     {
-        return $this->presenter->toDto(
-            $this->orchestrator->getAvatarByUserId($command->getUserId())
-        );
+        return $this->orchestrator->getAvatarByUserId($command->getUserId());
     }
 }

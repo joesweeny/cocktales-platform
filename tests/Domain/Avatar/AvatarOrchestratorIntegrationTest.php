@@ -2,19 +2,13 @@
 
 namespace Cocktales\Domain\Avatar;
 
-use Cocktales\Bootstrap\ConfigFactory;
-use Cocktales\Bootstrap\ContainerFactory;
-use Cocktales\Domain\Avatar\Entity\Avatar;
-use Cocktales\Domain\Avatar\Exception\AvatarRepositoryException;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Uuid\Uuid;
 use Cocktales\Testing\Traits\RunsMigrations;
 use Cocktales\Testing\Traits\UsesContainer;
-use Illuminate\Database\Connection;
 use Interop\Container\ContainerInterface;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AvatarOrchestratorIntegrationTest extends TestCase
 {
@@ -23,8 +17,6 @@ class AvatarOrchestratorIntegrationTest extends TestCase
 
     /** @var  ContainerInterface */
     private $container;
-    /** @var  Connection */
-    private $connection;
     /** @var  AvatarOrchestrator */
     private $orchestrator;
     /** @var  Filesystem */
@@ -33,139 +25,68 @@ class AvatarOrchestratorIntegrationTest extends TestCase
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
-        $this->connection = $this->container->get(Connection::class);
         $this->orchestrator = $this->container->get(AvatarOrchestrator::class);
         $this->filesystem = $this->container->get(Filesystem::class);
     }
 
-    public function test_create_avatar_increases_table_count()
+    public function test_create_avatar_saves_contents_to_filesystem_saved_against_user_id()
     {
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setFilename('filename.jpg'));
+        $this->orchestrator->createAvatar($id = new Uuid('1ce824b0-76ba-4efe-8c63-e692b702c9bf'), 'Some image content string');
 
-        $total = $this->connection->table('avatar')->get();
+        $this->assertTrue($this->filesystem->has('/avatar/1ce824b0-76ba-4efe-8c63-e692b702c9bf'));
 
-        $this->assertCount(1, $total);
-
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('6aa4e7ac-ad89-4184-aba5-d3c9744ac6cf'))
-            ->setFilename('filename.jpg'));
-
-        $total = $this->connection->table('avatar')->get();
-
-        $this->assertCount(2, $total);
+        $this->removeFiles('/avatar/' . (string) $id);
     }
 
-    public function test_exception_is_thrown_if_attempting_to_create_an_avatar_for_a_user_that_already_has_one()
+    public function test_an_avatar_can_be_saved_and_retrieved_from_storage()
     {
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setFilename('filename.jpg'));
+        $this->orchestrator->createAvatar($id = new Uuid('1ce824b0-76ba-4efe-8c63-e692b702c9bf'), 'Some image content string');
 
-        $this->expectException(AvatarRepositoryException::class);
-        $this->expectExceptionMessage('Avatar with User ID dc5b6421-d452-4862-b741-d43383c3fe1d already exists');
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setFilename('filename.jpg'));
+        $fetched = $this->orchestrator->getAvatarByUserId($id);
+
+        $this->assertEquals('Some image content string', $fetched);
+
+        $this->removeFiles('/avatar/' . (string) $id);
     }
 
-    public function test_thumbnail_image_is_created_and_save_to_storage()
-    {
-        $file = new UploadedFile('./src/public/img/default_avatar.jpg', 'default_avatar.jpg', 'image/jpeg', 22000, UPLOAD_ERR_OK, true);
-
-        $this->orchestrator->saveThumbnailToStorage($file, $newFile = '/tests/test.jpg');
-
-        $this->assertFileExists('./src/public/img/tests/test.jpg');
-
-        $this->removeFiles($newFile);
-    }
-
-    public function test_standard_image_is_created_and_save_to_storage()
-    {
-        $file = new UploadedFile('./src/public/img/default_avatar.jpg', 'default_avatar.jpg', 'image/jpeg', 22000, UPLOAD_ERR_OK, true);
-
-        $this->orchestrator->saveThumbnailToStorage($file, $newFile = '/tests/test.jpg');
-
-        $this->assertFileExists('./src/public/img/tests/test.jpg');
-
-        $this->removeFiles($newFile);
-    }
-
-    public function test_avatar_can_be_retrieved_by_user_id()
-    {
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setFilename('filename.jpg'));
-
-        $fetched = $this->orchestrator->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
-
-        $this->assertEquals('filename.jpg', $fetched->getFilename());
-    }
-
-    public function test_exception_is_thrown_if_avatar_user_id_does_not_exist()
+    public function test_exception_is_thrown_if_avatar_file_does_not_exist()
     {
         $this->expectException(NotFoundException::class);
-        $this->expectExceptionMessage('Avatar with User ID dc5b6421-d452-4862-b741-d43383c3fe1d does not exist');
-        $this->orchestrator->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
+        $this->expectExceptionMessage('Avatar for User 1ce824b0-76ba-4efe-8c63-e692b702c9bf does not exist');
+        $this->orchestrator->getAvatarByUserId(new Uuid('1ce824b0-76ba-4efe-8c63-e692b702c9bf'));
     }
 
-    public function test_avatar_can_be_updated()
+    public function test_exception_is_thrown_if_avatar_file_contents_is_empty()
     {
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setFilename('filename.jpg'));
+        $this->orchestrator->createAvatar($id = new Uuid('1ce824b0-76ba-4efe-8c63-e692b702c9bf'), '');
 
-        $this->orchestrator->updateAvatar(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'), function (Avatar $avatar) {
-            $avatar->setFilename('filename.png');
-        });
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Unable to retrieve avatar file contents for User 1ce824b0-76ba-4efe-8c63-e692b702c9bf');
+        $this->orchestrator->getAvatarByUserId(new Uuid('1ce824b0-76ba-4efe-8c63-e692b702c9bf'));
 
-        $fetched = $this->orchestrator->getAvatarByUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'));
-
-        $this->assertEquals('filename.png', $fetched->getFilename());
+        $this->removeFiles('/avatar/' . (string) $id);
     }
 
-    public function test_thumbnail_image_is_created_and_save_to_storage_in_amazon_S3()
+    public function test_update_avatar_updates_file_contents()
     {
-        $this->markTestSkipped('Only test when AWS required');
+        $this->orchestrator->createAvatar($id = new Uuid('1ce824b0-76ba-4efe-8c63-e692b702c9bf'), 'Some image content string');
 
-        $container = (new ContainerFactory)->create(ConfigFactory::create()->set('aws.filesystem_enabled', true));
+        $fetched = $this->orchestrator->getAvatarByUserId($id);
 
-        $orchestrator = $container->get(AvatarOrchestrator::class);
+        $this->assertEquals('Some image content string', $fetched);
 
-        $filesystem = $container->get(Filesystem::class);
+        $this->orchestrator->updateAvatar($id = new Uuid('1ce824b0-76ba-4efe-8c63-e692b702c9bf'), 'New Content');
 
-        $file = new UploadedFile('./src/public/img/default_avatar.jpg', 'default_avatar.jpg', 'image/jpeg', 22000, UPLOAD_ERR_OK, true);
+        $fetched = $this->orchestrator->getAvatarByUserId($id);
 
-        $orchestrator->saveThumbnailToStorage($file, $newFile = '/tests/test.jpg');
+        $this->assertEquals('New Content', $fetched);
 
-        $this->assertTrue($filesystem->has('/tests/test.jpg'));
-
-        $this->removeFiles($newFile);
-    }
-
-    public function test_standard_image_is_created_and_save_to_storage_in_amazon_S3()
-    {
-        $this->markTestSkipped('Only test when AWS required');
-
-        $container = (new ContainerFactory)->create(ConfigFactory::create()->set('aws.filesystem_enabled', true));
-
-        $orchestrator = $container->get(AvatarOrchestrator::class);
-
-        $filesystem = $container->get(Filesystem::class);
-
-        $file = new UploadedFile('./src/public/img/default_avatar.jpg', 'default_avatar.jpg', 'image/jpeg', 22000, UPLOAD_ERR_OK, true);
-
-        $orchestrator->saveStandardSizeToStorage($file, $newFile = '/tests/test.jpg');
-
-        $this->assertTrue($filesystem->has('/tests/test.jpg'));
-
-        $this->removeFiles($newFile);
+        $this->removeFiles('/avatar/' . (string) $id);
     }
 
     private function removeFiles(string $file)
     {
         $this->filesystem->delete($file);
-        $this->filesystem->deleteDir('/tests');
+        $this->filesystem->deleteDir('/avatar');
     }
 }

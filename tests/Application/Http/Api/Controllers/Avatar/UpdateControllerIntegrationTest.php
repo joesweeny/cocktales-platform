@@ -3,6 +3,7 @@
 namespace Cocktales\Application\Http\Api\v1\Controllers\Avatar;
 
 use Cocktales\Bootstrap\Config;
+use Cocktales\Domain\Avatar\AvatarOrchestrator;
 use Cocktales\Domain\Session\Entity\SessionToken;
 use Cocktales\Domain\Session\TokenOrchestrator;
 use Cocktales\Domain\User\Entity\User;
@@ -16,7 +17,6 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Container\ContainerInterface;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\TestCase;
-use Zend\Diactoros\UploadedFile;
 
 class UpdateControllerIntegrationTest extends TestCase
 {
@@ -32,11 +32,14 @@ class UpdateControllerIntegrationTest extends TestCase
     private $user;
     /** @var  SessionToken */
     private $token;
+    /** @var  AvatarOrchestrator */
+    private $orchestrator;
 
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->filesystem = $this->container->get(Filesystem::class);
+        $this->orchestrator = $this->container->get(AvatarOrchestrator::class);
         $this->container->get(Config::class)->set('log.logger', 'null');
         $this->user = $this->container->get(UserOrchestrator::class)->createUser(
             (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
@@ -106,7 +109,7 @@ class UpdateControllerIntegrationTest extends TestCase
 
     private function createAvatar()
     {
-        $this->filesystem->put(new Uuid('f530caab-1767-4f0c-a669-331a7bf0fc85'), 'File Content');
+        $this->orchestrator->createAvatar(new Uuid('f530caab-1767-4f0c-a669-331a7bf0fc85'), 'File Content');
     }
 
     private function deleteDirectory()

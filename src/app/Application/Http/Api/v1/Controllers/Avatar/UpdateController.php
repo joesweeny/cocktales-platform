@@ -8,6 +8,7 @@ use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
 use Cocktales\Framework\JsendResponse\JsendErrorResponse;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendNotFoundResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
@@ -39,47 +40,31 @@ class UpdateController
 
     public function __invoke(ServerRequestInterface $request): JsendResponse
     {
-        $symfonyRequest = $this->factory->createRequest($request);
+        $body = json_decode($request->getBody()->getContents());
 
-        $errors = $this->validateRequest(
-            $body = json_decode($symfonyRequest->getContent()),
-            $avatar = $symfonyRequest->files->get('avatar')
-        );
+        $errors = $this->validateRequest($body);
 
         if (!empty($errors)) {
             return new JsendBadRequestResponse($errors);
         }
 
-        if (!$this->verifyUser($userId = $body->user_id, $authId = $request->getHeaderLine('AuthenticationToken'))) {
+        if (($userId = $body->user_id) !== ($authId = $request->getHeaderLine('AuthenticationToken'))) {
             $this->logError($userId, $authId);
-            return new JsendErrorResponse([new JsendError('Server Unavailable')]);
+            return new JsendFailResponse([new JsendError('You are not authorized to perform this action')]);
         }
 
-        try {
-            $avatar = $this->bus->execute(new UpdateAvatarCommand($body->user_id, $avatar));
+        $avatar = $body->format === 'base64' ? base64_decode($body->avatar) : $body->avatar;
 
-            return new JsendSuccessResponse([
-                'avatar' => $avatar
-            ]);
-        } catch (NotFoundException $e) {
-            return new JsendNotFoundResponse([
-                    new JsendError("User ID {$body->user_id} does not exist")
-                ]
-            );
-        }
-    }
+        $this->bus->execute(new UpdateAvatarCommand($body->user_id, $avatar));
 
-    private function verifyUser(string $userId, string $authId): bool
-    {
-        return $userId === $authId;
+        return new JsendSuccessResponse();
     }
 
     /**
      * @param mixed $body
-     * @param mixed $avatar
      * @return array
      */
-    private function validateRequest($body, $avatar): array
+    private function validateRequest($body): array
     {
         $errors = [];
 
@@ -87,8 +72,12 @@ class UpdateController
             $errors[] = new JsendError("Required field 'user_id' is missing");
         }
 
-        if (!$avatar) {
-            $errors[] = new JsendError("Required file 'avatar' is missing");
+        if (!$body->avatar) {
+            $errors[] = new JsendError("Required image 'avatar' is missing");
+        }
+
+        if (!$body->format) {
+            $errors[] = new JsendError("Required field 'format' is missing");
         }
 
         return $errors;

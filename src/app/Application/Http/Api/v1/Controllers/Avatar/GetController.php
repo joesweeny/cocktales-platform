@@ -31,13 +31,14 @@ class GetController
 
         try {
             $avatar = $this->bus->execute(new GetAvatarCommand($body->user_id));
-
+            
             return new JsendSuccessResponse([
                 'avatar' => $avatar
             ]);
 
         } catch (NotFoundException $e) {
-            return new JsendNotFoundResponse();
+            return new JsendNotFoundResponse([new JsendError("Avatar linked to User {$body->user_id} does not exist")]
+            );
         }
     }
 }

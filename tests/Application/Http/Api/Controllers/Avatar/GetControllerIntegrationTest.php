@@ -15,6 +15,7 @@ use Cocktales\Testing\Traits\UsesContainer;
 use Cocktales\Testing\Traits\UsesHttpServer;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Container\ContainerInterface;
+use League\Flysystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 
 class GetControllerIntegrationTest extends TestCase
@@ -31,11 +32,14 @@ class GetControllerIntegrationTest extends TestCase
     private $user;
     /** @var  SessionToken */
     private $token;
+    /** @var  Filesystem */
+    private $filesystem;
 
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->orchestrator = $this->container->get(AvatarOrchestrator::class);
+        $this->filesystem = $this->container->get(Filesystem::class);
         $this->user = $this->container->get(UserOrchestrator::class)->createUser(
             (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
         );
@@ -44,9 +48,7 @@ class GetControllerIntegrationTest extends TestCase
 
     public function test_success_response_is_received_and_avatar_information_returned()
     {
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setFilename('filename.jpg'));
+        $this->orchestrator->createAvatar(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'), 'File Contents');
 
         $request = new ServerRequest(
             'GET',
@@ -60,15 +62,13 @@ class GetControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
-        $this->assertEquals('filename.jpg', $jsend->data->avatar->filename);
+        $this->assertEquals('File Contents', $jsend->data->avatar);
+
+        $this->deleteDirectory();
     }
 
-    public function test_error_response_is_returned_if_user_id_field_is_missing()
+    public function test_400_response_is_returned_if_user_id_field_is_missing()
     {
-        $this->orchestrator->createAvatar((new Avatar)
-            ->setUserId(new Uuid('dc5b6421-d452-4862-b741-d43383c3fe1d'))
-            ->setFilename('filename.jpg'));
-
         $request = new ServerRequest(
             'GET',
             '/api/v1/avatar/get',
@@ -98,5 +98,11 @@ class GetControllerIntegrationTest extends TestCase
 
         $this->assertEquals('not_found', $jsend->status);
         $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals('Avatar linked to User dc5b6421-d452-4862-b741-d43383c3fe1d does not exist', $jsend->data->errors[0]->message);
+    }
+
+    private function deleteDirectory()
+    {
+        $this->filesystem->deleteDir('/avatar');
     }
 }

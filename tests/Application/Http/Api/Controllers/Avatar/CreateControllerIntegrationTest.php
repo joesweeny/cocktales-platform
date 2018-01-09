@@ -14,7 +14,6 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Container\ContainerInterface;
 use League\Flysystem\Filesystem;
 use PHPUnit\Framework\TestCase;
-use Zend\Diactoros\UploadedFile;
 
 class CreateControllerIntegrationTest extends TestCase
 {

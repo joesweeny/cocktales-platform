@@ -8,7 +8,7 @@ use Cocktales\Framework\Uuid\Uuid;
 class UpdateAvatarCommand implements Command
 {
     /**
-     * @var Uuid
+     * @var string
      */
     private $userId;
     /**

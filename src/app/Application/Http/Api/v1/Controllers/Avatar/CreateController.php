@@ -5,6 +5,7 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\Avatar;
 use Cocktales\Boundary\Avatar\Command\CreateAvatarCommand;
 use Cocktales\Domain\Avatar\Exception\AvatarRepositoryException;
 use Cocktales\Framework\CommandBus\CommandBus;
+use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
 use Cocktales\Framework\JsendResponse\JsendErrorResponse;
@@ -16,65 +17,36 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
 class CreateController
 {
-    /**
-     * @var HttpFoundationFactory
-     */
-    private $factory;
-    /**
-     * @var CommandBus
-     */
-    private $bus;
-
-    /**
-     * CreateController constructor.
-     * @param HttpFoundationFactory $factory
-     * @param CommandBus $bus
-     */
-    public function __construct(HttpFoundationFactory $factory, CommandBus $bus)
-    {
-        $this->factory = $factory;
-        $this->bus = $bus;
-    }
+    use ControllerService;
 
     /**
      * @param ServerRequestInterface $request
      * @return JsendResponse
-     * @throws \LogicException
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function __invoke(ServerRequestInterface $request): JsendResponse
     {
-        $request = $this->factory->createRequest($request);
+        $body = json_decode($request->getBody()->getContents());
 
-        $errors = $this->validateRequest(
-            $body = json_decode($request->getContent()),
-            $avatar = $request->files->get('avatar')
-        );
+        $errors = $this->validateRequest($body);
 
         if (!empty($errors)) {
             return new JsendBadRequestResponse($errors);
         }
 
-        try {
-            $avatar = $this->bus->execute(new CreateAvatarCommand($body->user_id, $avatar));
+        $avatar = $body->format === 'base64' ? base64_decode($body->avatar) : $body->avatar;
 
-            return new JsendSuccessResponse([
-                'avatar' => $avatar
-            ]);
+        $this->bus->execute(new CreateAvatarCommand($body->user_id, $avatar));
 
-        } catch (AvatarRepositoryException | FileExistsException $e) {
-            return new JsendErrorResponse([
-                    new JsendError("An avatar already exists for user {$body->user_id}")
-                ]
-            );
-        }
+        return new JsendSuccessResponse;
     }
 
     /**
      * @param mixed $body
-     * @param mixed $avatar
      * @return array
      */
-    private function validateRequest($body, $avatar): array
+    private function validateRequest($body): array
     {
         $errors = [];
 
@@ -82,8 +54,12 @@ class CreateController
             $errors[] = new JsendError("Required field 'user_id' is missing");
         }
 
-        if (!$avatar) {
-            $errors[] = new JsendError("Required file 'avatar' is missing");
+        if (!$body->avatar) {
+            $errors[] = new JsendError("Required image 'avatar' is missing");
+        }
+
+        if (!$body->format) {
+            $errors[] = new JsendError("Required field 'format' is missing");
         }
 
         return $errors;

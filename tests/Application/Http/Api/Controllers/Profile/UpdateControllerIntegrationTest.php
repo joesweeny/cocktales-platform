@@ -2,6 +2,7 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\Profile;
 
+use Cocktales\Bootstrap\Config;
 use Cocktales\Domain\Profile\Entity\Profile;
 use Cocktales\Domain\Profile\ProfileOrchestrator;
 use Cocktales\Domain\Session\Entity\SessionToken;
@@ -36,6 +37,7 @@ class UpdateControllerIntegrationTest extends TestCase
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->orchestrator = $this->container->get(ProfileOrchestrator::class);
+        $this->container->get(Config::class)->set('log.logger', 'null');
         $this->user = $this->container->get(UserOrchestrator::class)->createUser(
             (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
         );

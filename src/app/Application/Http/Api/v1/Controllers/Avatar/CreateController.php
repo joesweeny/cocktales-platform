@@ -9,6 +9,7 @@ use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
 use Cocktales\Framework\JsendResponse\JsendErrorResponse;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use League\Flysystem\FileExistsException;
@@ -33,6 +34,11 @@ class CreateController
 
         if (!empty($errors)) {
             return new JsendBadRequestResponse($errors);
+        }
+
+        if (($userId = $body->user_id) !== ($authId = $request->getHeaderLine('AuthenticationToken'))) {
+            $this->logError($userId, $authId);
+            return new JsendFailResponse([new JsendError('You are not authorized to perform this action')]);
         }
 
         $avatar = $body->format === 'base64' ? base64_decode($body->avatar) : $body->avatar;
@@ -63,5 +69,10 @@ class CreateController
         }
 
         return $errors;
+    }
+
+    private function logError(string $userId, string $authId)
+    {
+        $this->logger->error("User {$authId} has attempted to update Avatar for User {$userId}");
     }
 }

@@ -31,7 +31,7 @@ class GetController
 
         try {
             $avatar = $this->bus->execute(new GetAvatarCommand($body->user_id));
-            
+
             return new JsendSuccessResponse([
                 'avatar' => $avatar
             ]);

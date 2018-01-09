@@ -2,6 +2,7 @@
 
 namespace Cocktales\Application\Http\Api\v1\Controllers\Avatar;
 
+use Cocktales\Bootstrap\Config;
 use Cocktales\Domain\Session\Entity\SessionToken;
 use Cocktales\Domain\Session\TokenOrchestrator;
 use Cocktales\Domain\User\Entity\User;
@@ -36,6 +37,7 @@ class UpdateControllerIntegrationTest extends TestCase
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->filesystem = $this->container->get(Filesystem::class);
+        $this->container->get(Config::class)->set('log.logger', 'null');
         $this->user = $this->container->get(UserOrchestrator::class)->createUser(
             (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
         );

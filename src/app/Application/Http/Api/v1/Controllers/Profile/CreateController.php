@@ -31,6 +31,11 @@ class CreateController
             return new JsendBadRequestResponse($errors);
         }
 
+        if (($userId = $body->user_id) !== ($authId = $request->getHeaderLine('AuthenticationToken'))) {
+            $this->logError($userId, $authId);
+            return new JsendErrorResponse([new JsendError('Server Unavailable')]);
+        }
+
         $data = (object) [
             'user_id' => $body->user_id,
             'username' => $body->username,
@@ -66,5 +71,10 @@ class CreateController
         }
 
         return $errors;
+    }
+
+    private function logError(string $userId, string $authId)
+    {
+        $this->logger->error("User {$authId} has attempted to update profile for User {$userId}");
     }
 }

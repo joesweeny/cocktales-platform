@@ -36,7 +36,7 @@ class UpdateController
 
         if (!$this->verifyUser($userId = $body->user_id, $authId = $request->getHeaderLine('AuthenticationToken'))) {
             $this->logError($userId, $authId);
-            return new JsendErrorResponse([new JsendError('Server Unavailable')]);
+            return new JsendErrorResponse([new JsendError('You are not authorized to perform this action')]);
         }
 
         $data = (object) [

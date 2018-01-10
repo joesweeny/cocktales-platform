@@ -20,7 +20,7 @@ class CreateController
         $body = json_decode($request->getBody()->getContents());
 
         $errors = $this->validateRequest($body);
-        
+
         if (!empty($errors)) {
             return new JsendBadRequestResponse($errors);
         }

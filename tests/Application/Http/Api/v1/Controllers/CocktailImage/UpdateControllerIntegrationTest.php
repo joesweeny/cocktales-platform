@@ -49,22 +49,25 @@ class UpdateControllerIntegrationTest extends TestCase
 
     public function test_success_response_is_received_and_avatar_is_updated()
     {
-        $this->createAvatar();
+        $this->createImage();
 
         $request = new ServerRequest(
             'post',
             '/api/v1/cocktail-image/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", 
-              "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", 
-              "format": "base64",
-              "cocktail_id": "054c755e-8f17-4e21-a64c-cbc8c3fbff34"
-              }'
+            '{
+                "user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", 
+                "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", 
+                "format": "base64",
+                "cocktail_id": "054c755e-8f17-4e21-a64c-cbc8c3fbff34"
+             }'
         );
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
+
+        dd($jsend);
 
         $this->assertEquals('success', $jsend->status);
         $this->assertEquals(200, $response->getStatusCode());
@@ -132,9 +135,9 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->assertEquals("Required field 'image' is missing", $jsend->data->errors[0]->message);
     }
 
-    private function createAvatar()
+    private function createImage()
     {
-        $this->orchestrator->createImage(new Uuid('f530caab-1767-4f0c-a669-331a7bf0fc85'), 'File Content');
+        $this->orchestrator->createImage(new Uuid('054c755e-8f17-4e21-a64c-cbc8c3fbff34'), 'File Content');
     }
 
     private function deleteDirectory()

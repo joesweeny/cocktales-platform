@@ -25,10 +25,10 @@ class UpdateCocktailImageCommandHandler
      */
     public function handle(UpdateCocktailImageCommand $command): void
     {
-        if ($this->orchestrator->imageExists($command->getCocktailId())) {
-            $this->orchestrator->updateImage($command->getCocktailId(), $command->getFileContents());
+        if (!$this->orchestrator->imageExists($command->getCocktailId())) {
+            throw new NotFoundException("Image for Cocktail {$command->getCocktailId()} does not exist");
         }
-        
-        throw new NotFoundException("Image for Cocktail {$command->getCocktailId()} does not exist");
+
+        $this->orchestrator->updateImage($command->getCocktailId(), $command->getFileContents());
     }
 }

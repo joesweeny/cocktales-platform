@@ -87,6 +87,24 @@ class GetControllerIntegrationTest extends TestCase
         );
     }
 
+    public function test_422_response_is_returned_if_user_id_field_is_missing()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/profile/get',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"wrong": "field"}'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+    }
+
     private function createProfile()
     {
         $this->orchestrator->createProfile(

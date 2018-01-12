@@ -7,6 +7,7 @@ use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendNotFoundResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
@@ -25,20 +26,17 @@ class GetController
     {
         $body = json_decode($request->getBody()->getContents());
 
-        if (!isset($body->user_id)) {
-            return new JsendBadRequestResponse([new JsendError("Required field 'user_id' is missing")]);
-        }
-
         try {
             $avatar = $this->bus->execute(new GetAvatarCommand($body->user_id));
 
             return new JsendSuccessResponse([
                 'avatar' => $avatar
             ]);
-
         } catch (NotFoundException $e) {
-            return new JsendNotFoundResponse([new JsendError("Avatar linked to User {$body->user_id} does not exist")]
-            );
+            return (new JsendFailResponse([
+                    new JsendError("Avatar linked to User {$body->user_id} does not exist")
+                ]
+            ))->withStatus(404);
         }
     }
 }

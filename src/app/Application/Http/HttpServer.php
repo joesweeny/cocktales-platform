@@ -3,14 +3,15 @@
 namespace Cocktales\Application\Http;
 
 use Cocktales\Framework\Middleware\ApiGuard;
+use Cocktales\Framework\Middleware\EntityGuard;
 use Cocktales\Framework\Middleware\ErrorHandler;
-use Cocktales\Framework\Middleware\HtmlErrorResponseFactory;
+use Cocktales\Framework\Middleware\JsendResponseFactory;
 use Cocktales\Framework\Middleware\PsrLogger;
+use Cocktales\Framework\Middleware\RequestGuard;
 use Interop\Container\ContainerInterface;
 use Cocktales\Framework\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use PSR7Session\Http\SessionMiddleware;
 use Zend\Diactoros\Response;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
 use Zend\Stratigility\Middleware\OriginalMessages;
@@ -53,11 +54,13 @@ class HttpServer
             ->pipe('/', new CallableMiddlewareWrapper(new OriginalMessages, new Response))
 
             ->pipe('/', new ErrorHandler(
-                $this->container->get(HtmlErrorResponseFactory::class),
+                $this->container->get(JsendResponseFactory::class),
                 $this->container->get(PsrLogger::class)
             ))
 
             ->pipe('/api', $this->container->get(ApiGuard::class))
+            ->pipe('/api', $this->container->get(RequestGuard::class))
+            ->pipe('/api', $this->container->get(EntityGuard::class))
 
             ->process($request, $this->container->get(Router::class));
     }

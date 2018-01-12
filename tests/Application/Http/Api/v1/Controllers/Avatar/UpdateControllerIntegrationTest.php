@@ -55,7 +55,7 @@ class UpdateControllerIntegrationTest extends TestCase
             'post',
             '/api/v1/avatar/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", "avatar": "/9j/4AAQSkZJRgABAQAAAQABAAD/", "format": "base64"}'
+            '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", "format": "base64"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -68,7 +68,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->deleteDirectory();
     }
 
-    public function test_400_response_is_returned_if_either_user_id_or_avatar_or_format_is_missing_from_request()
+    public function test_400_response_is_returned_if_request_body_is_missing()
     {
         $request = new ServerRequest(
             'post',
@@ -80,21 +80,18 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertCount(3, $jsend->data->errors);
-        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
-        $this->assertEquals("Required image 'avatar' is missing", $jsend->data->errors[1]->message);
-        $this->assertEquals("Required field 'format' is missing", $jsend->data->errors[2]->message);
+        $this->assertEquals('No body in request or body is in an incorrect format', $jsend->data->errors[0]->message);
     }
 
-    public function test_401_response_returned_if_user_id_is_not_a_valid_user_id()
+    public function test_422_response_is_returned_if_specific_required_fields_are_missing()
     {
-      $request = new ServerRequest(
+        $request = new ServerRequest(
             'post',
             '/api/v1/avatar/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"user_id":"8897fa60-e66f-41fb-86a2-9828b1785481", "avatar": "/9j/4AAQSkZJRgABAQAAAQABAAD/", "format": "base64"}'
+            '{"format": "base64"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -102,10 +99,11 @@ class UpdateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(401, $response->getStatusCode());
-        $this->assertEquals('You are not authorized to perform this action', $jsend->data->errors[0]->message);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertCount(2, $jsend->data->errors);
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required field 'image' is missing", $jsend->data->errors[1]->message);
     }
-
 
     private function createAvatar()
     {

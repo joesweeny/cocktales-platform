@@ -27,12 +27,6 @@ class RegisterController
     {
         $body = json_decode($request->getBody()->getContents());
 
-        $errors = $this->validateRequest($body);
-
-        if (!empty($errors)) {
-            return new JsendBadRequestResponse($errors);
-        }
-
         $data = (object) [
             'email' => $body->email,
             'password' => $body->password
@@ -47,28 +41,13 @@ class RegisterController
                 'token' => $token
             ]);
         } catch (UserEmailValidationException $e) {
-            return new JsendErrorResponse([
+            return (new JsendErrorResponse([
                 new JsendError('A user has already registered with this email address')
-            ]);
+            ]))->withStatus(422);
         } catch (NotFoundException $e) {
-            return new JsendErrorResponse([
+            return (new JsendErrorResponse([
                 new JsendError('Unable to verify user credentials')
-            ]);
+            ]))->withStatus(401);
         }
-    }
-
-    private function validateRequest($body): array
-    {
-        $errors = [];
-
-        if (!isset($body->email)) {
-            $errors[] = new JsendError("Required field 'email' is missing");
-        }
-
-        if (!isset($body->password)) {
-            $errors[] = new JsendError("Required field 'password' is missing");
-        }
-
-        return $errors;
     }
 }

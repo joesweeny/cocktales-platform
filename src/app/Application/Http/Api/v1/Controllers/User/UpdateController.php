@@ -10,6 +10,7 @@ use Cocktales\Framework\Exception\UserPasswordValidationException;
 use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
 use Cocktales\Framework\JsendResponse\JsendErrorResponse;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,17 +29,6 @@ class UpdateController
     {
         $body = json_decode($request->getBody()->getContents());
 
-        $errors = $this->validateRequest($body);
-
-        if (!empty($errors)) {
-            return new JsendBadRequestResponse($errors);
-        }
-
-        if (!$this->verifyUser($userId = $body->user_id, $authId = $request->getHeaderLine('AuthenticationToken'))) {
-            $this->logError($userId, $authId);
-            return new JsendErrorResponse([new JsendError('You are not authorized to perform this action')]);
-        }
-
         $data = (object) [
             'id' => $body->user_id,
             'email' => $body->email,
@@ -53,42 +43,17 @@ class UpdateController
                 'user' => $user
             ]);
         } catch (NotFoundException $e) {
-            return new JsendErrorResponse([
+            return (new JsendFailResponse([
                 new JsendError('Unable to process request - please try again')
-            ]);
+            ]))->withStatus(404);
         } catch (UserEmailValidationException $e) {
-            return new JsendErrorResponse([
+            return (new JsendErrorResponse([
                 new JsendError('A user has already registered with this email address')
-            ]);
+            ]))->withStatus(422);
         } catch (UserPasswordValidationException $e) {
-            return new JsendErrorResponse([
+            return (new JsendErrorResponse([
                 new JsendError('Password does not match the password on record - please try again')
-            ]);
+            ]))->withStatus(401);
         }
-    }
-
-    private function verifyUser(string $userId, string $authId): bool
-    {
-        return $userId === $authId;
-    }
-
-    private function validateRequest($body): array
-    {
-        $errors = [];
-
-        if (!isset($body->user_id)) {
-            $errors[] = new JsendError("Required field 'user_id' is missing");
-        }
-
-        if (!isset($body->email)) {
-            $errors[] = new JsendError("Required field 'email' is missing");
-        }
-
-        return $errors;
-    }
-
-    private function logError(string $userId, string $authId)
-    {
-        $this->logger->error("User {$authId} has attempted to update profile for User {$userId}");
     }
 }

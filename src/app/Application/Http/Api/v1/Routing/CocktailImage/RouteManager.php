@@ -15,7 +15,8 @@ class RouteManager implements RouteMapper
      */
     public function map(RouteCollector $router)
     {
-        $router->addRoute('POST', '/api/v1/cocktail/image/create', CreateController::class);
-        $router->addRoute('GET', '/api/v1/cocktail/image/get', GetController::class);
+        $router->addRoute('POST', '/api/v1/cocktail-image/create', CreateController::class);
+        $router->addRoute('GET', '/api/v1/cocktail-image/get', GetController::class);
+        $router->addRoute('POST', '/api/v1/cocktail-image/update', GetController::class);
     }
 }

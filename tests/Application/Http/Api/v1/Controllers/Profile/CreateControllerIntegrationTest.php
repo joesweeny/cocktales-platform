@@ -66,11 +66,6 @@ class CreateControllerIntegrationTest extends TestCase
 
         $this->assertEquals('success', $jsend->status);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('joe', $jsend->data->profile->username);
-        $this->assertEquals('Joe', $jsend->data->profile->first_name);
-        $this->assertEquals('Sweeny', $jsend->data->profile->last_name);
-        $this->assertEquals('', $jsend->data->profile->location);
-        $this->assertEquals('', $jsend->data->profile->slogan);
     }
 
     public function test_error_response_is_received_if_username_is_already_taken_by_another_user()
@@ -96,8 +91,50 @@ class CreateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('error', $jsend->status);
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
         $this->assertEquals('Username is already taken', $jsend->data->errors[0]->message);
+    }
+
+    public function test_400_response_is_returned_if_request_body_is_missing()
+    {
+        $request = new ServerRequest(
+            'post',
+            '/api/v1/profile/create',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('No body in request or body is in an incorrect format', $jsend->data->errors[0]->message);
+    }
+
+    public function test_422_response_is_returned_if_specific_required_fields_are_missing()
+    {
+        $request = new ServerRequest(
+            'post',
+            '/api/v1/profile/create',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{
+                "first_name":"Joe",
+                "last_name":"Sweeny",
+                "location":"",
+                "slogan":""
+            }'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertCount(2, $jsend->data->errors);
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required image 'username' is missing", $jsend->data->errors[1]->message);
     }
 
     private function createProfile()

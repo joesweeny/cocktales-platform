@@ -37,9 +37,10 @@ class RegisterControllerIntegrationTest extends TestCase
         $this->assertEquals('success', $jsend->status);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('joe@email.com', $jsend->data->user->email);
+        $this->assertTrue(isset($jsend->data->token));
     }
 
-    public function test_error_response_is_returned_if_user_creation_process_fails()
+    public function test_422_response_is_returned_if_user_creation_process_fails()
     {
         $this->container->get(UserOrchestrator::class)->createUser(
             (new User)->setEmail('joe@email.com')->setPasswordHash(PasswordHash::createFromRaw('pass')));
@@ -50,8 +51,22 @@ class RegisterControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals('A user has already registered with this email address', $jsend->data->errors[0]->message);
+    }
+
+    public function test_422_response_is_returned_if_either_email_or_password_is_missing()
+    {
+        $request = new ServerRequest('post', '/api/v1/user/register', [], '{"wrong": "field"}');
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals("Required field 'email' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required field 'password' is missing", $jsend->data->errors[1]->message);
     }
 }

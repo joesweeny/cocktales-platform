@@ -63,4 +63,9 @@ class CocktailImageOrchestrator
     {
         $this->filesystem->put("/cocktail/image/{$cocktailId}", $contents);
     }
+
+    public function imageExists(Uuid $cocktailId): bool
+    {
+        return $this->filesystem->has("/cocktail/image/{$cocktailId}");
+    }
 }

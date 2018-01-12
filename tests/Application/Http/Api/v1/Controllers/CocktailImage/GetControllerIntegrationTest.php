@@ -51,7 +51,7 @@ class GetControllerIntegrationTest extends TestCase
 
         $request = new ServerRequest(
             'GET',
-            '/api/v1/cocktail/image/get',
+            '/api/v1/cocktail-image/get',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"cocktail_id" : "cecc0497-16be-40c9-adb4-80395d853e0f"}'
         );
@@ -67,11 +67,11 @@ class GetControllerIntegrationTest extends TestCase
         $this->deleteDirectory();
     }
 
-    public function test_400_response_returned_if_cocktail_id_field_is_missing()
+    public function test_400_response_returned_if_request_body_is_missing()
     {
         $request = new ServerRequest(
             'GET',
-            '/api/v1/cocktail/image/get',
+            '/api/v1/cocktail-image/get',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
         );
 
@@ -79,16 +79,16 @@ class GetControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals('No body in request or body is in an incorrect format', $jsend->data->errors[0]->message);
     }
 
     public function test_404_response_returned_if_cocktail_image_does_not_exist()
     {
         $request = new ServerRequest(
             'GET',
-            '/api/v1/cocktail/image/get',
+            '/api/v1/cocktail-image/get',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"cocktail_id" : "cecc0497-16be-40c9-adb4-80395d853e0f"}'
         );
@@ -97,9 +97,27 @@ class GetControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertEquals('Image for Cocktail cecc0497-16be-40c9-adb4-80395d853e0f does not exist', $jsend->data->errors[0]->message);
+    }
+
+    public function test_422_response_is_returned_if_cocktail_id_field_is_missing()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/cocktail-image/get',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"wrong": "field"}'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[0]->message);
     }
 
     private function deleteDirectory()

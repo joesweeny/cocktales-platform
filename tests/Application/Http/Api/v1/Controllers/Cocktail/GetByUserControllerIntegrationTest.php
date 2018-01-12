@@ -97,6 +97,40 @@ class GetByUserControllerIntegrationTest extends TestCase
         $this->assertEmpty($jsend->data->cocktails);
     }
 
+    public function test_400_returned_if_required_specific_body_requirements_are_missing()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/cocktail/get-by-user',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    public function test_422_returned_if_required_specific_body_fields_are_missing()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/cocktail/get-by-user',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"wrong": ["e6885733-72b8-4ebe-bbb5-2cee7d6bd0a5"]}'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+    }
+
     private function createCocktails()
     {
         $this->cocktailOrchestrator->createCocktail((new Cocktail(

@@ -71,7 +71,7 @@ class GetControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertEquals(
             'User with ID 93449e9d-4082-4305-8840-fa1673bcf915 does not exist',
@@ -79,7 +79,7 @@ class GetControllerIntegrationTest extends TestCase
         );
     }
 
-    public function test_400_response_returned_if_user_id_field_is_not_set_is_request_body()
+    public function test_400_response_returned_if_request_body_is_missing()
     {
         $request = new ServerRequest(
             'get',
@@ -91,8 +91,26 @@ class GetControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('No body in request or body is in an incorrect format', $jsend->data->errors[0]->message);
+    }
+
+    public function test_422_response_is_returned_if_user_id_field_is_missing()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/user/get',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"wrong": "field"}'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
         $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
     }
 }

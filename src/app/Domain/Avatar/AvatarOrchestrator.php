@@ -63,4 +63,9 @@ class AvatarOrchestrator
     {
         $this->filesystem->put("/avatar/{$userId}", $contents);
     }
+
+    public function avatarExists(Uuid $userId): bool
+    {
+        return $this->filesystem->has("/avatar/{$userId}");
+    }
 }

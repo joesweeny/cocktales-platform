@@ -5,9 +5,8 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 use Cocktales\Boundary\User\Command\GetUserByIdCommand;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Exception\NotFoundException;
-use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
-use Cocktales\Framework\JsendResponse\JsendNotFoundResponse;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,10 +24,6 @@ class GetController
     {
         $body = json_decode($request->getBody()->getContents());
 
-        if (!isset($body->user_id)) {
-            return new JsendBadRequestResponse([new JsendError("Required field 'user_id' is missing")]);
-        }
-
         try {
             $user = $this->bus->execute(new GetUserByIdCommand($body->user_id));
 
@@ -36,9 +31,9 @@ class GetController
                'user' => $user
             ]);
         } catch (NotFoundException $e) {
-            return new JsendNotFoundResponse([
+            return (new JsendFailResponse([
                 new JsendError("User with ID {$body->user_id} does not exist")
-            ]);
+            ]))->withStatus(404);
         }
     }
 }

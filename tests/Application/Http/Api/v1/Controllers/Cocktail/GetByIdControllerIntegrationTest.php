@@ -92,12 +92,30 @@ class GetByIdControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertEquals('Cocktail with ID 0487d724-4ca0-4942-bf64-4cc53273bc2b does not exist', $jsend->data->errors[0]->message);
     }
 
-    public function test_400_response_returned_if_cocktail_id_is_not_provided_in_request_body()
+    public function test_returns_422_response_if_cocktail_does_not_exist()
+    {
+        $request = new ServerRequest(
+            'GET',
+            '/api/v1/cocktail/get-by-id',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"wrong":"0487d724-4ca0-4942-bf64-4cc53273bc2b"}'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[0]->message);
+    }
+
+    public function test_400_response_returned_if_request_body_is_missing()
     {
         $request = new ServerRequest(
             'GET',
@@ -109,8 +127,9 @@ class GetByIdControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
-        $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('No body in request or body is in an incorrect format', $jsend->data->errors[0]->message);
     }
 
     private function createCocktail()

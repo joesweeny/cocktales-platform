@@ -49,7 +49,7 @@ class CreateControllerIntegrationTest extends TestCase
             '/api/v1/cocktail/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "user_id": "a88cffac-f628-445c-9f55-ae99a0542fe6",
+                "user_id": "f530caab-1767-4f0c-a669-331a7bf0fc85",
                 "cocktail": {
                         "name": "Sex on the Beach",
                         "origin": "Ibiza"
@@ -87,10 +87,9 @@ class CreateControllerIntegrationTest extends TestCase
 
         $this->assertEquals('success', $jsend->status);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Sex on the Beach', $jsend->data->cocktail->name);
     }
 
-    public function test_error_response_is_received_if_cocktail_name_already_exists()
+    public function test_422_response_is_returned_if_cocktail_name_already_exists()
     {
         $this->orchestrator->createCocktail((new Cocktail(
             new Uuid('0487d724-4ca0-4942-bf64-4cc53273bc2b'),
@@ -103,7 +102,7 @@ class CreateControllerIntegrationTest extends TestCase
             '/api/v1/cocktail/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{
-                "user_id": "a88cffac-f628-445c-9f55-ae99a0542fe6",
+                "user_id": "f530caab-1767-4f0c-a669-331a7bf0fc85",
                 "cocktail": {
                         "name": "Sex on the Beach",
                         "origin": "Ibiza"
@@ -139,14 +138,15 @@ class CreateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
         $this->assertEquals(
             'A Cocktail with the name Sex on the Beach already exists - please choose another name',
             $jsend->data->errors[0]->message
         );
     }
 
-    public function test_error_response_returned_with_detailed_errors_if_information_is_missing()
+    public function test_400_response_returned_with_detailed_errors_if_request_body_is_missing()
     {
         $request = new ServerRequest(
             'POST',
@@ -158,12 +158,11 @@ class CreateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertCount(8, $jsend->data->errors);
     }
 
-    public function test_error_response_returned_with_detailed_errors_if_information_in_is_an_incorrect_format()
+    public function test_422_response_returned_with_detailed_errors_if_specific_request_body_fields_are_missing()
     {
         $request = new ServerRequest(
             'POST',
@@ -191,8 +190,8 @@ class CreateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
         $this->assertCount(4, $jsend->data->errors);
     }
 }

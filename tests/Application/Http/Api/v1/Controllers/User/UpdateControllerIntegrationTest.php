@@ -61,7 +61,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->assertEquals('joe@newEmail.com', $jsend->data->user->email);
     }
 
-    public function test_error_response_is_returned_if_user_email_is_already_taken_by_another_user()
+    public function test_422_response_is_returned_if_user_email_is_already_taken_by_another_user()
     {
         $this->createAdditionalUser();
 
@@ -76,14 +76,13 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
         $this->assertEquals('A user has already registered with this email address', $jsend->data->errors[0]->message);
     }
 
-    public function test_error_response_is_returned_if_old_password_does_not_match_password_stored_for_user()
+    public function test_401_response_is_returned_if_old_password_does_not_match_password_stored_for_user()
     {
-
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
@@ -95,9 +94,29 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals('Password does not match the password on record - please try again', $jsend->data->errors[0]->message);
+    }
+
+    public function test_422_response_is_returned_if_specific_required_fields_are_missing()
+    {
+        $request = new ServerRequest(
+            'post',
+            '/api/v1/user/update',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@email.com"}'
+
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertCount(2, $jsend->data->errors);
+        $this->assertEquals("Required field 'password' is missing", $jsend->data->errors[0]->message);
     }
 
     private function createAdditionalUser()

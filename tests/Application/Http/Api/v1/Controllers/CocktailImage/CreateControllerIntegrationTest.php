@@ -46,13 +46,9 @@ class CreateControllerIntegrationTest extends TestCase
     {
         $request = new ServerRequest(
             'post',
-            '/api/v1/cocktail/image/create',
+            '/api/v1/cocktail-image/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", 
-              "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", 
-              "format": "base64",
-              "cocktail_id": "5ca66e0b-4ea0-4f15-bfe3-51752c6d25b3"
-             }'
+            '{"user_id": "f530caab-1767-4f0c-a669-331a7bf0fc85", "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", "format": "base64", "cocktail_id": "5ca66e0b-4ea0-4f15-bfe3-51752c6d25b3"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -69,7 +65,7 @@ class CreateControllerIntegrationTest extends TestCase
     {
         $request = new ServerRequest(
             'post',
-            '/api/v1/cocktail/image/create',
+            '/api/v1/cocktail-image/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
         );
 
@@ -77,19 +73,15 @@ class CreateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
-        $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[1]->message);
-        $this->assertEquals("Required field 'image' is missing", $jsend->data->errors[2]->message);
-        $this->assertEquals("Required field 'format' is missing", $jsend->data->errors[3]->message);
     }
 
     public function test_401_response_is_returned_if_the_user_id_and_auth_id_do_not_match()
     {
         $request = new ServerRequest(
             'post',
-            '/api/v1/cocktail/image/create',
+            '/api/v1/cocktail-image/create',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
             '{"user_id":"efeef6cd-04eb-464e-8c5e-82eba004408b", 
               "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", 
@@ -105,6 +97,27 @@ class CreateControllerIntegrationTest extends TestCase
         $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals('You are not authorized to perform this action', $jsend->data->errors[0]->message);
+    }
+
+    public function test_422_response_is_returned_if_specific_required_fields_are_missing()
+    {
+        $request = new ServerRequest(
+            'post',
+            '/api/v1/cocktail-image/create',
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"format": "base64"}'
+        );
+
+        $response = $this->handle($this->container, $request);
+
+        $jsend = json_decode($response->getBody()->getContents());
+
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertCount(3, $jsend->data->errors);
+        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[1]->message);
+        $this->assertEquals("Required field 'image' is missing", $jsend->data->errors[2]->message);
     }
 
     private function deleteDirectory()

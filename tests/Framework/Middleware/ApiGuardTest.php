@@ -8,7 +8,6 @@ use Cocktales\Framework\CommandBus\CommandBus;
 use Cocktales\Testing\Traits\UsesContainer;
 use Interop\Http\Middleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;

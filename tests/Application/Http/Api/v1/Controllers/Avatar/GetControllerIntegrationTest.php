@@ -62,24 +62,27 @@ class GetControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('success', $jsend->status);
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('File Contents', $jsend->data->avatar);
 
         $this->deleteDirectory();
     }
 
-    public function test_400_response_is_returned_if_user_id_field_is_missing()
+    public function test_422_response_is_returned_if_user_id_field_is_missing()
     {
         $request = new ServerRequest(
             'GET',
             '/api/v1/avatar/get',
-            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()]
+            ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
+            '{"wrong": "field"}'
         );
 
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
+        $this->assertEquals(422, $response->getStatusCode());
         $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
     }
 
@@ -96,7 +99,7 @@ class GetControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertEquals('Avatar linked to User dc5b6421-d452-4862-b741-d43383c3fe1d does not exist', $jsend->data->errors[0]->message);
     }

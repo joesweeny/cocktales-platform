@@ -42,7 +42,7 @@ class LoginControllerIntegrationTest extends TestCase
         $this->assertTrue(isset($jsend->data->token));
     }
 
-    public function test_error_response_is_sent_if_user_credentials_validation_fails()
+    public function test_401_response_is_returned_if_user_credentials_validation_fails()
     {
         $request = new ServerRequest('post', '/api/v1/user/login', [], '{"email":"joe@joe.com","password":"wrong"}');
 

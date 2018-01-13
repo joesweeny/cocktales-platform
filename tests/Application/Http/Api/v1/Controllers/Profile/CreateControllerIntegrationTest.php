@@ -68,7 +68,7 @@ class CreateControllerIntegrationTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function test_error_response_is_received_if_username_is_already_taken_by_another_user()
+    public function test_422_response_is_received_if_username_is_already_taken_by_another_user()
     {
         $this->createProfile();
 
@@ -90,7 +90,7 @@ class CreateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('error', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(422, $response->getStatusCode());
         $this->assertEquals('Username is already taken', $jsend->data->errors[0]->message);
     }
@@ -134,7 +134,7 @@ class CreateControllerIntegrationTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
         $this->assertCount(2, $jsend->data->errors);
         $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
-        $this->assertEquals("Required image 'username' is missing", $jsend->data->errors[1]->message);
+        $this->assertEquals("Required field 'username' is missing", $jsend->data->errors[1]->message);
     }
 
     private function createProfile()

@@ -37,10 +37,10 @@ class EntityGuardTest extends TestCase
             'post',
             '/api/v1/avatar/create',
             ['AuthenticationToken' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'],
-            '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85"}'
+            '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", "format": "base64"}'
         );
 
-        $this->delegate->process($request)->willReturn($mockResponse = new TextResponse('hello!'));
+        $this->delegate->process(Argument::type(ServerRequest::class))->willReturn($mockResponse = new TextResponse('hello!'));
 
         $response = $this->middleware->process($request, $this->delegate->reveal());
         $this->assertEquals($mockResponse, $response);
@@ -60,6 +60,7 @@ class EntityGuardTest extends TestCase
         $this->logger->error('An attempt has been made to create or update a record that does not belong to the user', [
             'Auth ID' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
             'User ID' => 'c2166109-f443-420d-9ec2-63366c034b78',
+            'Entity ID' => '',
             'Path' => '/api/v1/avatar/create'
         ])->shouldBeCalled();
 
@@ -71,7 +72,7 @@ class EntityGuardTest extends TestCase
     {
         $request = new ServerRequest(
             'post',
-            '/api/v1/avatar/create',
+            '/api/v1/avatar/update',
             ['AuthenticationToken' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'],
             '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", "cocktail_id": "b57ec362-d77d-449e-bd16-5d779d27e6ee"}'
         );
@@ -91,7 +92,8 @@ class EntityGuardTest extends TestCase
         $this->logger->error('An attempt has been made to create or update a record that does not belong to the user', [
             'Auth ID' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
             'User ID' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
-            'Path' => '/api/v1/avatar/create'
+            'Entity ID' => 'b57ec362-d77d-449e-bd16-5d779d27e6ee',
+            'Path' => '/api/v1/avatar/update'
         ])->shouldBeCalled();
 
         $this->expectException(NotAuthorizedException::class);
@@ -115,7 +117,7 @@ class EntityGuardTest extends TestCase
             ]
         );
 
-        $this->delegate->process($request)->willReturn($mockResponse = new TextResponse('hello!'));
+        $this->delegate->process(Argument::type(ServerRequest::class))->willReturn($mockResponse = new TextResponse('hello!'));
 
         $response = $this->middleware->process($request, $this->delegate->reveal());
         $this->assertEquals($mockResponse, $response);

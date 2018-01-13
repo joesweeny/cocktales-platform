@@ -4,7 +4,7 @@ namespace Cocktales\Application\Http\Api\v1\Validation;
 
 use Cocktales\Application\Http\Api\v1\Validation\Avatar\AvatarRequestValidator;
 use Cocktales\Application\Http\Api\v1\Validation\Cocktail\CocktailRequestValidator;
-use Cocktales\Application\Http\Api\v1\Validation\CocktailImage\CocktailImageRequestValidatorTest;
+use Cocktales\Application\Http\Api\v1\Validation\CocktailImage\CocktailImageRequestValidator;
 use Cocktales\Application\Http\Api\v1\Validation\Profile\ProfileRequestValidator;
 use Cocktales\Application\Http\Api\v1\Validation\User\UserRequestValidator;
 use Cocktales\Framework\Exception\RequestValidationException;
@@ -57,7 +57,7 @@ class ValidatorResolverTest extends TestCase
             ],
             [
                 'cocktail-image',
-                CocktailImageRequestValidatorTest::class
+                CocktailImageRequestValidator::class
             ],
             [
                 'profile',

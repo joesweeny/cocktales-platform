@@ -29,8 +29,8 @@ class ProfileRequestValidatorTest extends TestCase
     {
         $errors = $this->validator->validate('create', (object) []);
 
-        $this->assertEquals(new JsendError("Required field 'user_id' is missing"), $errors[0]);
-        $this->assertEquals(new JsendError("Required field 'username' is missing"), $errors[1]);
+        $this->assertEquals("Required field 'user_id' is missing", $errors[0]);
+        $this->assertEquals("Required field 'username' is missing", $errors[1]);
     }
 
     public function correctRequests()

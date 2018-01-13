@@ -29,9 +29,9 @@ class UserRequestValidatorTest extends TestCase
     {
         $errors = $this->validator->validate('update', (object) []);
 
-        $this->assertEquals(new JsendError("Required field 'user_id' is missing"), $errors[0]);
-        $this->assertEquals(new JsendError("Required field 'email' is missing"), $errors[1]);
-        $this->assertEquals(new JsendError("Required field 'password' is missing"), $errors[2]);
+        $this->assertEquals("Required field 'user_id' is missing", $errors[0]);
+        $this->assertEquals("Required field 'email' is missing", $errors[1]);
+        $this->assertEquals("Required field 'password' is missing", $errors[2]);
     }
 
     public function correctRequests()

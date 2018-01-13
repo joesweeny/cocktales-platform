@@ -29,10 +29,10 @@ class CocktailImageRequestValidatorTest extends TestCase
     {
         $errors = $this->validator->validate('create', (object) []);
 
-        $this->assertEquals(new JsendError("Required field 'user_id' is missing"), $errors[0]);
-        $this->assertEquals(new JsendError("Required field 'cocktail_id' is missing"), $errors[1]);
-        $this->assertEquals(new JsendError("Required field 'avatar' is missing"), $errors[2]);
-        $this->assertEquals(new JsendError("Required field 'format' is missing"), $errors[3]);
+        $this->assertEquals("Required field 'user_id' is missing", $errors[0]);
+        $this->assertEquals("Required field 'cocktail_id' is missing", $errors[1]);
+        $this->assertEquals("Required field 'image' is missing", $errors[2]);
+        $this->assertEquals("Required field 'format' is missing", $errors[3]);
     }
 
     public function correctRequests()
@@ -43,7 +43,7 @@ class CocktailImageRequestValidatorTest extends TestCase
                 (object) [
                     'user_id' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
                     'cocktail_id' => '054c755e-8f17-4e21-a64c-cbc8c3fbff34',
-                    'avatar' => 'Image string',
+                    'image' => 'Image string',
                     'format' => 'base64'
                 ]
             ],
@@ -58,7 +58,7 @@ class CocktailImageRequestValidatorTest extends TestCase
                 (object) [
                     'user_id' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
                     'cocktail_id' => '054c755e-8f17-4e21-a64c-cbc8c3fbff34',
-                    'avatar' => 'Image string',
+                    'image' => 'Image string',
                     'format' => 'base64'
                 ]
             ]

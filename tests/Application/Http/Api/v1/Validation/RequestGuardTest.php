@@ -4,6 +4,7 @@ namespace Cocktales\Application\Http\Api\v1\Validation;
 
 use Cocktales\Application\Http\Api\v1\Validation\Avatar\AvatarRequestValidator;
 use Cocktales\Framework\Exception\RequestValidationException;
+use Cocktales\Framework\Exception\UnprocessableEntityException;
 use Cocktales\Framework\Middleware\RequestGuard;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Http\Middleware\DelegateInterface;
@@ -70,7 +71,7 @@ class RequestGuardTest extends TestCase
 
         $this->resolver->resolve('avatar')->willReturn(new AvatarRequestValidator());
 
-        $this->expectException(RequestValidationException::class);
+        $this->expectException(UnprocessableEntityException::class);
         $this->guard->process($request, $this->delegate->reveal());
     }
 }

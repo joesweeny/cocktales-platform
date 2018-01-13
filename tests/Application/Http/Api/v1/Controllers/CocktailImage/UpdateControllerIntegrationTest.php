@@ -3,6 +3,8 @@
 namespace Cocktales\Application\Http\Api\v1\Controllers\CocktailImage;
 
 use Cocktales\Bootstrap\Config;
+use Cocktales\Domain\Cocktail\CocktailOrchestrator;
+use Cocktales\Domain\Cocktail\Entity\Cocktail;
 use Cocktales\Domain\CocktailImage\CocktailImageOrchestrator;
 use Cocktales\Domain\Session\Entity\SessionToken;
 use Cocktales\Domain\Session\TokenOrchestrator;
@@ -34,12 +36,15 @@ class UpdateControllerIntegrationTest extends TestCase
     private $token;
     /** @var  CocktailImageOrchestrator */
     private $orchestrator;
+    /** @var  CocktailOrchestrator */
+    private $cocktailOrchestrator;
 
     public function setUp()
     {
         $this->container = $this->runMigrations($this->createContainer());
         $this->filesystem = $this->container->get(Filesystem::class);
         $this->orchestrator = $this->container->get(CocktailImageOrchestrator::class);
+        $this->cocktailOrchestrator = $this->container->get(CocktailOrchestrator::class);
         $this->container->get(Config::class)->set('log.logger', 'null');
         $this->user = $this->container->get(UserOrchestrator::class)->createUser(
             (new User('f530caab-1767-4f0c-a669-331a7bf0fc85'))->setEmail('joe@joe.com')->setPasswordHash(new PasswordHash('password'))
@@ -47,8 +52,9 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
-    public function test_success_response_is_received_and_avatar_is_updated()
+    public function test_success_response_is_received_and_cocktail_image_is_updated()
     {
+        $this->createCocktail();
         $this->createImage();
 
         $request = new ServerRequest(
@@ -66,8 +72,6 @@ class UpdateControllerIntegrationTest extends TestCase
         $response = $this->handle($this->container, $request);
 
         $jsend = json_decode($response->getBody()->getContents());
-
-        dd($jsend);
 
         $this->assertEquals('success', $jsend->status);
         $this->assertEquals(200, $response->getStatusCode());
@@ -87,9 +91,9 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('bad_request', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
+        $this->assertEquals('No body in request or body is in an incorrect format', $jsend->data->errors[0]->message);
     }
 
     public function test_401_response_returned_if_user_id_is_not_a_valid_user_id()
@@ -133,6 +137,17 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(422, $response->getStatusCode());
         $this->assertEquals("Required field 'image' is missing", $jsend->data->errors[0]->message);
+    }
+
+    private function createCocktail()
+    {
+        $this->cocktailOrchestrator->createCocktail(
+            new Cocktail(
+                new Uuid('054c755e-8f17-4e21-a64c-cbc8c3fbff34'),
+                $this->user->getId(),
+                'Tequila Sunrise'
+            )
+        );
     }
 
     private function createImage()

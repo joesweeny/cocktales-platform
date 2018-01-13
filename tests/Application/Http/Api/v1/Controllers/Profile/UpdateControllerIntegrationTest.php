@@ -138,7 +138,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
         $this->assertCount(2, $jsend->data->errors);
         $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
-        $this->assertEquals("Required image 'username' is missing", $jsend->data->errors[1]->message);
+        $this->assertEquals("Required field 'username' is missing", $jsend->data->errors[1]->message);
     }
 
     private function createProfile()

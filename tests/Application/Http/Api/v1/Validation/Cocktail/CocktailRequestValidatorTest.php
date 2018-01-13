@@ -29,14 +29,14 @@ class CocktailRequestValidatorTest extends TestCase
     {
         $errors = $this->validator->validate('create', (object) []);
 
-        $this->assertEquals(new JsendError("Required field 'user_id' is missing"), $errors[0]);
-        $this->assertEquals(new JsendError("Required 'cocktail' object is missing"), $errors[1]);
-        $this->assertEquals(new JsendError("Required field 'name' is missing from 'cocktail' object"), $errors[2]);
-        $this->assertEquals(new JsendError("Required field 'origin' is missing from 'cocktail' object"), $errors[3]);
-        $this->assertEquals(new JsendError("Required 'ingredients' object is missing"), $errors[4]);
-        $this->assertEquals(new JsendError("Required 'ingredients' object is not in the correct format: array"), $errors[5]);
-        $this->assertEquals(new JsendError("Required 'instructions' object is missing"), $errors[6]);
-        $this->assertEquals(new JsendError("Required 'instructions' object is not in the correct format: array"), $errors[7]);
+        $this->assertEquals("Required field 'user_id' is missing", $errors[0]);
+        $this->assertEquals("Required 'cocktail' object is missing", $errors[1]);
+        $this->assertEquals("Required field 'name' is missing from 'cocktail' object", $errors[2]);
+        $this->assertEquals("Required field 'origin' is missing from 'cocktail' object", $errors[3]);
+        $this->assertEquals("Required 'ingredients' object is missing", $errors[4]);
+        $this->assertEquals("Required 'ingredients' object is not in the correct format: array", $errors[5]);
+        $this->assertEquals("Required 'instructions' object is missing", $errors[6]);
+        $this->assertEquals("Required 'instructions' object is not in the correct format: array", $errors[7]);
     }
 
     public function correctRequests()

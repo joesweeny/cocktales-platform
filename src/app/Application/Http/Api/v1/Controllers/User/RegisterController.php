@@ -10,6 +10,7 @@ use Cocktales\Boundary\User\Command\RegisterUserCommand;
 use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
 use Cocktales\Framework\JsendResponse\JsendErrorResponse;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -41,11 +42,11 @@ class RegisterController
                 'token' => $token
             ]);
         } catch (UserEmailValidationException $e) {
-            return (new JsendErrorResponse([
+            return (new JsendFailResponse([
                 new JsendError('A user has already registered with this email address')
             ]))->withStatus(422);
         } catch (NotFoundException $e) {
-            return (new JsendErrorResponse([
+            return (new JsendFailResponse([
                 new JsendError('Unable to verify user credentials')
             ]))->withStatus(401);
         }

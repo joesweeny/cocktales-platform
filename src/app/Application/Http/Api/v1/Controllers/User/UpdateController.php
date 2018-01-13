@@ -32,7 +32,7 @@ class UpdateController
         $data = (object) [
             'id' => $body->user_id,
             'email' => $body->email,
-            'oldPassword' => $body->oldPassword ?? '',
+            'password' => $body->password ?? '',
             'newPassword' => $body->newPassword ?? ''
         ];
 
@@ -47,12 +47,12 @@ class UpdateController
                 new JsendError('Unable to process request - please try again')
             ]))->withStatus(404);
         } catch (UserEmailValidationException $e) {
-            return (new JsendErrorResponse([
+            return (new JsendFailResponse([
                 new JsendError('A user has already registered with this email address')
             ]))->withStatus(422);
         } catch (UserPasswordValidationException $e) {
-            return (new JsendErrorResponse([
-                new JsendError('Password does not match the password on record - please try again')
+            return (new JsendFailResponse([
+                new JsendError('Unable to process request - please try again')
             ]))->withStatus(401);
         }
     }

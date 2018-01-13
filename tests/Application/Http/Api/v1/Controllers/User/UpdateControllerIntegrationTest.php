@@ -43,13 +43,13 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
-    public function test_success_response_is_received()
+    public function test_success_response_is_received_joe()
     {
         $request = new ServerRequest(
             'post',
             '/api/v1/user/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@newEmail.com","oldPassword":"password", "newPassword":"newPass"}'
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@newEmail.com","password":"password", "newPassword":"newPass"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -69,7 +69,7 @@ class UpdateControllerIntegrationTest extends TestCase
             'post',
             '/api/v1/user/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"andrea@mail.com","oldPassword":"", "newPassword":""}'
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"andrea@mail.com","password":"password", "newPassword":""}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -87,7 +87,7 @@ class UpdateControllerIntegrationTest extends TestCase
             'post',
             '/api/v1/user/update',
             ['AuthorizationToken' => (string) $this->token->getToken(), 'AuthenticationToken' => (string) $this->user->getId()],
-            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@email.com","oldPassword":"wrongPassword", "newPassword":"newPass"}'
+            '{"user_id":"93449e9d-4082-4305-8840-fa1673bcf915","email":"joe@email.com","password":"wrongPassword", "newPassword":"newPass"}'
         );
 
         $response = $this->handle($this->container, $request);
@@ -96,7 +96,7 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(401, $response->getStatusCode());
-        $this->assertEquals('Password does not match the password on record - please try again', $jsend->data->errors[0]->message);
+        $this->assertEquals('Unable to process request - please try again', $jsend->data->errors[0]->message);
     }
 
     public function test_422_response_is_returned_if_specific_required_fields_are_missing()
@@ -115,7 +115,7 @@ class UpdateControllerIntegrationTest extends TestCase
 
         $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(422, $response->getStatusCode());
-        $this->assertCount(2, $jsend->data->errors);
+        $this->assertCount(1, $jsend->data->errors);
         $this->assertEquals("Required field 'password' is missing", $jsend->data->errors[0]->message);
     }
 

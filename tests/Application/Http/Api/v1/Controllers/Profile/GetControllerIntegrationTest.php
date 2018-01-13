@@ -80,7 +80,7 @@ class GetControllerIntegrationTest extends TestCase
 
         $jsend = json_decode($response->getBody()->getContents());
 
-        $this->assertEquals('not_found', $jsend->status);
+        $this->assertEquals('fail', $jsend->status);
         $this->assertEquals(
             'Profile for User ID b5acd30c-085e-4dee-b8a9-19e725dc62c3 does not exist',
             $jsend->data->errors[0]->message

@@ -6,7 +6,7 @@ use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Exception\UsernameValidationException;
 use Cocktales\Boundary\Profile\Command\CreateProfileCommand;
 use Cocktales\Framework\JsendResponse\JsendError;
-use Cocktales\Framework\JsendResponse\JsendErrorResponse;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,7 +38,7 @@ class CreateController
 
             return new JsendSuccessResponse();
         } catch (UsernameValidationException $e) {
-            return (new JsendErrorResponse([
+            return (new JsendFailResponse([
                 new JsendError('Username is already taken')
             ]))->withStatus(422);
         }

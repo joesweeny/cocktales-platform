@@ -46,7 +46,7 @@ class UpdateUserCommandHandler
         // Throws Not Found Exception
         $user = $this->orchestrator->getUserById($command->getUserId());
 
-        if ($user->getEmail() != $command->getEmail()) {
+        if ($user->getEmail() !== $command->getEmail()) {
             if (!$this->orchestrator->canUpdateUser($command->getEmail())) {
                 throw new UserEmailValidationException("A user has already registered with this email address {$user->getEmail()}");
             }
@@ -55,7 +55,7 @@ class UpdateUserCommandHandler
         }
 
         if ($command->getNewPassword()) {
-            if (!$this->orchestrator->validateUserPassword($command->getUserId(), $command->getOldPassword())) {
+            if (!$this->orchestrator->validateUserPassword($command->getUserId(), $command->getPassword())) {
                 throw new UserPasswordValidationException('Password does not match the password stored for this user');
             }
 

@@ -29,9 +29,11 @@ class AvatarRequestValidatorTest extends TestCase
     {
         $errors = $this->validator->validate('create', (object) []);
 
-        $this->assertEquals(new JsendError("Required field 'user_id' is missing"), $errors[0]);
-        $this->assertEquals(new JsendError("Required field 'image' is missing"), $errors[1]);
-        $this->assertEquals(new JsendError("Required field 'format' is missing"), $errors[2]);
+
+
+        $this->assertEquals("Required field 'user_id' is missing", $errors[0]);
+        $this->assertEquals("Required field 'image' is missing", $errors[1]);
+        $this->assertEquals("Required field 'format' is missing", $errors[2]);
     }
 
     public function correctRequests()

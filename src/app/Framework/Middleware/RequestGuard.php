@@ -14,6 +14,13 @@ use Psr\Http\Message\ServerRequestInterface;
 class RequestGuard implements ServerMiddlewareInterface
 {
     const BASE_PATH = '/api/v1/';
+
+    private $exemptPaths = [
+        '/api/v1/ingredient/all',
+        '/api/v1/ingredient/all-by-type',
+        '/api/v1/ingredient/all-by-category',
+    ];
+
     /**
      * @var ValidatorResolver
      */
@@ -45,6 +52,10 @@ class RequestGuard implements ServerMiddlewareInterface
         // middleware is used we can access the originalUri attribute.
         if ($request->getAttribute('originalUri')) {
             $uri = $request->getAttribute('originalUri');
+        }
+
+        if (in_array($uri->getPath(), $this->exemptPaths, true)) {
+            return $delegate->process($request);
         }
 
         $bits = explode('/', $uri->getPath());

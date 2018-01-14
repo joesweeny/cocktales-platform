@@ -35,7 +35,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = new UpdateUserCommand((object) [
             'id' => '7aede48c-cf27-4c3e-90f9-c0c71a2c46e1',
             'email' => 'joe@newemail.com',
-            'oldPassword' => '',
+            'password' => '',
             'newPassword' => ''
         ]);
 
@@ -45,7 +45,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->canUpdateUser($command->getEmail())->shouldBeCalled()->willReturn(true);
 
-        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getOldPassword())->shouldNotBeCalled();
+        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getPassword())->shouldNotBeCalled();
 
         $this->orchestrator->updateUser(Argument::that(function (User $user) {
             $this->assertEquals('7aede48c-cf27-4c3e-90f9-c0c71a2c46e1', $user->getId()->__toString());
@@ -63,7 +63,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = new UpdateUserCommand((object) [
             'id' => '7aede48c-cf27-4c3e-90f9-c0c71a2c46e1',
             'email' => 'joe@email.com',
-            'oldPassword' => 'password',
+            'password' => 'password',
             'newPassword' => 'newPassword'
         ]);
 
@@ -75,7 +75,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->canUpdateUser($command->getEmail())->shouldNotBeCalled();
 
-        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getOldPassword())->shouldBeCalled()->willReturn(true);
+        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getPassword())->shouldBeCalled()->willReturn(true);
 
         $this->orchestrator->updateUser(Argument::that(function (User $user) {
             $this->assertEquals('7aede48c-cf27-4c3e-90f9-c0c71a2c46e1', $user->getId()->__toString());
@@ -94,7 +94,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = new UpdateUserCommand((object) [
             'id' => '7aede48c-cf27-4c3e-90f9-c0c71a2c46e1',
             'email' => 'joe@newEmail.com',
-            'oldPassword' => 'password',
+            'password' => 'password',
             'newPassword' => 'newPassword'
         ]);
 
@@ -106,7 +106,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->canUpdateUser($command->getEmail())->shouldBeCalled()->willReturn(true);
 
-        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getOldPassword())->shouldBeCalled()->willReturn(true);
+        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getPassword())->shouldBeCalled()->willReturn(true);
 
         $this->orchestrator->updateUser(Argument::that(function (User $user) {
             $this->assertEquals('7aede48c-cf27-4c3e-90f9-c0c71a2c46e1', $user->getId()->__toString());
@@ -125,7 +125,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = new UpdateUserCommand((object) [
             'id' => '7aede48c-cf27-4c3e-90f9-c0c71a2c46e1',
             'email' => 'joe@newEmail.com',
-            'oldPassword' => 'password',
+            'password' => 'password',
             'newPassword' => 'newPassword'
         ]);
 
@@ -133,7 +133,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->canUpdateUser($command->getEmail())->shouldNotBeCalled();
 
-        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getOldPassword())->shouldNotBeCalled();
+        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getPassword())->shouldNotBeCalled();
 
         $this->orchestrator->updateUser(Argument::type(User::class))->shouldNotBeCalled();
 
@@ -147,7 +147,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = new UpdateUserCommand((object) [
             'id' => '7aede48c-cf27-4c3e-90f9-c0c71a2c46e1',
             'email' => 'joe@newEmail.com',
-            'oldPassword' => 'password',
+            'password' => 'password',
             'newPassword' => 'newPassword'
         ]);
 
@@ -159,7 +159,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->canUpdateUser($command->getEmail())->shouldBeCalled()->willReturn(false);
 
-        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getOldPassword())->shouldNotBeCalled();
+        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getPassword())->shouldNotBeCalled();
 
         $this->orchestrator->updateUser(Argument::type(User::class))->shouldNotBeCalled();
 
@@ -173,7 +173,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = new UpdateUserCommand((object) [
             'id' => '7aede48c-cf27-4c3e-90f9-c0c71a2c46e1',
             'email' => 'joe@newEmail.com',
-            'oldPassword' => 'password',
+            'password' => 'password',
             'newPassword' => 'newPassword'
         ]);
 
@@ -185,7 +185,7 @@ class UpdateUserCommandHandlerTest extends TestCase
 
         $this->orchestrator->canUpdateUser($command->getEmail())->shouldBeCalled()->willReturn(true);
 
-        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getOldPassword())->shouldBeCalled()->willReturn(false);
+        $this->orchestrator->validateUserPassword($command->getUserId(), $command->getPassword())->shouldBeCalled()->willReturn(false);
 
         $this->orchestrator->updateUser(Argument::type(User::class))->shouldNotBeCalled();
 

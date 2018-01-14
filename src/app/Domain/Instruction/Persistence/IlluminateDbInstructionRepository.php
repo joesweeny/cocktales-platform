@@ -49,7 +49,10 @@ class IlluminateDbInstructionRepository implements Repository
      */
     public function getInstructions(Uuid $cocktailId): Collection
     {
-        return Collection::make($this->connection->table(self::TABLE)->orderBy('ingredient_id')->get())->map(function (\stdClass $data) {
+        return Collection::make($this->connection->table(self::TABLE)
+            ->where('cocktail_id', $cocktailId->toBinary())
+            ->orderBy('ingredient_id')->get()
+        )->map(function (\stdClass $data) {
             return Hydrator::fromRawData($data);
         });
     }

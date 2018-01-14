@@ -41,9 +41,9 @@ class UpdateUserCommand implements Command
     /**
      * @return string
      */
-    public function getOldPassword(): string
+    public function getPassword(): string
     {
-        return $this->data->oldPassword;
+        return $this->data->password;
     }
 
     /**

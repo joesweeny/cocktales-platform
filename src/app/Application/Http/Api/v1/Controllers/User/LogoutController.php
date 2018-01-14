@@ -4,8 +4,6 @@ namespace Cocktales\Application\Http\Api\v1\Controllers\User;
 
 use Cocktales\Boundary\User\Command\LogoutUserCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
-use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
-use Cocktales\Framework\JsendResponse\JsendError;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,17 +30,6 @@ class LogoutController
     {
         $token = $request->getHeaderLine('AuthorizationToken') ?? '';
         $userId = $request->getHeaderLine('AuthenticationToken') ?? '';
-
-        if (!$token || !$userId) {
-            $this->logger->error('A logout attempt has failed due to missing information', [
-                'token' => $token,
-                'userId' => $userId
-            ]);
-            return new JsendBadRequestResponse([
-                    new JsendError('Unable to verify credentials')
-                ]
-            );
-        }
 
         $this->bus->execute(new LogoutUserCommand($token, $userId));
 

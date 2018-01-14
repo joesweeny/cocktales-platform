@@ -36,7 +36,7 @@ class ConfigFactory
                 /**
                  * Which psr/log implementation to use. Options: monolog, null
                  */
-                'logger' => self::fromEnv('LOG_LOGGER') ?: 'monolog'
+                'logger' => self::fromEnv('LOG_LOGGER') ?: 'null'
             ]
         ]);
     }

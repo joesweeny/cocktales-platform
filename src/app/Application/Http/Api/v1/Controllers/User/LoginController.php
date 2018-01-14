@@ -7,10 +7,8 @@ use Cocktales\Boundary\User\Command\ValidateUserCredentialsCommand;
 use Cocktales\Domain\User\Exception\UserValidationException;
 use Cocktales\Framework\Controller\ControllerService;
 use Cocktales\Framework\Exception\NotFoundException;
-use Cocktales\Framework\JsendResponse\JsendBadRequestResponse;
 use Cocktales\Framework\JsendResponse\JsendError;
-use Cocktales\Framework\JsendResponse\JsendErrorResponse;
-use Cocktales\Framework\JsendResponse\JsendNotFoundResponse;
+use Cocktales\Framework\JsendResponse\JsendFailResponse;
 use Cocktales\Framework\JsendResponse\JsendResponse;
 use Cocktales\Framework\JsendResponse\JsendSuccessResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,12 +21,6 @@ class LoginController
     {
         $body = json_decode($request->getBody()->getContents());
 
-        $errors = $this->validateRequest($body);
-
-        if (!empty($errors)) {
-            return new JsendBadRequestResponse($errors);
-        }
-
         try {
             $user = $this->bus->execute(new ValidateUserCredentialsCommand($body->email, $body->password));
             $token = $this->bus->execute(new CreateSessionTokenCommand($user->id));
@@ -38,24 +30,9 @@ class LoginController
                 'user' => $user->id
             ]);
         } catch (UserValidationException | NotFoundException $e) {
-            return new JsendErrorResponse([
+            return (new JsendFailResponse([
                 new JsendError('Unable to verify user credentials')
-            ]);
+            ]))->withStatus(401);
         }
-    }
-
-    private function validateRequest($body): array
-    {
-        $errors = [];
-
-        if (!isset($body->email)) {
-            $errors[] = new JsendError("Required field 'email' is missing");
-        }
-
-        if (!isset($body->password)) {
-            $errors[] = new JsendError("Required field 'password' is missing");
-        }
-
-        return $errors;
     }
 }

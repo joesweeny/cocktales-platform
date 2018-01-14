@@ -51,7 +51,7 @@ class Dispatcher
             case FastRouteDispatcher::METHOD_NOT_ALLOWED:
             case FastRouteDispatcher::NOT_FOUND:
             default:
-                return new HtmlResponse('404 - Page not foud', 404);
+                return new HtmlResponse('404 - Path does not exist - please try again', 404);
                 break;
 
         }

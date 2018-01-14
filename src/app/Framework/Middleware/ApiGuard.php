@@ -14,6 +14,7 @@ use Zend\Diactoros\Response\RedirectResponse;
 class ApiGuard implements ServerMiddlewareInterface
 {
     private $allowedPaths = [
+        '/',
         '/api/v1/user/login',
         '/api/v1/user/register'
     ];

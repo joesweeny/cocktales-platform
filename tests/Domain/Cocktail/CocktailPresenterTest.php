@@ -18,9 +18,9 @@ class CocktailPresenterTest extends TestCase
 
         $this->assertInstanceOf(\stdClass::class, $dto);
         $this->assertEquals('0487d724-4ca0-4942-bf64-4cc53273bc2b', $dto->id);
-        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', $dto->userId);
+        $this->assertEquals('f5a366cf-15a0-4aca-a19e-e77c3e71815f', $dto->user_id);
         $this->assertEquals('The Titty Twister', $dto->name);
         $this->assertEquals('Made in my garage when pissed', $dto->origin);
-        $this->assertEquals('2017-03-12', $dto->createdAt);
+        $this->assertEquals('2017-03-12', $dto->created_at);
     }
 }

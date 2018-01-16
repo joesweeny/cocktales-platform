@@ -74,7 +74,7 @@ class EntityGuard implements ServerMiddlewareInterface
 
         if ($cocktailId && $path === 'update') {
             $cocktail = $this->bus->execute(new GetCocktailByIdCommand($cocktailId));
-            if ($cocktail->cocktail->userId !== $userId) {
+            if ($cocktail->cocktail->user_id !== $userId) {
                 $this->logError($uri->getPath(), $userId, $authId, $cocktailId);
                 throw new NotAuthorizedException('You are not authorized to perform this action');
             }

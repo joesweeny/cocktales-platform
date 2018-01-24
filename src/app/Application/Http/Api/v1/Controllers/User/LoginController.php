@@ -27,12 +27,12 @@ class LoginController
 
             return new JsendSuccessResponse([
                 'token' => $token,
-                'user' => $user->id
+                'user_id' => $user->id
             ]);
         } catch (UserValidationException | NotFoundException $e) {
             return (new JsendFailResponse([
                 new JsendError('Unable to verify user credentials')
-            ]))->withStatus(401);
+            ]))->withStatus(404);
         }
     }
 }

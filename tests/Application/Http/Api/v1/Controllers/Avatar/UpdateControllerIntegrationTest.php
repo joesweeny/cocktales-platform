@@ -85,7 +85,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->assertEquals('No body in request or body is in an incorrect format', $jsend->data->errors[0]->message);
     }
 
-    public function test_422_response_is_returned_if_specific_required_fields_are_missing()
+    public function test_400_response_is_returned_if_specific_required_fields_are_missing()
     {
         $request = new ServerRequest(
             'post',
@@ -99,7 +99,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertCount(2, $jsend->data->errors);
         $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
         $this->assertEquals("Required field 'image' is missing", $jsend->data->errors[1]->message);

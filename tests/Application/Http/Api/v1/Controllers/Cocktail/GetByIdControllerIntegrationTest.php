@@ -97,7 +97,7 @@ class GetByIdControllerIntegrationTest extends TestCase
         $this->assertEquals('Cocktail with ID 0487d724-4ca0-4942-bf64-4cc53273bc2b does not exist', $jsend->data->errors[0]->message);
     }
 
-    public function test_returns_422_response_if_cocktail_does_not_exist()
+    public function test_returns_400_response_if_cocktail_id_field_is_not_present_in_request_body()
     {
         $request = new ServerRequest(
             'GET',
@@ -111,7 +111,7 @@ class GetByIdControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[0]->message);
     }
 

@@ -43,7 +43,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->token = $this->container->get(TokenOrchestrator::class)->createToken($this->user->getId());
     }
 
-    public function test_success_response_is_received_joe()
+    public function test_success_response_is_received_when_user_updated_successfully()
     {
         $request = new ServerRequest(
             'post',
@@ -99,7 +99,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $this->assertEquals('Unable to process request - please try again', $jsend->data->errors[0]->message);
     }
 
-    public function test_422_response_is_returned_if_specific_required_fields_are_missing()
+    public function test_400_response_is_returned_if_specific_required_fields_are_missing()
     {
         $request = new ServerRequest(
             'post',
@@ -114,7 +114,7 @@ class UpdateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertCount(1, $jsend->data->errors);
         $this->assertEquals("Required field 'password' is missing", $jsend->data->errors[0]->message);
     }

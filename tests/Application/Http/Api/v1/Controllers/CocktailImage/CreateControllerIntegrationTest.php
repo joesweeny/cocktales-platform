@@ -99,7 +99,7 @@ class CreateControllerIntegrationTest extends TestCase
         $this->assertEquals('You are not authorized to perform this action', $jsend->data->errors[0]->message);
     }
 
-    public function test_422_response_is_returned_if_specific_required_fields_are_missing()
+    public function test_400_response_is_returned_if_specific_required_fields_are_missing()
     {
         $request = new ServerRequest(
             'post',
@@ -113,7 +113,7 @@ class CreateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertCount(3, $jsend->data->errors);
         $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
         $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[1]->message);

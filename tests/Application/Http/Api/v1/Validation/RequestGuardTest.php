@@ -71,7 +71,7 @@ class RequestGuardTest extends TestCase
 
         $this->resolver->resolve('avatar')->willReturn(new AvatarRequestValidator());
 
-        $this->expectException(UnprocessableEntityException::class);
+        $this->expectException(RequestValidationException::class);
         $this->guard->process($request, $this->delegate->reveal());
     }
 }

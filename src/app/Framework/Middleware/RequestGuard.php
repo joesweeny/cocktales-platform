@@ -70,7 +70,7 @@ class RequestGuard implements ServerMiddlewareInterface
         $errors = $this->resolver->resolve($entityReference)->validate($action, $body);
 
         if (!empty($errors)) {
-            throw new UnprocessableEntityException(implode(',', $errors));
+            throw new RequestValidationException(implode(',', $errors));
         }
 
         return $delegate->process(RequestBuilder::rebuildRequest($request, json_encode($body)));

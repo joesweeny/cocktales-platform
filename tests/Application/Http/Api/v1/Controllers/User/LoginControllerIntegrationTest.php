@@ -42,7 +42,7 @@ class LoginControllerIntegrationTest extends TestCase
         $this->assertTrue(isset($jsend->data->token));
     }
 
-    public function test_401_response_is_returned_if_user_credentials_validation_fails()
+    public function test_404_response_is_returned_if_user_credentials_validation_fails()
     {
         $request = new ServerRequest('post', '/api/v1/user/login', [], '{"email":"joe@joe.com","password":"wrong"}');
 
@@ -51,11 +51,11 @@ class LoginControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(404, $response->getStatusCode());
         $this->assertEquals('Unable to verify user credentials', $jsend->data->errors[0]->message);
     }
 
-    public function test_422_response_is_returned_if_either_email_or_password_is_missing()
+    public function test_400_response_is_returned_if_either_email_or_password_is_missing()
     {
         $request = new ServerRequest('post', '/api/v1/user/login', [], '{"wrong": "field"}');
 
@@ -64,7 +64,7 @@ class LoginControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals("Required field 'email' is missing", $jsend->data->errors[0]->message);
         $this->assertEquals("Required field 'password' is missing", $jsend->data->errors[1]->message);
     }

@@ -68,7 +68,7 @@ class GetControllerIntegrationTest extends TestCase
         $this->deleteDirectory();
     }
 
-    public function test_422_response_is_returned_if_user_id_field_is_missing()
+    public function test_400_response_is_returned_if_user_id_field_is_missing()
     {
         $request = new ServerRequest(
             'GET',
@@ -82,7 +82,7 @@ class GetControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals("Required field 'user_id' is missing", $jsend->data->errors[0]->message);
     }
 

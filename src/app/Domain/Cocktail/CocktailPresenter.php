@@ -11,9 +11,9 @@ class CocktailPresenter
         return (object) [
             'id' => (string) $cocktail->getId(),
             'name' => $cocktail->getName(),
-            'userId' => (string) $cocktail->getUserId(),
+            'user_id' => (string) $cocktail->getUserId(),
             'origin' => $cocktail->getOrigin(),
-            'createdAt' => $cocktail->getCreatedDate()->format('Y-m-d')
+            'created_at' => $cocktail->getCreatedDate()->format('Y-m-d')
         ];
     }
 }

@@ -162,7 +162,7 @@ class CreateControllerIntegrationTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function test_422_response_returned_with_detailed_errors_if_specific_request_body_fields_are_missing()
+    public function test_400_response_returned_with_detailed_errors_if_specific_request_body_fields_are_missing()
     {
         $request = new ServerRequest(
             'POST',
@@ -191,7 +191,7 @@ class CreateControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertCount(4, $jsend->data->errors);
     }
 }

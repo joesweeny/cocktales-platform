@@ -97,7 +97,7 @@ class GetByIngredientsControllerIntegrationTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function test_422_returned_if_required_specific_body_fields_are_missing()
+    public function test_400_returned_if_required_specific_body_fields_are_missing()
     {
         $request = new ServerRequest(
             'GET',
@@ -111,7 +111,7 @@ class GetByIngredientsControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals("Required field 'ingredients' is missing", $jsend->data->errors[0]->message);
     }
 

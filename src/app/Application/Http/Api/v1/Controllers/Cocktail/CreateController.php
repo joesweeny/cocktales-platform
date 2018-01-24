@@ -25,14 +25,16 @@ class CreateController
         $body = json_decode($request->getBody()->getContents());
 
         try {
-            $this->bus->execute(new CreateCocktailCommand(
+            $cocktail = $this->bus->execute(new CreateCocktailCommand(
                 $body->user_id,
                 $body->cocktail,
                 $body->ingredients,
                 $body->instructions
             ));
 
-            return new JsendSuccessResponse();
+            return new JsendSuccessResponse([
+                'cocktail_id' => $cocktail->cocktail->id
+            ]);
         } catch (DuplicateNameException $e) {
             return (new JsendFailResponse([
                 new JsendError($e->getMessage() . ' - please choose another name')

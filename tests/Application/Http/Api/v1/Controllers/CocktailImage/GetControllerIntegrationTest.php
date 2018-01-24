@@ -102,7 +102,7 @@ class GetControllerIntegrationTest extends TestCase
         $this->assertEquals('Image for Cocktail cecc0497-16be-40c9-adb4-80395d853e0f does not exist', $jsend->data->errors[0]->message);
     }
 
-    public function test_422_response_is_returned_if_cocktail_id_field_is_missing()
+    public function test_400_response_is_returned_if_cocktail_id_field_is_missing()
     {
         $request = new ServerRequest(
             'GET',
@@ -116,7 +116,7 @@ class GetControllerIntegrationTest extends TestCase
         $jsend = json_decode($response->getBody()->getContents());
 
         $this->assertEquals('fail', $jsend->status);
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals("Required field 'cocktail_id' is missing", $jsend->data->errors[0]->message);
     }
 

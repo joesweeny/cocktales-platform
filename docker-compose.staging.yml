@@ -4,6 +4,9 @@ services:
   web:
     image: joesweeny/cocktalesplatform_web_staging:latest
     environment:
+      DB_DSN: ${STAGING_DB_DSN}
+      DB_USER: ${STAGING_DB_USER}
+      DB_PASS: ${STAGING_DB_PASS}
       AWS_FILESYSTEM_ENABLED: 'false'
     ports:
       - "8000:80"

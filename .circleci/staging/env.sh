@@ -1,6 +1,0 @@
-#!/bin/sh
-
-export STAGING_DB_DSN=${STAGING_DB_DSN}
-export STAGING_DB_USER=${STAGING_DB_USER}
-export STAGING_DB_PASS=${STAGING_DB_PASS}
-export JOE=knobhead

@@ -11,7 +11,7 @@
 <body>
 
 <div id="app">
-    Welcome to CockTales - Create the potion and tell the tale
+    Welcome to CockTales - Create the potion and tell the tale - I won't forget you all when this makes me a millionaire
 </div>
 
 </body>

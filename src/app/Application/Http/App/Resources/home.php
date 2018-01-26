@@ -11,7 +11,9 @@
 <body>
 
 <div id="app">
-    Welcome to CockTales - Create the potion and tell the tale - I won't forget you all when this makes me a millionaire
+    Welcome to CockTales - Create the potion and tell the tale - I won't forget you all when this makes me a millionaire.
+
+    Joe Sweeny 26-1-2018
 </div>
 
 </body>

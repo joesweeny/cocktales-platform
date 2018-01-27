@@ -2,6 +2,8 @@
 
 namespace Cocktales\Domain\User;
 
+use Cocktales\Domain\Session\Entity\SessionToken;
+use Cocktales\Domain\Session\Persistence\Repository as TokenRepository;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Domain\User\Persistence\Repository;
 use Cocktales\Framework\Exception\NotFoundException;
@@ -14,14 +16,15 @@ class UserOrchestrator
      * @var Repository
      */
     private $repository;
-
     /**
-     * UserOrchestrator constructor.
-     * @param Repository $repository
+     * @var TokenRepository
      */
-    public function __construct(Repository $repository)
+    private $tokenRepo;
+
+    public function __construct(Repository $repository, TokenRepository $tokenRepo)
     {
         $this->repository = $repository;
+        $this->tokenRepo = $tokenRepo;
     }
 
     /**
@@ -120,5 +123,15 @@ class UserOrchestrator
     public function getUsers(): Collection
     {
         return $this->repository->getUsers();
+    }
+
+    /**
+     * @param SessionToken $token
+     * @return User
+     * @throws \Cocktales\Framework\Exception\NotFoundException
+     */
+    public function getUserByToken(SessionToken $token): User
+    {
+        return $this->repository->getUserById($token->getUserId());
     }
 }

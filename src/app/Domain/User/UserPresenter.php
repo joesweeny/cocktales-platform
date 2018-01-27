@@ -16,8 +16,8 @@ class UserPresenter
         return (object) [
             'id' => $user->getId()->__toString(),
             'email' => $user->getEmail(),
-            'created_at' => $user->getCreatedDate()->format('d-m-Y'),
-            'updated_at' => $user->getLastModifiedDate()->format('d-m-Y')
+            'created_at' => $user->getCreatedDate()->format(\DATE_ATOM),
+            'updated_at' => $user->getLastModifiedDate()->format(\DATE_ATOM)
         ];
     }
 }

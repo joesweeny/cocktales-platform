@@ -5,6 +5,8 @@ namespace Cocktales\Framework\Middleware;
 use Cocktales\Bootstrap\Config;
 use Cocktales\Boundary\Session\Command\ValidateSessionTokenCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
+use Cocktales\Framework\Exception\NotAuthenticatedException;
+use Cocktales\Framework\Exception\NotAuthenticationException;
 use Interop\Http\Middleware\DelegateInterface;
 use Interop\Http\Middleware\ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -42,6 +44,7 @@ class ApiGuard implements ServerMiddlewareInterface
      * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
+     * @throws \Cocktales\Framework\Exception\NotAuthenticatedException
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
     {
@@ -59,15 +62,13 @@ class ApiGuard implements ServerMiddlewareInterface
         }
 
         $token = $request->getHeaderLine('AuthorizationToken') ?? '';
-        $userId = $request->getHeaderLine('AuthenticationToken') ?? '';
 
-
-        if (!$token || !$userId) {
-            return new RedirectResponse("{$this->config->get('base-uri')}/user/login");
+        if (!$token) {
+            throw new NotAuthenticatedException('AuthorizationToken value not set in request header');
         }
 
-        if (!$this->bus->execute(new ValidateSessionTokenCommand($token, $userId))) {
-            return new RedirectResponse("{$this->config->get('base-uri')}/user/login");
+        if (!$this->bus->execute(new ValidateSessionTokenCommand($token))) {
+            throw new NotAuthenticatedException('AuthorizationToken value provided failed validation');
         }
 
         return $delegate->process($request);

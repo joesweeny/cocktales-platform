@@ -23,52 +23,35 @@ class SessionManager
      * @var TokenRefresher
      */
     private $refresher;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
     public function __construct(
         TokenOrchestrator $orchestrator,
         Validator $validator,
-        TokenRefresher $refresher,
-        LoggerInterface $logger
+        TokenRefresher $refresher
     ) {
         $this->orchestrator = $orchestrator;
         $this->validator = $validator;
         $this->refresher = $refresher;
-        $this->logger = $logger;
     }
 
     /**
      * @param Uuid $token
-     * @param Uuid $userId
      * @throws SessionTokenValidationException
      * @return void
      */
-    public function handleToken(Uuid $token, Uuid $userId): void
+    public function handleToken(Uuid $token): void
     {
         try {
             $token = $this->orchestrator->getToken($token);
-            $this->validateToken($token, $userId);
+
+            if (!$this->validator->isValid($token)) {
+                throw new SessionTokenValidationException('Unable to validate token provided');
+            }
+
             $this->handleTokenExpiry($token);
             return;
         } catch (NotFoundException $e) {
-            $this->logError($token, $userId);
             throw new SessionTokenValidationException($e->getMessage());
-        }
-    }
-
-    /**
-     * @param SessionToken $token
-     * @param Uuid $userId
-     * @throws SessionTokenValidationException
-     * @return void
-     */
-    private function validateToken(SessionToken $token, Uuid $userId): void
-    {
-        if (!$this->validator->validate($token, $userId)) {
-            throw new SessionTokenValidationException('Unable to validate token provided');
         }
     }
 
@@ -77,16 +60,5 @@ class SessionManager
         if ($this->refresher->expiresWithinHour($token->getExpiry())) {
             $this->orchestrator->updateToken($this->refresher->refreshToHour($token));
         }
-    }
-
-    private function logError(Uuid $token, Uuid $userId): void
-    {
-        $this->logger->error(
-            'A user has attempted to again access with an invalid id and token combination',
-            [
-                'token' => (string) $token,
-                'userId' => (string) $userId
-            ]
-        );
     }
 }

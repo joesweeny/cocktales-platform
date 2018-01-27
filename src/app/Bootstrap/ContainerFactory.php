@@ -166,8 +166,7 @@ class ContainerFactory
 
             \Cocktales\Domain\Session\Validation\Validator::class => \DI\factory(function (ContainerInterface $container) {
                 return new Validator(
-                    $container->get(Clock::class),
-                    $container->get(LoggerInterface::class)
+                    $container->get(Clock::class)
                 );
             })
             

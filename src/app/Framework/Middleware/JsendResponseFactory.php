@@ -2,6 +2,7 @@
 
 namespace Cocktales\Framework\Middleware;
 
+use Cocktales\Framework\Exception\NotAuthenticatedException;
 use Cocktales\Framework\Exception\NotAuthorizedException;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Exception\RequestValidationException;
@@ -27,6 +28,12 @@ class JsendResponseFactory implements ErrorResponseFactory
         }
 
         if ($exception instanceof NotAuthorizedException) {
+            return (new JsendFailResponse([
+                new JsendError($exception->getMessage())
+            ]))->withStatus(401);
+        }
+
+        if ($exception instanceof NotAuthenticatedException) {
             return (new JsendFailResponse([
                 new JsendError($exception->getMessage())
             ]))->withStatus(401);

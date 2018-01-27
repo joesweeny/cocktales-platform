@@ -5,6 +5,8 @@ namespace Cocktales\Framework\Middleware;
 use Cocktales\Bootstrap\Config;
 use Cocktales\Boundary\Session\Command\ValidateSessionTokenCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
+use Cocktales\Framework\Exception\NotAuthenticatedException;
+use Cocktales\Framework\Exception\NotAuthenticationException;
 use Cocktales\Testing\Traits\UsesContainer;
 use Interop\Http\Middleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
@@ -34,14 +36,13 @@ class ApiGuardTest extends TestCase
         $this->container->get(Config::class)->set('base-uri', 'http://cocktales.io');
     }
 
-    public function test_user_is_redirected_to_login_page_if_no_auth_or_user_credentials_are_provided()
+    public function test_exception_is_thrown_if_no_authorization_token_header_is_provided()
     {
         $request = (new ServerRequest)->withUri(new Uri('https://cocktales.io/api/v1/user/get'));
 
-        $response = $this->middleware->process($request, $this->delegate->reveal());
-        
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals('http://cocktales.io/user/login', $response->getHeaderLine('location'));
+        $this->expectException(NotAuthenticatedException::class);
+        $this->expectExceptionMessage('AuthorizationToken value not set in request header');
+        $this->middleware->process($request, $this->delegate->reveal());
     }
 
     public function test_user_is_allowed_to_proceed_if_attempting_to_access_an_allowed_path()
@@ -54,40 +55,38 @@ class ApiGuardTest extends TestCase
         $this->assertEquals($mockResponse, $response);
     }
 
-    public function test_user_is_redirected_to_login_page_if_auth_validation_fails()
+    public function test_exception_is_thrown_if_token_provided_is_not_valid()
     {
         $request = (new ServerRequest)
             ->withUri(new Uri('https://cocktales.io/api/v1/user/get'))
-            ->withHeader('AuthorizationToken', '262a3987-426e-4de4-b06f-2353c0ae1505')
-            ->withHeader('AuthenticationToken', 'f530caab-1767-4f0c-a669-331a7bf0fc85');
+            ->withHeader('AuthorizationToken', '262a3987-426e-4de4-b06f-2353c0ae1505');
 
         $this->bus->execute(
             new ValidateSessionTokenCommand(
-                '262a3987-426e-4de4-b06f-2353c0ae1505', 'f530caab-1767-4f0c-a669-331a7bf0fc85'
+                '262a3987-426e-4de4-b06f-2353c0ae1505'
             )
         )->willReturn(false);
 
-        $response = $this->middleware->process($request, $this->delegate->reveal());
-
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals('http://cocktales.io/user/login', $response->getHeaderLine('location'));
+        $this->expectException(NotAuthenticatedException::class);
+        $this->expectExceptionMessage('AuthorizationToken value provided failed validation');
+        $this->middleware->process($request, $this->delegate->reveal());
     }
 
     public function test_user_is_allowed_to_proceed_if_auth_validation_passes()
     {
         $request = (new ServerRequest)
             ->withUri(new Uri('https://cocktales.io/api/v1/user/get'))
-            ->withHeader('AuthorizationToken', '262a3987-426e-4de4-b06f-2353c0ae1505')
-            ->withHeader('AuthenticationToken', 'f530caab-1767-4f0c-a669-331a7bf0fc85');
+            ->withHeader('AuthorizationToken', '262a3987-426e-4de4-b06f-2353c0ae1505');
 
         $this->bus->execute(
             new ValidateSessionTokenCommand(
-                '262a3987-426e-4de4-b06f-2353c0ae1505', 'f530caab-1767-4f0c-a669-331a7bf0fc85'
+                '262a3987-426e-4de4-b06f-2353c0ae1505'
             )
         )->willReturn(true);
 
         $this->delegate->process($request)->willReturn($mockResponse = new TextResponse('hello!'));
 
         $response = $this->middleware->process($request, $this->delegate->reveal());
-        $this->assertEquals($mockResponse, $response);    }
+        $this->assertEquals($mockResponse, $response);
+    }
 }

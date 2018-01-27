@@ -2,6 +2,8 @@
 
 namespace Cocktales\Domain\User;
 
+use Cocktales\Domain\Session\Entity\SessionToken;
+use Cocktales\Domain\Session\Persistence\Repository;
 use Cocktales\Domain\User\Entity\User;
 use Cocktales\Framework\Exception\NotFoundException;
 use Cocktales\Framework\Password\PasswordHash;
@@ -192,5 +194,40 @@ class UserOrchestratorTest extends TestCase
         foreach ($users as $user) {
             $this->assertInstanceOf(User::class, $user);
         }
+    }
+
+    public function test_get_user_by_token_retrieves_a_user()
+    {
+        $this->orchestrator->createUser(
+            $user = (new User('dc5b6421-d452-4862-b741-d43383c3fe1d'))
+                ->setEmail('joe@example.com')
+                ->setPasswordHash(PasswordHash::createFromRaw('password'))
+        );
+
+        $this->container->get(Repository::class)->insertToken(
+            $token = new SessionToken(
+                new Uuid('a4a93668-6e61-4a81-93b4-b2404dbe9788'),
+                $user->getId(),
+                new \DateTimeImmutable('2017-12-11 20:20:02'),
+                new \DateTimeImmutable('2017-12-11 20:20:02')
+            )
+        );
+
+        $fetched = $this->orchestrator->getUserByToken($token);
+
+        $this->assertEquals('joe@example.com', $fetched->getEmail());
+    }
+
+    public function test_not_found_exception_is_thrown_if_no_user_associated_to_token()
+    {
+        $this->expectException(NotFoundException::class);
+        $this->orchestrator->getUserByToken(
+            new SessionToken(
+                Uuid::generate(),
+                Uuid::generate(),
+                new \DateTimeImmutable(),
+                new \DateTimeImmutable()
+            )
+        );
     }
 }

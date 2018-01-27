@@ -3,6 +3,7 @@
 namespace Cocktales\Framework\Middleware;
 
 use Cocktales\Boundary\Cocktail\Command\GetCocktailByIdCommand;
+use Cocktales\Boundary\User\Command\GetUserByTokenCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
 use Cocktales\Framework\Exception\NotAuthorizedException;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -36,8 +37,14 @@ class EntityGuardTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/avatar/create',
-            ['AuthenticationToken' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'],
+            ['AuthorizationToken' => 'bbf0eb3d-1a9a-4d9d-87e1-4c94178354e2'],
             '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/", "format": "base64"}'
+        );
+
+        $this->bus->execute(new GetUserByTokenCommand('bbf0eb3d-1a9a-4d9d-87e1-4c94178354e2'))->willReturn(
+            (object) [
+                'id' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'
+            ]
         );
 
         $this->delegate->process(Argument::type(ServerRequest::class))->willReturn($mockResponse = new TextResponse('hello!'));
@@ -51,14 +58,20 @@ class EntityGuardTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/avatar/create',
-            ['AuthenticationToken' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'],
+            ['AuthorizationToken' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'],
             '{"user_id":"c2166109-f443-420d-9ec2-63366c034b78"}'
+        );
+
+        $this->bus->execute(new GetUserByTokenCommand('f530caab-1767-4f0c-a669-331a7bf0fc85'))->willReturn(
+            (object) [
+                'id' => '3e770307-aedb-4c24-b7e6-b05a23978bcb'
+            ]
         );
 
         $this->delegate->process(Argument::any())->shouldNotBeCalled();
 
         $this->logger->error('An attempt has been made to create or update a record that does not belong to the user', [
-            'Auth ID' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
+            'Token' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
             'User ID' => 'c2166109-f443-420d-9ec2-63366c034b78',
             'Entity ID' => '',
             'Path' => '/api/v1/avatar/create'
@@ -68,13 +81,19 @@ class EntityGuardTest extends TestCase
         $this->middleware->process($request, $this->delegate->reveal());
     }
 
-    public function test_not_authorized_exception_is_thrown_if_authentication_token_does_not_match_retrieved_cocktail_user_id()
+    public function test_not_authorized_exception_is_thrown_if_authorization_token_does_not_match_retrieved_cocktail_user_id()
     {
         $request = new ServerRequest(
             'post',
             '/api/v1/avatar/update',
-            ['AuthenticationToken' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'],
+            ['AuthorizationToken' => 'bbf0eb3d-1a9a-4d9d-87e1-4c94178354e2'],
             '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", "cocktail_id": "b57ec362-d77d-449e-bd16-5d779d27e6ee"}'
+        );
+
+        $this->bus->execute(new GetUserByTokenCommand('bbf0eb3d-1a9a-4d9d-87e1-4c94178354e2'))->willReturn(
+            (object) [
+                'id' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'
+            ]
         );
 
         $this->bus->execute(new GetCocktailByIdCommand('b57ec362-d77d-449e-bd16-5d779d27e6ee'))->willReturn(
@@ -90,7 +109,7 @@ class EntityGuardTest extends TestCase
         $this->delegate->process(Argument::any())->shouldNotBeCalled();
 
         $this->logger->error('An attempt has been made to create or update a record that does not belong to the user', [
-            'Auth ID' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
+            'Token' => 'bbf0eb3d-1a9a-4d9d-87e1-4c94178354e2',
             'User ID' => 'f530caab-1767-4f0c-a669-331a7bf0fc85',
             'Entity ID' => 'b57ec362-d77d-449e-bd16-5d779d27e6ee',
             'Path' => '/api/v1/avatar/update'
@@ -105,8 +124,14 @@ class EntityGuardTest extends TestCase
         $request = new ServerRequest(
             'post',
             '/api/v1/avatar/create',
-            ['AuthenticationToken' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'],
+            ['AuthorizationToken' => 'bbf0eb3d-1a9a-4d9d-87e1-4c94178354e2'],
             '{"user_id":"f530caab-1767-4f0c-a669-331a7bf0fc85", "cocktail_id": "b57ec362-d77d-449e-bd16-5d779d27e6ee"}'
+        );
+
+        $this->bus->execute(new GetUserByTokenCommand('bbf0eb3d-1a9a-4d9d-87e1-4c94178354e2'))->willReturn(
+            (object) [
+                'id' => 'f530caab-1767-4f0c-a669-331a7bf0fc85'
+            ]
         );
 
         $this->bus->execute(new GetCocktailByIdCommand('b57ec362-d77d-449e-bd16-5d779d27e6ee'))->willReturn(

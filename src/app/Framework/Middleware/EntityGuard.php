@@ -3,7 +3,9 @@
 namespace Cocktales\Framework\Middleware;
 
 use Cocktales\Boundary\Cocktail\Command\GetCocktailByIdCommand;
+use Cocktales\Boundary\User\Command\GetUserByTokenCommand;
 use Cocktales\Framework\CommandBus\CommandBus;
+use Cocktales\Framework\Exception\NotAuthenticatedException;
 use Cocktales\Framework\Exception\NotAuthorizedException;
 use Cocktales\Framework\Request\RequestBuilder;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -41,6 +43,7 @@ class EntityGuard implements ServerMiddlewareInterface
      * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
+     * @throws \Cocktales\Framework\Exception\NotAuthenticatedException
      * @throws \Cocktales\Framework\Exception\NotAuthorizedException
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -60,22 +63,29 @@ class EntityGuard implements ServerMiddlewareInterface
             return $delegate->process($request);
         }
 
-        $body = json_decode($request->getBody()->getContents());
+        $token = $request->getHeaderLine('AuthorizationToken') ?? '';
 
-        $authId = $request->getHeaderLine('AuthenticationToken') ?? '';
+        if (!$token) {
+            throw new NotAuthenticatedException('AuthorizationToken value not set in request header');
+        }
+
+        $body = json_decode($request->getBody()->getContents());
         $userId = $body->user_id ?? '';
         $cocktailId = $body->cocktail_id ?? '';
 
+        if ($userId) {
+            $user = $this->bus->execute(new GetUserByTokenCommand($token));
 
-        if ($authId !== $userId) {
-            $this->logError($uri->getPath(), $userId, $authId);
-            throw new NotAuthorizedException('You are not authorized to perform this action');
+            if ($user->id !== $userId) {
+                $this->logError($uri->getPath(), $userId, $token, $cocktailId);
+                throw new NotAuthorizedException('You are not authorized to perform this action');
+            }
         }
 
         if ($cocktailId && $path === 'update') {
             $cocktail = $this->bus->execute(new GetCocktailByIdCommand($cocktailId));
             if ($cocktail->cocktail->user_id !== $userId) {
-                $this->logError($uri->getPath(), $userId, $authId, $cocktailId);
+                $this->logError($uri->getPath(), $userId, $token, $cocktailId);
                 throw new NotAuthorizedException('You are not authorized to perform this action');
             }
         }
@@ -86,13 +96,13 @@ class EntityGuard implements ServerMiddlewareInterface
     /**
      * @param string $path
      * @param string $userId
-     * @param string $authId
+     * @param string $token
      * @param string $entityId
      */
-    private function logError(string $path, string $userId, string $authId, string $entityId = '')
+    private function logError(string $path, string $userId, string $token, string $entityId = '')
     {
         $this->logger->error('An attempt has been made to create or update a record that does not belong to the user', [
-            'Auth ID' => $authId,
+            'Token' => $token,
             'User ID' => $userId,
             'Entity ID' => $entityId,
             'Path' => $path

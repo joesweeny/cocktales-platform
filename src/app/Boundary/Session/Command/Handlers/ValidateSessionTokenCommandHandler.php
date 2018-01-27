@@ -21,7 +21,7 @@ class ValidateSessionTokenCommandHandler
     public function handle(ValidateSessionTokenCommand $command)
     {
         try {
-            $this->manager->handleToken($command->getToken(), $command->getUserId());
+            $this->manager->handleToken($command->getToken());
             return true;
         } catch (SessionTokenValidationException $e) {
             return false;
